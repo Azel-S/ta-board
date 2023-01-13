@@ -1,7 +1,13 @@
-This is CEN3031 main project.
+##CEN3031-Project-Name.
 
-Members:
+#Members:
 Abbas Shah
 Carlo Quick
 Nick Rodriguez
 Riley Willis
+
+#About
+
+#Running Backend
+
+#Running Frontend
