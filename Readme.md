@@ -1,13 +1,13 @@
-##CEN3031-Project-Name.
+## CEN3031-Project-Name.
 
-#Members:
+# Members:
 Abbas Shah
 Carlo Quick
 Nick Rodriguez
 Riley Willis
 
-#About
+# About
 
-#Running Backend
+# Running Backend
 
-#Running Frontend
+# Running Frontend
