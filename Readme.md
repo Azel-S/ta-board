@@ -15,9 +15,7 @@ A useful helper for teachers or assistants. When a student needs information, in
 
 ## Members:
 ### Front End
-Abbas Shah
-Carlo Quick
+Abbas Shah, Carlo Quick
 
 ### Back-End
-Nick Rodriguez
-Riley Willis
+Nick Rodriguez, Riley Willis
