@@ -19,3 +19,10 @@ Abbas Shah, Carlo Quick
 
 ### Back-End
 Nick Rodriguez, Riley Willis
+
+### APIs & Languages:
+   - Angular
+   - Typescript
+   - Golang
+      * Planned Libraries: Gin, Go-SQL-Driver. [yet to be fully determined]
+   - mySQL
