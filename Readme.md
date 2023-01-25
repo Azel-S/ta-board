@@ -13,7 +13,7 @@ A useful helper for teachers or assistants. When a student needs information, in
    - Then the syllabus is searched with the key words and the section is given to the student.
    - If the answer is not helpful, an option to the log is given (to be answered by the teacher/assistant later).
 
-### APIs & Languages:
+## APIs & Languages:
    - Angular
    - Typescript
    - Golang
@@ -26,4 +26,3 @@ Abbas Shah, Carlo Quick
 
 ### Back-End
 Nick Rodriguez, Riley Willis
-
