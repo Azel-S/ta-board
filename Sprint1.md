@@ -8,5 +8,6 @@ Team Videos:
 
 Front End:
   Record a video demoing your frontend work. Use a mocked up backend if necessary.
+
 Backend:
   Record a video demoing your backend work. Use the command line or Postman.
