@@ -5,12 +5,11 @@ import { RouterModule, Routes } from '@angular/router'
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopBarComponent } from './top-bar/top-bar.component';
-import { HomeComponent } from './home/home.component';
+
+import { MatToolbarModule } from '@angular/material/toolbar'; 
 
 const routes: Routes =
 [
-  { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
 ]
 
 @NgModule
@@ -19,13 +18,13 @@ const routes: Routes =
   [
     AppComponent,
     TopBarComponent,
-    HomeComponent
   ],
   imports:
   [
     BrowserModule,
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes)
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
