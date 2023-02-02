@@ -24,7 +24,8 @@ const routes: Routes =
   declarations:
   [
     AppComponent,
-    DashComponent
+    TopBarComponent,
+    DashComponent,
   ],
   imports:
   [
