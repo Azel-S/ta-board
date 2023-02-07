@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router, RouterLink } from '@angular/router';
 
 @Component
@@ -18,15 +19,19 @@ export class LoginComponent
   password: string | undefined;
   confirmPassword: string | undefined;
 
-  login()
+  student()
   {
     if(this.courseID == "admin")
     {
-      this.router.navigate(['\dash']);
+      this.router.navigate(['student-view']);
     }
-    else
+  }
+
+  teacher()
+  {
+    if(this.username == "admin")
     {
-      // TODO: Error Message
+      this.router.navigate(['teacher-view']);
     }
   }
 
