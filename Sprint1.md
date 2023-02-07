@@ -11,3 +11,23 @@ Front End:
 
 Backend:
   Record a video demoing your backend work. Use the command line or Postman.
+  
+User Stories:
+
+   As any user of the TA bot site, I want the site to be well-organized and have an easily accessible structure as this application is meant to be a quick and easy alternative to scouring the syllabus or other sections of the course.
+   
+   As a student, I want any question the TA bot can't answer to be noted for the professor to add input to so students with the same question in the future have an answer.
+   
+   As a professor, I want to be able to quickly add my own answers to questions that are not included in the basic questions when first setting up the TA bot.
+   
+   As a visiting student, I want to quickly access my course with a course code so the application feels seamless without much hassle to begin interacting with the TA bot.
+  
+   As a student, I only wanna have a course id, and not a password when I sign in because my brain is unable to carry any more information than necessary. -> Done
+
+   As a teacher (or assistant), I want to sign in only once and be able to manage all my courses because signing in for a course each time is annoying. -> Done
+   
+   As a student I want to ask specific questions about my class so that I don't have to parse the syllabus.
+   
+   As a professor I want to reply to common questions only once, so that I can have more time for my other duties.
+   
+   As a professor I want to have access to multiple courses in one website for ease of mind.
