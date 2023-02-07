@@ -25,3 +25,9 @@ User Stories:
    As a student, I only wanna have a course id, and not a password when I sign in because my brain is unable to carry any more information than necessary. -> Done
 
    As a teacher (or assistant), I want to sign in only once and be able to manage all my courses because signing in for a course each time is annoying. -> Done
+   
+   As a student I want to ask specific questions about my class so that I don't have to parse the syllabus.
+   
+   As a professor I want to reply to common questions only once, so that I can have more time for my other duties.
+   
+   As a professor I want to have access to multiple courses in one website for ease of mind.
