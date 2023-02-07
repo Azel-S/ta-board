@@ -21,3 +21,7 @@ User Stories:
    As a professor, I want to be able to quickly add my own answers to questions that are not included in the basic questions when first setting up the TA bot.
    
    As a visiting student, I want to quickly access my course with a course code so the application feels seamless without much hassle to begin interacting with the TA bot.
+  
+   As a student, I only wanna have a course id, and not a password when I sign in because my brain is unable to carry any more information than necessary. -> Done
+
+   As a teacher (or assistant), I want to sign in only once and be able to manage all my courses because signing in for a course each time is annoying. -> Done
