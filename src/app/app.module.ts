@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 // Custom Components
 import { AppComponent } from './app.component';
@@ -46,6 +47,7 @@ const routes: Routes =
   [
     RouterModule.forRoot(routes),
     BrowserModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     MatGridListModule,
     MatCardModule,

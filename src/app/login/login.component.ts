@@ -14,6 +14,7 @@ export class LoginComponent
 
   // Input fields
   courseID: string | undefined;
+  username: string | undefined;
   password: string | undefined;
   confirmPassword: string | undefined;
 
