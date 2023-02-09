@@ -1,3 +1,4 @@
+/*
 package InitializeDB_Sample
 
 import (
@@ -46,3 +47,4 @@ func GoDBCreate(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Successful", user)
 }
+*/
