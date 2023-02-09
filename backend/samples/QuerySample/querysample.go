@@ -1,4 +1,4 @@
-package main
+package QuerySample
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func main() {
+func QuerySample() {
 	// Enter your personal mySQL root password where [root_password] is
 	db, err := sql.Open("mysql", "root:[root_password]@tcp(127.0.0.1:3306)/testdb")
 
