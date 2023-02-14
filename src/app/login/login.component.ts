@@ -1,5 +1,5 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router, RouterLink } from '@angular/router';
 
 @Component
@@ -11,7 +11,7 @@ import { Router, RouterLink } from '@angular/router';
 
 export class LoginComponent
 {
-  constructor(public router: Router){}
+  constructor(public router: Router, private http: HttpClient){}
 
   // Input fields
   courseID: string | undefined;
@@ -35,8 +35,15 @@ export class LoginComponent
     }
   }
 
-  register(regForm: {username: string, password: string, confirmPassword: string})
+  register(credentials: {username: string, password: string})
   {
-    console.log(regForm);
+    if(this.password == this.confirmPassword)
+    {
+      console.log(credentials);
+      this.http.post('localhost:3306/users.json', credentials).subscribe((res) =>
+      {
+        console.log(res);
+      })
+    }
   }
 }
