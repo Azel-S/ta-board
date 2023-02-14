@@ -35,8 +35,8 @@ export class LoginComponent
     }
   }
 
-  register()
+  register(regForm: {username: string, password: string, confirmPassword: string})
   {
-    // TODO
+    console.log(regForm);
   }
 }
