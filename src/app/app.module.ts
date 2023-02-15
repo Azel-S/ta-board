@@ -29,6 +29,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
+
 
 // Services
 
@@ -74,7 +76,8 @@ const routes: Routes =
     FormsModule,
     MatSidenavModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatExpansionModule
   ],
   providers: [],
   bootstrap: [AppComponent]
