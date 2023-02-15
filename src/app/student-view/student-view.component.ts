@@ -5,6 +5,16 @@ import { Component } from '@angular/core';
   templateUrl: './student-view.component.html',
   styleUrls: ['./student-view.component.css']
 })
+
 export class StudentViewComponent {
 
+  // Variables
+  courseName: string = "Course Name";
+  courseID: string = "Course ID";
+  courseProf: { first: string, last: string } = { first: "Professor's", last: "Name" };
+
+  openSyllabus() {
+    // TODO: Implement actual syllabus
+    window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
+  }
 }
