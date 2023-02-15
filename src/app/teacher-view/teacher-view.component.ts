@@ -9,8 +9,8 @@ import { MatAccordion } from '@angular/material/expansion';
 
 export class TeacherViewComponent {
   questions: { student: string, question: string }[] = [
-    { student: 'Abbas', question: 'Why the sigh?' },
-    { student: 'Riley', question: 'Heres a tutorial for ya' },
+    { student: 'Abbas', question: '...' },
+    { student: 'Riley', question: '...' },
     { student: 'Nick', question: '...' },
   ]
 
