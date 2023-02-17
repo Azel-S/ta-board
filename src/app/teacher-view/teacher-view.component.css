@@ -5,10 +5,12 @@
 .leftDiv{
   width: 50%;
   float: left;
+  padding: 1px;
   
 }
 
 .rightDiv{
   float: right;
   width: 50%;
+  padding: 1px;
 }
