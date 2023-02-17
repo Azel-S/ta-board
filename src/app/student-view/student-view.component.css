@@ -3,12 +3,12 @@
 }
 
 .bot-card {
-
     padding: 20px;
     height: 60vh;
 }
 
-.bot-frame
-{
-    height: 100%;
+.bot-frame {
+    border: none;
+    height: calc(60vh - 40px - 20px);
+    width: 100%;
 }
