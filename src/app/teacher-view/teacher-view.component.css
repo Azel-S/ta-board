@@ -2,3 +2,13 @@
     margin-left: 8px;
   }
 
+.leftDiv{
+  width: 50%;
+  float: left;
+  
+}
+
+.rightDiv{
+  float: right;
+  width: 50%;
+}

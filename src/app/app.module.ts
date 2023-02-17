@@ -31,7 +31,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
 
-
 // Services
 
 const routes: Routes =
@@ -54,7 +53,7 @@ const routes: Routes =
     StudentViewComponent,
     TeacherViewComponent,
     CourseViewComponent,
-    SidebarComponent,
+    SidebarComponent
   ],
   imports:
   [

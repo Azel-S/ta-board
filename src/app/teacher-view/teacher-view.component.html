@@ -1,53 +1,4 @@
-<!--
-<mat-accordion>
-  <mat-expansion-panel hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        FAQs
-      </mat-panel-title>
-      <mat-panel-description>
-        This is a summary of the content
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <p>This is the primary content of the panel.</p>
-  </mat-expansion-panel>
-  <mat-expansion-panel (opened)="panelOpenState = true"
-                       (closed)="panelOpenState = false">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Self aware panel
-      </mat-panel-title>
-      <mat-panel-description>
-        Currently I am {{panelOpenState ? 'open' : 'closed'}}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <p>I'm visible because I am open</p>
-  </mat-expansion-panel>
-    <mat-expansion-panel (opened)="panelOpenState = true"
-                       (closed)="panelOpenState = false">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Self aware panel
-      </mat-panel-title>
-      <mat-panel-description>
-        Currently I am {{panelOpenState ? 'open' : 'closed'}}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <p>I'm visible because I am open</p>
-  </mat-expansion-panel>
-
-  <mat-expansion-panel (opened)="panelOpenState = true"
-                        (closed)="panelOpenState = false">
-    <mat-expansion-panel-header>
-      Another Expansion
-    </mat-expansion-panel-header>
-      <iframe width=auto height=auto allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/6d736956-0a55-41cf-8dc5-d7b7ebe842ad"></iframe>
-  </mat-expansion-panel>
-
-</mat-accordion>
--->
-
-<div class="mainDiv">
+<div class="leftDiv">
   <mat-card class = "mainQuestions">
   
     <mat-accordion>
@@ -64,6 +15,35 @@
         <mat-label>Response</mat-label>
         <textarea matInput style="width: 100%; max-width: 100%;"></textarea>
       </mat-form-field>
+      <div class ="submit">
+        <button mat-raised-button color="accent">Submit</button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  
+</mat-card>
+</div>
+
+<div class="leftDiv">
+  <mat-card class = "mainQuestions">
+  
+    <mat-accordion>
+    <mat-expansion-panel hideToggle  *ngFor="let question of questions">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ question.student }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ question.question }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-form-field>
+        <mat-label>Response</mat-label>
+        <textarea matInput style="width: 100%; max-width: 100%;"></textarea>
+      </mat-form-field>
+      <div class ="submit">
+        <button mat-raised-button color="accent">Submit</button>
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
   
