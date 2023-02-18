@@ -4,11 +4,12 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// Note: make setVar() funcs for these later
 type User struct {
-	id            int    `json:"id"`
-	ProfessorName string `json:"ProfessorName"`
-	ClassID       string `json:"ClassID"`
-	ClassName     string `json:"ClassName"`
+	ID            int    `json:"id"`
+	ProfessorName string `json:"professor_name"`
+	ClassID       string `json:"class_id"`
+	ClassName     string `json:"class_name"`
 }
 
 /*
@@ -19,16 +20,16 @@ type User struct {
 -----------------------------------
 */
 type Register struct {
-	ClassID  string `json:"classid"`
+	ClassID  string `json:"class_id"`
 	Password string `json:"password"`
 }
 
 type StudenLogin struct {
-	ClassID string `json:"classid"`
+	ClassID string `json:"class_id"`
 }
 
 type ProfessorLogin struct {
-	ClassID  string `json:"classid"`
+	ClassID  string `json:"class_id"`
 	Password string `json:"password"`
 }
 
@@ -40,28 +41,32 @@ func (User) TableName() string {
 	return "users"
 }
 
-func (u *User) getUser(db *gorm.DB) error {
-	ret := db.Raw("SELECT ProfessorName, ClassID, ClassName FROM users WHERE id=?", u.id) //.Row().Scan(&u.ProfessorName, &u.ClassID, &u.ClassName)
+func (u *User) GetUser(db *gorm.DB) error {
+	//ret := db.Exec("SELECT professor_name, class_id, class_name FROM users WHERE id=?", u.ID) //.Row().Scan(&u.ProfessorName, &u.ClassID, &u.ClassName)
+	ret := db.First(&u)
 	return ret.Error
 }
 
-func (u *User) updateUser(db *gorm.DB) error {
-	ret := db.Raw("UPDATE users SET ProfessorName=?, ClassID=?, ClassName=? WHERE id=?", u.ProfessorName, u.ClassID, u.ClassName, u.id)
+func (u *User) UpdateUser(db *gorm.DB) error {
+	//ret := db.Raw("UPDATE users SET professor_name=?, class_id=?, class_name=? WHERE id=?", u.ProfessorName, u.ClassID, u.ClassName, u.ID)
+	ret := db.Model(&u).Omit("id").Updates(User{ProfessorName: u.ProfessorName, ClassID: u.ClassID, ClassName: u.ClassName})
 	return ret.Error
 }
 
-func (u *User) deleteUser(db *gorm.DB) error {
-	ret := db.Raw("DELETE FROM users WHERE id=?", u.id)
+func (u *User) DeleteUser(db *gorm.DB) error {
+	//ret := db.Exec("DELETE FROM users WHERE id=?", u.ID)
+	ret := db.Delete(&u)
 	return ret.Error
 }
 
-func (u *User) createUser(db *gorm.DB) error {
-	ret := db.Raw("INSERT INTO users(ProfessorName, ClassID, ClassName) VALUES(?, ?, ?) RETURNING id", u.ProfessorName, u.ClassID, u.ClassName).Scan(&u.id)
+func (u *User) CreateUser(db *gorm.DB) error {
+	//ret := db.Raw("INSERT INTO users(professor_name, class_id, class_name) VALUES(?, ?, ?) RETURNING id", u.ProfessorName, u.ClassID, u.ClassName) //.Scan(&u.ID)
+	ret := db.Create(&u)
 	return ret.Error
 }
 
-func getUsers(db *gorm.DB, start, count int) ([]User, error) {
-	rows, err := db.Raw("SELECT id, ProfessorName, ClassID, ClassName FROM users LIMIT ? OFFSET ?", count, start).Rows()
+func GetManyUsers(db *gorm.DB, start, count int) ([]User, error) {
+	rows, err := db.Raw("SELECT id, professor_name, class_id, class_name FROM users LIMIT ? OFFSET ?", count, start).Rows()
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +74,7 @@ func getUsers(db *gorm.DB, start, count int) ([]User, error) {
 	users := []User{}
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.id, &u.ProfessorName, &u.ClassID, &u.ClassName); err != nil {
+		if err := rows.Scan(&u.ID, &u.ProfessorName, &u.ClassID, &u.ClassName); err != nil {
 			return nil, err
 		}
 		users = append(users, u)
