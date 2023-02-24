@@ -31,7 +31,8 @@ export class LoginComponent
   {
     if(this.username == "admin")
     {
-      this.router.navigate(['teacher-view']);
+      //this.router.navigate(['teacher-view']);
+      this.router.navigate(['teacher-dash']);
     }
   }
 

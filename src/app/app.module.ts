@@ -30,6 +30,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { TeacherDashComponent } from './teacher-dash/teacher-dash.component';
 
 // Services
 
@@ -39,6 +40,7 @@ const routes: Routes =
   { path: 'home', component: HomeComponent },
   { path: 'student-view', component: StudentViewComponent },
   { path: 'teacher-view', component: TeacherViewComponent },
+  { path: 'teacher-dash', component: TeacherDashComponent },
   { path: 'course-view', component: CourseViewComponent },
   { path: '',   redirectTo: '/login', pathMatch: 'full' }
 ]
@@ -53,7 +55,8 @@ const routes: Routes =
     StudentViewComponent,
     TeacherViewComponent,
     CourseViewComponent,
-    SidebarComponent
+    SidebarComponent,
+    TeacherDashComponent
   ],
   imports:
   [
