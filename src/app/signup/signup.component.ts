@@ -7,12 +7,16 @@ import { FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
-  
+  // Data
+  contact: { first: string, last: string, email: string, phone: string} | undefined;
+
   contactGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', Validators.email],
+    phone: ['', Validators.pattern('[0-9]+')]
   });
   testGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
   });
 
   constructor(private _formBuilder: FormBuilder) { }
