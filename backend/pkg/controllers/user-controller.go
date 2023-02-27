@@ -4,7 +4,7 @@ import (
 	//"encoding/json"
 	"net/http"
 
-	"github.com/NickkRodriguez/TA-Bot/pkg/models"
+	"github.com/rw-w/TA-Bot/backend/pkg/models"
 	//"github.com/NickkRodriguez/TA-Bot/pkg/utils"
 )
 

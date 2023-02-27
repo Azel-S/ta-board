@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/NickkRodriguez/TA-Bot/pkg/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/rw-w/TA-Bot/backend/pkg/models"
 )
 
 // return a variable 'db' to assist other files in interacting with 'db'
