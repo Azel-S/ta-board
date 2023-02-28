@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -44,7 +45,7 @@ func (a *App) Initialize(user, password, dbname string) {
 }
 
 func (a *App) Run(addr string) {
-	log.Fatal(http.ListenAndServe(addr, a.Router))
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
 func (a *App) GetDB() *gorm.DB {
@@ -154,10 +155,18 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
+func (a *App) TestPrintComm(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Test Successful")
+}
+
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users", a.GetManyUsers).Methods("GET")
 	a.Router.HandleFunc("/users", a.CreateUser).Methods("POST")
+	//a.Router.HandleFunc("localhost:4200/login", a.TestPrintComm).Methods("POST")
+
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.GetUser).Methods("GET")
+
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
+	//a.Router.HandleFunc("/student-view", a.TestPrintComm).Methods("GET")
 }

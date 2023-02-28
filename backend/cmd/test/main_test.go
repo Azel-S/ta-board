@@ -4,6 +4,9 @@ package test
 	A majority of this program has been written by following the given tutorial:
 	https://semaphoreci.com/community/tutorials/building-and-testing-a-rest-api-in-go-with-gorilla-mux-and-postgresql
 	Written by: Kulshekhar Kabra; August 29, 2022; Published by Semaphore
+
+	This main_test.go file contains all the unit tests and tests can be ran using the Golang's internal 'testing' package
+		- can run go test -v in the /test directory to see all of these tests in action
 */
 
 import (
@@ -28,8 +31,6 @@ const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
 )`
 
 var a config.App
-
-//	can run go test -v in the /test directory to see all of these tests in action
 
 func TestMain(m *testing.M) {
 	a.Initialize(

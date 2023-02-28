@@ -40,7 +40,7 @@ export class LoginComponent
     if(this.password == this.confirmPassword)
     {
       console.log(credentials);
-      this.http.post('localhost:3306/users.json', credentials).subscribe((res) =>
+      this.http.post('localhost:4200/users.json', credentials).subscribe((res) =>
       {
         console.log(res);
       })
