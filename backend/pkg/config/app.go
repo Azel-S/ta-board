@@ -10,7 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/rw-w/TA-Bot/backend/pkg/models"
+
+	"TA-Bot/backend/pkg/models"
 )
 
 // return a variable 'db' to assist other files in interacting with 'db'
@@ -35,7 +36,7 @@ func (a *App) Connect(cPath string) {
 }
 
 func (a *App) Initialize(user, password, dbname string) {
-	connectionPath := "root:iidgst1wngsT!@tcp(localhost:3306)/testdb?charset=utf8&parseTime=True&loc=Local"
+	connectionPath := "root:password@tcp(localhost:3306)/testdb?charset=utf8&parseTime=True&loc=Local"
 	//cString := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
 	a.Connect(connectionPath)
 	a.Router = mux.NewRouter()
@@ -45,7 +46,7 @@ func (a *App) Initialize(user, password, dbname string) {
 }
 
 func (a *App) Run(addr string) {
-	log.Fatal(http.ListenAndServe(addr, nil))
+	log.Fatal(http.ListenAndServe(addr, a.Router))
 }
 
 func (a *App) GetDB() *gorm.DB {
@@ -73,6 +74,8 @@ func (a *App) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) GetManyUsers(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Request recieved...")
+
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -88,6 +91,7 @@ func (a *App) GetManyUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, http.StatusOK, users)
+	fmt.Println("Request finished...")
 }
 
 func (a *App) CreateUser(w http.ResponseWriter, r *http.Request) {

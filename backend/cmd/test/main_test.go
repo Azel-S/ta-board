@@ -17,8 +17,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/rw-w/TA-Bot/backend/pkg/config"
-	"github.com/rw-w/TA-Bot/backend/pkg/models"
+	"TA-Bot/backend/pkg/config"
+	"TA-Bot/backend/pkg/models"
 )
 
 const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users

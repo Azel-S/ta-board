@@ -37,10 +37,10 @@ export class LoginComponent
 
   register(credentials: {username: string, password: string})
   {
-    if(this.password == this.confirmPassword)
+    if(true)//this.password == this.confirmPassword)
     {
       console.log(credentials);
-      this.http.post('localhost:4200/users.json', credentials).subscribe((res) =>
+      this.http.get<any>('http://localhost:4222/users').subscribe((res) =>
       {
         console.log(res);
       })
