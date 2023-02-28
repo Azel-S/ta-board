@@ -36,13 +36,11 @@ func (a *App) Connect(cPath string) {
 }
 
 func (a *App) Initialize(user, password, dbname string) {
-	connectionPath := "root:password@tcp(localhost:3306)/testdb?charset=utf8&parseTime=True&loc=Local"
-	//cString := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
+	connectionPath := user + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local"
 	a.Connect(connectionPath)
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
 	a.DB.AutoMigrate(&models.User{})
-	// routes.RegisterTABotRoutes(a.RTR)
 }
 
 func (a *App) Run(addr string) {
@@ -166,7 +164,7 @@ func (a *App) TestPrintComm(w http.ResponseWriter, r *http.Request) {
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users", a.GetManyUsers).Methods("GET")
 	a.Router.HandleFunc("/users", a.CreateUser).Methods("POST")
-	//a.Router.HandleFunc("localhost:4200/login", a.TestPrintComm).Methods("POST")
+	//a.Router.HandleFunc("/login", a.TestPrintComm).Methods("POST")
 
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.GetUser).Methods("GET")
 

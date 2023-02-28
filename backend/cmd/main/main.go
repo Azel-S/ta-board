@@ -13,11 +13,16 @@ import (
 
 // telling golang where our routes are; creating the server defining our local host
 func main() {
+	// CONSTANTS
+	ADDR := "localhost:4222"
+	USER := "root"
+	PASSWORD := "password"
+	DBNAME := "testdb"
+
 	var a config.App
-	addr := "localhost:4222"
 
 	fmt.Println("Initializing...")
-	a.Initialize("", "", "") // these string inputs are WIP for future connections with databases
+	a.Initialize(USER, PASSWORD, DBNAME)
 	fmt.Println("Initializing done...")
 
 	fmt.Println("Handling...")
@@ -25,13 +30,6 @@ func main() {
 	fmt.Println("Handling done...")
 
 	fmt.Println("Running...")
-	a.Run(addr)
+	a.Run(ADDR)
 	fmt.Println("Running done...")
-
-	// a.Initialize(
-	// 	os.Getenv("APP_DB_USERNAME"),
-	// 	os.Getenv("APP_DB_PASSWORD"),
-	// 	os.Getenv("APP_DB_NAME"),
-	// )
-	// http.Handle("/", a.GetRTR())
 }
