@@ -47,4 +47,20 @@ describe('LoginComponent', () => {
     const result = fixture.componentInstance.register({username: "test", password: "aaa"});
     expect(result).toBe(false);
   })
+
+  it('student id should match \'admin\'', async() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.courseID = 'admin';
+    const result = fixture.componentInstance.student();
+    expect(result).toBe(true);
+  })
+
+  it('student id should match \'admin\'', async() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.courseID = 'password';
+    const result = fixture.componentInstance.student();
+    expect(result).toBe(false);
+  })
+
+
 });
