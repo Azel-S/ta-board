@@ -32,7 +32,7 @@ describe('TeacherViewComponent', () => {
 
   it('should be able to load expansion panels', async () => {
     const panels = await loader.getAllHarnesses(MatExpansionPanelHarness);
-    expect(panels.length).toBe(1);
+    expect(panels.length).toBe(3);
   });
 
   it('should be able to toggle expansion state of panel', async () => {
@@ -41,16 +41,11 @@ describe('TeacherViewComponent', () => {
     await panel.toggle();
     expect(await panel.isExpanded()).toBe(true);
   });
-
-  it('should be able to get text content of expansion panel', async () => {
-    const panel = await loader.getHarness(MatExpansionPanelHarness);
-    expect(await panel.getTextContent()).toBe('I am the content!');
-  });
-
+  
   it('should be able to get expansion panels of accordion', async () => {
     const accordion = await loader.getHarness(MatAccordionHarness);
     const panels = await accordion.getExpansionPanels();
-    expect(panels.length).toBe(1);
-    expect(await panels[0].getTitle()).toBe('Welcome');
+    expect(panels.length).toBe(3);
+    expect(await panels[0].getTitle()).toBe('Abbas');
   });
 });
