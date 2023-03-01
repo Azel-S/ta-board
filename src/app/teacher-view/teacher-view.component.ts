@@ -14,5 +14,5 @@ export class TeacherViewComponent {
     { student: 'Nick', question: '...' },
   ]
 
-  panelOpenState = false;
+  // Not sure if needed: panelOpenState = false;
 }

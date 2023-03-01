@@ -41,10 +41,18 @@ export class LoginComponent
     if(this.password == this.confirmPassword)
     {
       console.log(credentials);
+      /*
       this.http.post('localhost:3306/users.json', credentials).subscribe((res) =>
       {
         console.log(res);
       })
+      */
+      
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
 }
