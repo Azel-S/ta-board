@@ -19,17 +19,13 @@ func main() {
 	PASSWORD := "password"
 	DBNAME := "testdb"
 
+	fmt.Println("Database: " + DBNAME + " | " + USER + " | " + PASSWORD)
+	fmt.Println("Server Address: " + ADDR)
+
 	var a config.App
-
-	fmt.Println("Initializing...")
 	a.Initialize(USER, PASSWORD, DBNAME)
-	fmt.Println("Initializing done...")
-
-	fmt.Println("Handling...")
 	http.Handle("/", a.Router)
-	fmt.Println("Handling done...")
 
-	fmt.Println("Running...")
+	fmt.Println("\nServer listening...")
 	a.Run(ADDR)
-	fmt.Println("Running done...")
 }

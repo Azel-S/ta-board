@@ -3,15 +3,14 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 @Component
-({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
-})
+  ({
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
+  })
 
-export class LoginComponent
-{
-  constructor(public router: Router, private http: HttpClient){}
+export class LoginComponent {
+  constructor(public router: Router, private http: HttpClient) { }
 
   // Input fields
   courseID: string | undefined;
@@ -19,31 +18,36 @@ export class LoginComponent
   password: string | undefined;
   confirmPassword: string | undefined;
 
-  student()
-  {
-    if(this.courseID == "admin")
-    {
+  student() {
+    if (this.courseID == "admin") {
       this.router.navigate(['student-view']);
     }
   }
 
-  teacher()
-  {
-    if(this.username == "admin")
-    {
+  teacher() {
+    if (this.username == "admin") {
       this.router.navigate(['teacher-view']);
     }
   }
 
-  register(credentials: {username: string, password: string})
-  {
-    if(true)//this.password == this.confirmPassword)
+  register(credentials: { username: string, password: string }) {
+    if (true)//this.password == this.confirmPassword)
     {
+      const url = 'http://localhost:4222';
+
       console.log(credentials);
-      this.http.get<any>('http://localhost:4222/users').subscribe((res) =>
+      
+      this.http.get<any>(url + '/users').subscribe((res) =>
       {
         console.log(res);
+        this.username = res.username;
       })
+
+      this.http.post<any>(url + '/users', { title: 'POST Request' }).subscribe((res) =>
+      {
+        console.log(res);
+        this.username = res.username;
+      });
     }
   }
 }
