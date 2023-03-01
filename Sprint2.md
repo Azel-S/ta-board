@@ -19,7 +19,7 @@ __TODO__: List unit tests and Cypress test for frontend
     * 'go install github.com/jinzhu/gorm@latest'
 
 ### Unit Tests
-##### These unit tests are executed using the 'testing' package within Golang, to run the tests, execute the command 'go test -v' within the backend/cmd/test directory
+#### These unit tests are executed using the 'testing' package within Golang, to run the tests, execute the command 'go test -v' within the backend/cmd/test directory
 * Test for empty MySQL table (TestEmptyTable)
 * Getting a non-existent user (TestGetNonExistUser)
 * Creating a new user (TestCreateUser)
