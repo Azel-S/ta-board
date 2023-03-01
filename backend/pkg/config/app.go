@@ -11,7 +11,8 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	"TA-Bot/backend/pkg/models"
+	course "TA-Bot/backend/pkg/models/course"
+	user "TA-Bot/backend/pkg/models/user"
 )
 
 type App struct {
@@ -30,11 +31,13 @@ func (a *App) Connect(cPath string) {
 
 // Opens database according to given paramaters
 // Sets routes for server
-func (a *App) Initialize(user, password, dbname string) {
-	a.Connect(user + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local")
+func (a *App) Initialize(username, password, dbname string) {
+	a.Connect(username + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local")
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
-	a.DB.AutoMigrate(&models.User{})
+	a.DB.Exec(user.UsersCreationQuery)
+	a.DB.Exec(course.CoursesCreationQuery)
+	a.DB.AutoMigrate(&user.User{})
 }
 
 // Listens for incoming requests from Angular
@@ -52,6 +55,12 @@ func (a *App) GetRTR() *mux.Router {
 	return a.Router
 }
 
+/*
+
+	USER FUNCTIONS
+
+*/
+
 func (a *App) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -59,7 +68,7 @@ func (a *App) GetUser(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
-	u := models.User{ID: id}
+	u := user.User{ID: id}
 	if err := u.GetUser(a.DB); err != nil {
 		respondWithError(w, http.StatusNotFound, "User not found")
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
@@ -78,7 +87,7 @@ func (a *App) GetManyUsers(w http.ResponseWriter, r *http.Request) {
 	if start < 0 {
 		start = 0
 	}
-	users, err := models.GetManyUsers(a.DB, start, count)
+	users, err := user.GetManyUsers(a.DB, start, count)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -87,7 +96,7 @@ func (a *App) GetManyUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var u models.User
+	var u user.User
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
@@ -109,7 +118,7 @@ func (a *App) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
-	var u models.User
+	var u user.User
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
@@ -132,13 +141,112 @@ func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
-	u := models.User{ID: id}
+	u := user.User{ID: id}
 	if err := u.DeleteUser(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
+
+/*
+
+	COURSE FUNCTIONS
+
+*/
+
+func (a *App) GetCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
+		return
+	}
+	c := course.Course{ID: id}
+	if err := c.GetCourse(a.DB); err != nil {
+		respondWithError(w, http.StatusNotFound, "Course not found")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, c)
+}
+
+func (a *App) GetManyCourses(w http.ResponseWriter, r *http.Request) {
+	count, _ := strconv.Atoi(r.FormValue("count"))
+	start, _ := strconv.Atoi(r.FormValue("start"))
+
+	if count > 10 || count < 1 {
+		count = 10
+	}
+	if start < 0 {
+		start = 0
+	}
+	courses, err := course.GetManyCourses(a.DB, start, count)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, courses)
+}
+
+func (a *App) CreateCourse(w http.ResponseWriter, r *http.Request) {
+	var c course.Course
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&c); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+
+	if err := c.CreateCourse(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, c)
+}
+
+func (a *App) UpdateCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
+		return
+	}
+	var c course.Course
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&c); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+	c.ID = id
+
+	if err := c.UpdateCourse(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, c)
+}
+
+func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
+		return
+	}
+	c := course.Course{ID: id}
+	if err := c.DeleteCourse(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+/*
+
+	HELPER + TESTING FUNCTIONS
+
+*/
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)

@@ -4,6 +4,15 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
+(
+	id SERIAL,
+	professor_name TEXT NOT NULL,
+	class_id TEXT NOT NULL,
+	class_name TEXT NOT NULL,
+	CONSTRAINT users_pkey PRIMARY KEY (id)
+)`
+
 // Note: make setVar() funcs for these later
 type User struct {
 	ID            int    `json:"id"`
@@ -81,17 +90,3 @@ func GetManyUsers(db *gorm.DB, start, count int) ([]User, error) {
 	}
 	return users, nil
 }
-
-// returning what was created
-// func (b *User) CreateUser() *User {
-// 	db.NewRecord(b)
-// 	db.Create(&b)
-// 	return b
-// }
-
-// // returns a slice/list of users
-// func GetAllUsers() []User {
-// 	var Users []User
-// 	db.Find(&Users)
-// 	return Users
-//}
