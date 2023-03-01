@@ -5,6 +5,7 @@ import {HarnessLoader} from '@angular/cdk/testing';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { TeacherViewComponent } from './teacher-view.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('TeacherViewComponent', () => {
   let fixture: ComponentFixture<TeacherViewComponent>;
@@ -15,6 +16,9 @@ describe('TeacherViewComponent', () => {
     TestBed.configureTestingModule({
       imports: [MatExpansionModule, NoopAnimationsModule],
       declarations: [TeacherViewComponent],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(TeacherViewComponent);
     fixture.detectChanges();
