@@ -34,20 +34,24 @@ export class LoginComponent {
     if (true)//this.password == this.confirmPassword)
     {
       const url = 'http://localhost:4222';
-
       console.log(credentials);
       
-      this.http.get<any>(url + '/users').subscribe((res) =>
+      if(this.username == "get")
       {
-        console.log(res);
-        this.username = res.username;
-      })
-
-      this.http.post<any>(url + '/users', { title: 'POST Request' }).subscribe((res) =>
+        this.http.get<any>(url + '/users').subscribe((res) =>
+        {
+          console.log(res);
+          this.username = res.username;
+        })
+      }
+      else if(this.username == "post")
       {
-        console.log(res);
-        this.username = res.username;
-      });
+        this.http.post<any>(url + '/users', { title: 'POST Request' }).subscribe((res) =>
+        {
+          console.log(res);
+          this.username = res.username;
+        });
+      }
     }
   }
 }
