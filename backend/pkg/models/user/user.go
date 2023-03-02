@@ -50,30 +50,35 @@ func (User) TableName() string {
 	return "users"
 }
 
+// RETURNS THE FIRST INSTANCE OF A MACHING USER IN DATABASE
 func (u *User) GetUser(db *gorm.DB) error {
 	//ret := db.Exec("SELECT professor_name, class_id, class_name FROM users WHERE id=?", u.ID) //.Row().Scan(&u.ProfessorName, &u.ClassID, &u.ClassName)
 	ret := db.First(&u)
 	return ret.Error
 }
 
+// UPDATES THE FIRST INSTANCE OF A MATCHING USER IN DATABASE WITH NEW VALUES
 func (u *User) UpdateUser(db *gorm.DB) error {
 	//ret := db.Raw("UPDATE users SET professor_name=?, class_id=?, class_name=? WHERE id=?", u.ProfessorName, u.ClassID, u.ClassName, u.ID)
 	ret := db.Model(&u).Omit("id").Updates(User{ProfessorName: u.ProfessorName, ClassID: u.ClassID, ClassName: u.ClassName})
 	return ret.Error
 }
 
+// DELETES FIRST INSTANCE OF A MATCHING USER FROM DATABASE
 func (u *User) DeleteUser(db *gorm.DB) error {
 	//ret := db.Exec("DELETE FROM users WHERE id=?", u.ID)
 	ret := db.Delete(&u)
 	return ret.Error
 }
 
+// CREATES A USER IN DATABASE
 func (u *User) CreateUser(db *gorm.DB) error {
 	//ret := db.Raw("INSERT INTO users(professor_name, class_id, class_name) VALUES(?, ?, ?) RETURNING id", u.ProfessorName, u.ClassID, u.ClassName) //.Scan(&u.ID)
 	ret := db.Create(&u)
 	return ret.Error
 }
 
+// CONSTRUCTS AND RETURNS AN ARRAY OF USERS STARTING FROM 'START' INDEX AND 'COUNT' INDICES FORWARD
 func GetManyUsers(db *gorm.DB, start, count int) ([]User, error) {
 	rows, err := db.Raw("SELECT id, professor_name, class_id, class_name FROM users LIMIT ? OFFSET ?", count, start).Rows()
 	if err != nil {

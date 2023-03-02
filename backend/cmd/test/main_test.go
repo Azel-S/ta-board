@@ -32,12 +32,9 @@ const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
 
 var a config.App
 
+// RUNS TESTS AND CHECKS FOR 'USERS' TABLE EXISTENCE
 func TestMain(m *testing.M) {
-	a.Initialize(
-		os.Getenv("APP_DB_USERNAME"),
-		os.Getenv("APP_DB_PASSWORD"),
-		os.Getenv("APP_DB_NAME"),
-	)
+	a.Initialize("root", "password", "testdb")
 	if !checkTableExistence() {
 		panic("Table failed to exist")
 	}
@@ -46,16 +43,19 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+// CHECK WHETHER OR NOT TABLE 'USERS' EXISTS -> NECESSARY FOR TESTS TO RUN
 func checkTableExistence() bool {
 	a.DB.Exec("DROP TABLE IF EXISTS users")
 	exists := a.DB.Exec(tableCreationQuery)
 	return exists.Error == nil
 }
 
+// CLEARS ENTIRE 'USERS' TABLE
 func clearTable() {
 	a.DB.Exec("DELETE FROM users")
 }
 
+// CREATES AN ARTIFICIAL HTTP REQUEST TO TRY TO GET USERS (HANDLED BY ROUTER TO GetManyUsers())
 func TestEmptyTable(t *testing.T) {
 	clearTable()
 	req, _ := http.NewRequest("GET", "/users", nil)
@@ -66,6 +66,7 @@ func TestEmptyTable(t *testing.T) {
 	}
 }
 
+// TESTS TO GET A USER NOT IN THE DATABASE (HANDLED BY ROUTER TO GetUser())
 func TestGetNonExistUser(t *testing.T) {
 	clearTable()
 	// Issue here: When set to "/users/10" or any ID greater than 9 (two digits+), it doesn't return an error like it should...
@@ -79,6 +80,7 @@ func TestGetNonExistUser(t *testing.T) {
 	}
 }
 
+// TESTS TO CREATE A USER IN DATABASE (HANDLED BY ROUTER TO CreateUser())
 func TestCreateUser(t *testing.T) {
 	clearTable()
 
@@ -106,6 +108,7 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
+// TEST TO GET USER IN DATABASE (HANDLED BY ROUTER TO GetUser())
 func TestGetUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
@@ -116,10 +119,7 @@ func TestGetUser(t *testing.T) {
 	checkResponseCode(t, http.StatusOK, response.Code)
 }
 
-// func addUserRaw(name, ID, class string) {
-// 	a.DB.Exec(`INSERT INTO users(professor_name, class_id, class_name) VALUES(?, ?, ?)`, name, ID, class)
-// }
-
+// TESTS TO UPDATE A USER (HANDLED BY ROUTER TO UpdateUser())
 func TestUpdateUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
@@ -151,6 +151,7 @@ func TestUpdateUser(t *testing.T) {
 	}
 }
 
+// TESTS TO DELETE A USER (HANDLED BY ROUTER TO DeleteUser())
 func TestDeleteUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
@@ -169,6 +170,7 @@ func TestDeleteUser(t *testing.T) {
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
 
+// HELPER FUNCTION TO EXECUTE TEST HTTP REQUESTS
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	// Execute request and returns response
 	rr := httptest.NewRecorder()
@@ -176,6 +178,7 @@ func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	return rr
 }
 
+// CHECK WHETHER A RETURNED RESPONSE CODE IS EQUAL TO AN EXPECTED RESPONSE CODE
 func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
 		t.Errorf("Expected response code %d. Got %d\n", expected, actual)

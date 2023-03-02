@@ -38,7 +38,7 @@ export class LoginComponent {
       
       if(this.username == "get")
       {
-        this.http.get<any>(url + '/users').subscribe((res) =>
+        this.http.get<any>(url + '/userstest').subscribe((res) =>
         {
           console.log(res);
           this.username = res.username;
@@ -46,7 +46,7 @@ export class LoginComponent {
       }
       else if(this.username == "post")
       {
-        this.http.post<any>(url + '/users', { title: 'POST Request' }).subscribe((res) =>
+        this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
         {
           console.log(res);
           this.username = res.username;
