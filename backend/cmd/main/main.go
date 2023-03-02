@@ -1,14 +1,10 @@
 package main
 
-// cd go/src/github.com/rw-w/TA-bot
-
 import (
 	"fmt"
 	"net/http"
 
 	"TA-Bot/backend/pkg/config"
-	// Riley: "github.com/rw-w/TA-Bot/backend/pkg/config"
-	// Abbas: "TA-Bot/backend/pkg/config"
 )
 
 // telling golang where our routes are; creating the server defining our local host

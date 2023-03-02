@@ -1,4 +1,4 @@
-module github.com/rw-w/TA-Bot/backend
+module TA-Bot/backend
 
 go 1.20
 
