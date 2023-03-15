@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { DataComponentService } from '../services/data-component.service';
 
 @Component
   ({
@@ -10,48 +11,24 @@ import { Router, RouterLink } from '@angular/router';
   })
 
 export class LoginComponent {
-  constructor(public router: Router, private http: HttpClient) { }
-
+  constructor(private comm_component: DataComponentService) { }
+  
   // Input fields
   courseID: string | undefined;
   username: string | undefined;
   password: string | undefined;
   confirmPassword: string | undefined;
-
-  student() {
-    if (this.courseID == "admin") {
-      this.router.navigate(['student-view']);
-    }
+  
+  studentLogin(){
+    this.comm_component.student(this.courseID!);
   }
 
-  teacher() {
-    if (this.username == "admin") {
-      this.router.navigate(['teacher-view']);
-    }
+  teacherLogin(){
+    this.comm_component.teacher(this.username!);
   }
 
-  register(credentials: { username: string, password: string }) {
-    if (true)//this.password == this.confirmPassword)
-    {
-      const url = 'http://localhost:4222';
-      console.log(credentials);
-      
-      if(this.username == "get")
-      {
-        this.http.get<any>(url + '/userstest').subscribe((res) =>
-        {
-          console.log(res);
-          this.username = res.username;
-        })
-      }
-      else if(this.username == "post")
-      {
-        this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
-        {
-          console.log(res);
-          this.username = res.username;
-        });
-      }
-    }
+  reg(credentials: { username: string, password: string }){
+    this.comm_component.register(credentials);
   }
+
 }

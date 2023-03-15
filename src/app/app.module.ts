@@ -29,6 +29,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { DataComponentService } from './services/data-component.service';
 
 // Services
 
@@ -76,7 +77,7 @@ const routes: Routes =
     MatDividerModule,
     MatListModule
   ],
-  providers: [],
+  providers: [DataComponentService],
   bootstrap: [AppComponent]
 })
 
