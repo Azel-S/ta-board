@@ -10,6 +10,7 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 	professor_name TEXT NOT NULL,
 	class_id TEXT NOT NULL,
 	class_name TEXT NOT NULL,
+	password TEXT NOT NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`
 
@@ -19,6 +20,7 @@ type User struct {
 	ProfessorName string `json:"professor_name"`
 	ClassID       string `json:"class_id"`
 	ClassName     string `json:"class_name"`
+	Password      string `json:"password"`
 }
 
 /*
