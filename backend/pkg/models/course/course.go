@@ -9,6 +9,7 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 	id SERIAL,
 	class_id TEXT NOT NULL,
 	class_name TEXT NOT NULL,
+	passcode TEXT NOT NULL,
 	class_info_raw TEXT NOT NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`

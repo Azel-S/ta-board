@@ -13,10 +13,10 @@ export class LoginComponent {
   constructor(public router: Router, private http: HttpClient) { }
 
   // Input fields
-  courseID: string | undefined;
-  username: string | undefined;
-  password: string | undefined;
-  confirmPassword: string | undefined;
+  courseID: string | null = null;
+  username: string | null = null;
+  password: string | null = null;
+  confirmPassword: string | null = null;
 
   student() {
     if (this.courseID == "admin") {
@@ -30,28 +30,18 @@ export class LoginComponent {
     }
   }
 
-  register(credentials: { username: string, password: string }) {
-    if (true)//this.password == this.confirmPassword)
-    {
+  register(credentials: { TESTusername: string, TESTpassword: string }) {
       const url = 'http://localhost:4222';
       console.log(credentials);
-      
-      if(this.username == "get")
-      {
-        this.http.get<any>(url + '/userstest').subscribe((res) =>
-        {
-          console.log(res);
-          this.username = res.username;
-        })
-      }
-      else if(this.username == "post")
-      {
-        this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
-        {
-          console.log(res);
-          this.username = res.username;
-        });
-      }
-    }
+      this.http.post(url + '/registeruser', {
+        TESTusername: this.username,
+        TESTpassword: this.password
+      }).subscribe((response: any) => {
+        if(response){
+          console.log(response)
+        }
+        this.username = null
+        this.password = null
+      })
   }
 }

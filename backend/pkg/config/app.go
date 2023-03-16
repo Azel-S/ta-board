@@ -11,6 +11,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
+	endpoints "TA-Bot/backend/pkg/endpoints"
 	course "TA-Bot/backend/pkg/models/course"
 	user "TA-Bot/backend/pkg/models/user"
 )
@@ -257,6 +258,37 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 /*
 
+	Frontent Integration
+
+*/
+
+func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("YES")
+	var data endpoints.Register
+	var u user.User
+	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
+	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close() // close http body at end of function call
+
+	u.ProfessorName = data.Username
+	u.Password = data.Password
+	u.ClassID = "TESTID"
+	u.ClassName = "TESTNAME"
+
+	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
+		fmt.Println("Error adding user")
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, u)
+}
+
+/*
+
 	HELPER + TESTING FUNCTIONS
 
 */
@@ -320,4 +352,6 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.GetUser).Methods("GET")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
+
+	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST")
 }
