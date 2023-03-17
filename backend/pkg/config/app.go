@@ -21,6 +21,8 @@ type App struct {
 	Router *mux.Router
 }
 
+const MASTERDropTables = `DROP TABLE IF EXISTS users, courses`
+
 // Opens a connection with the database
 func (a *App) Connect(cPath string) {
 	d, err := gorm.Open("mysql", cPath)
@@ -37,7 +39,9 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.Connect(username + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local")
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
+	a.DB.Exec(MASTERDropTables)
 	a.DB.Exec(user.UsersCreationQuery)
+	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
@@ -263,7 +267,7 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 */
 
 func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("YES")
+	fmt.Println("REGISTER")
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
@@ -291,6 +295,39 @@ func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, http.StatusCreated, u)
+}
+
+func (a *App) TESTloginTeacher(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("LOGIN")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	vars := mux.Vars(r)                 // Make a map of string to strings from the http Request
+	id, err := strconv.Atoi(vars["id"]) // convert the value of key "id" to readable integer
+	if err != nil {                     // error handling
+		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+	// if vars["username"] == "ADMIN" {
+	// 	u := user.User{ID: 1}
+	// 	if err := u.GetUser(a.DB); err != nil {
+	// 		respondWithError(w, http.StatusNotFound, "User not found")
+	// 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
+	// 		return
+	// 	}
+	// 	respondWithJSON(w, http.StatusOK, u)
+	// } else {
+	u := user.User{ID: id} // create a user with ID of the 'id' grabbed earlier
+
+	if err := u.GetUser(a.DB); err != nil {
+		respondWithError(w, http.StatusNotFound, "User not found")
+		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
+		return
+	}
+	respondWithJSON(w, http.StatusOK, u)
+	//}
 }
 
 /*
