@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DataComponentService } from '../services/data-component.service';
 
+// FormControl
+import { FormControl, Validators } from '@angular/forms';
+
 @Component
   ({
     selector: 'app-login',
@@ -35,5 +38,14 @@ export class LoginComponent {
   reg(credentials: { username: string, password: string }){
     this.comm_component.register(credentials);
   }
+
+  //===INPUT ERRORS===//
+  //==Student==//
+  courseIDFormControl = new FormControl('', [Validators.required]);
+  //==Teacher==//
+  usernameFormControl = new FormControl('', [Validators.required]);
+  passwordFormControl = new FormControl('', [Validators.required]);
+  //==Register==//
+  confirmPasswordFormControl = new FormControl('', [Validators.required]);
 
 }
