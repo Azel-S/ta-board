@@ -20,11 +20,16 @@ export class LoginComponent {
   confirmPassword: string | undefined;
   
   studentLogin(){
-    this.comm_component.student(this.courseID!);
+    if (this.courseID == 'admin'){
+      this.comm_component.Navigate('student-view');
+    }
+    // Else if
   }
 
   teacherLogin(){
-    this.comm_component.teacher(this.username!);
+    if(this.username == 'admin'){
+      this.comm_component.Navigate('teacher-view');
+    }
   }
 
   reg(credentials: { username: string, password: string }){

@@ -9,17 +9,12 @@ export class DataComponentService {
 
   constructor(public router: Router, private http: HttpClient) { }
 
-  // Data Communication between component
+  professorFirstName: string | undefined;
+  professorLastName: string | undefined;
 
-  student(courseID: string) {
-    if (courseID == 'admin') {
-      this.router.navigate(['student-view'])
-    }
-  }
-  teacher(username: string) {
-    if (username == "admin") {
-      this.router.navigate(['teacher-view']);
-    }
+  // Data Communication between component
+  Navigate(component: string){
+    this.router.navigate([component])
   }
 
   register(credentials: { username: string, password: string }) {
