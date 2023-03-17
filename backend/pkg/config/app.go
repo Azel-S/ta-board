@@ -264,6 +264,11 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("YES")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	var data endpoints.Register
 	var u user.User
 	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
@@ -273,11 +278,12 @@ func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close() // close http body at end of function call
-
+	fmt.Println(data.Username)
+	fmt.Println(data.Password)
 	u.ProfessorName = data.Username
 	u.Password = data.Password
-	u.ClassID = "TESTID"
-	u.ClassName = "TESTNAME"
+	u.ClassID = "TEST_ID"
+	u.ClassName = "TEST_CLASS_NAME"
 
 	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
 		fmt.Println("Error adding user")
@@ -353,5 +359,6 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
 
-	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST")
+	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST", "OPTIONS")
+	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 }

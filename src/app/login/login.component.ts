@@ -30,18 +30,36 @@ export class LoginComponent {
     }
   }
 
-  register(credentials: { TESTusername: string, TESTpassword: string }) {
+  register(credentials: { username: string, password: string }) {
       const url = 'http://localhost:4222';
       console.log(credentials);
       this.http.post(url + '/registeruser', {
-        TESTusername: this.username,
-        TESTpassword: this.password
-      }).subscribe((response: any) => {
-        if(response){
-          console.log(response)
-        }
-        this.username = null
-        this.password = null
-      })
+        username: this.username,
+        password: this.password
+      }).subscribe()
   }
+  // register(credentials: { username: string, password: string }) {
+  //   if (true)//this.password == this.confirmPassword)
+  //   {
+  //     const url = 'http://localhost:4222';
+  //     console.log(credentials);
+      
+  //     if(this.username == "get")
+  //     {
+  //       this.http.get<any>(url + '/userstest').subscribe((res) =>
+  //       {
+  //         console.log(res);
+  //         this.username = res.username;
+  //       })
+  //     }
+  //     else if(this.username == "post")
+  //     {
+  //       this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
+  //       {
+  //         console.log(res);
+  //         this.username = res.username;
+  //       });
+  //     }
+  //   }
+  // }
 }
