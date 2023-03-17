@@ -2,6 +2,25 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
+// Source: https://blog.angular-university.io/angular-custom-validators/
+export function createErrorVal(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+
+    const value = control.value;
+
+    if (!value) {
+      return null;
+    }
+
+    if (value == "error") {
+      return { errorVal: true };
+    }
+    else {
+      return null;
+    }
+  }
+}
+
 @Component
   ({
     selector: 'app-login',
@@ -31,19 +50,19 @@ export class LoginComponent {
   }
 
   register(credentials: { username: string, password: string }) {
-      const url = 'http://localhost:4222';
-      console.log(credentials);
-      this.http.post(url + '/registeruser', {
-        username: this.username,
-        password: this.password
-      }).subscribe()
+    const url = 'http://localhost:4222';
+    console.log(credentials);
+    this.http.post(url + '/registeruser', {
+      username: this.username,
+      password: this.password
+    }).subscribe()
   }
   // register(credentials: { username: string, password: string }) {
   //   if (true)//this.password == this.confirmPassword)
   //   {
   //     const url = 'http://localhost:4222';
   //     console.log(credentials);
-      
+
   //     if(this.username == "get")
   //     {
   //       this.http.get<any>(url + '/userstest').subscribe((res) =>
