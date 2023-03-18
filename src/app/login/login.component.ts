@@ -44,10 +44,19 @@ export class LoginComponent {
     }
   }
 
-  teacher() {
-    if (this.username == "admin") {
+  teacher(credentials: { username: string, password: string }) {
+    // if (this.username == "admin") {
+    //   this.router.navigate(['teacher-view']);
+    // }
+    const url = 'http://localhost:4222';
+    console.log(credentials)
+    this.http.post(url + '/teacherlogin', {
+      username: this.username,
+      password: this.password
+    }).subscribe(res => {
+      console.log(res)
       this.router.navigate(['teacher-view']);
-    }
+    })
   }
 
   register(credentials: { username: string, password: string }) {

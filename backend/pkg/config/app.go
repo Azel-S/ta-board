@@ -320,6 +320,7 @@ func (a *App) TESTteacherLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("user:", u)
 	if err := u.GetUser(a.DB); err != nil {
+		fmt.Println("Not found")
 		respondWithError(w, http.StatusNotFound, "User not found")
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 		return
@@ -394,6 +395,6 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
 
 	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/loginteacher", a.TESTteacherLogin).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/teacherlogin", a.TESTteacherLogin).Methods("POST", "OPTIONS")
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 }
