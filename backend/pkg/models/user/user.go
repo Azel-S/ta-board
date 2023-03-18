@@ -15,7 +15,7 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 )`
 
 const UsersAddAdminQuery = `INSERT INTO users(id, professor_name, class_id, class_name, password)
-VALUES(1, 'ADMIN', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
+VALUES(0, 'ADMIN', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
 `
 
 // Note: make setVar() funcs for these later

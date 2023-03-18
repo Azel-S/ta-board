@@ -297,37 +297,34 @@ func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, u)
 }
 
-func (a *App) TESTloginTeacher(w http.ResponseWriter, r *http.Request) {
+func (a *App) TESTteacherLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("LOGIN")
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	vars := mux.Vars(r)                 // Make a map of string to strings from the http Request
-	id, err := strconv.Atoi(vars["id"]) // convert the value of key "id" to readable integer
-	if err != nil {                     // error handling
-		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
+	var data endpoints.TeacherLogin
+
+	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
+	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	// if vars["username"] == "ADMIN" {
-	// 	u := user.User{ID: 1}
-	// 	if err := u.GetUser(a.DB); err != nil {
-	// 		respondWithError(w, http.StatusNotFound, "User not found")
-	// 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
-	// 		return
-	// 	}
-	// 	respondWithJSON(w, http.StatusOK, u)
-	// } else {
-	u := user.User{ID: id} // create a user with ID of the 'id' grabbed earlier
-
+	defer r.Body.Close() // close http body at end of function call
+	fmt.Println("data:", data)
+	u := user.User{
+		ProfessorName: data.Username,
+		Password:      data.Password,
+	}
+	fmt.Println("user:", u)
 	if err := u.GetUser(a.DB); err != nil {
 		respondWithError(w, http.StatusNotFound, "User not found")
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 		return
 	}
 	respondWithJSON(w, http.StatusOK, u)
-	//}
 }
 
 /*
@@ -397,5 +394,6 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
 
 	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/loginteacher", a.TESTteacherLogin).Methods("POST", "OPTIONS")
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 }

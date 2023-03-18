@@ -6,16 +6,16 @@ type Register struct {
 	ConfirmPassword string `json:"confirmPassword"`
 }
 
-type studentLogin struct {
+type StudentLogin struct {
 	CourseID string `json:"course_id"`
 }
 
-type teacherLogin struct {
+type TeacherLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-type user struct {
+type User struct {
 	ID       int
 	Username string `mux:"column:professor_name"`
 	Password string `mux:"column:password"`
