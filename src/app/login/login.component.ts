@@ -13,30 +13,43 @@ import { FormControl, Validators } from '@angular/forms';
     styleUrls: ['./login.component.css']
   })
 
-export class LoginComponent {
-  constructor(private comm_component: DataComponentService) { }
-  
+export class LoginComponent
+{
+  constructor(public router: Router, private http: HttpClient){}
+
   // Input fields
   courseID: string | undefined;
   username: string | undefined;
   password: string | undefined;
   confirmPassword: string | undefined;
-  
-  studentLogin(){
-    if (this.courseID == 'admin'){
-      this.comm_component.Navigate('student-view');
+
+  student()
+  {
+    if(this.courseID == "admin")
+    {
+      this.router.navigate(['student-view']);
     }
     // Else if
   }
 
-  teacherLogin(){
-    if(this.username == 'admin'){
-      this.comm_component.Navigate('teacher-view');
+  teacher()
+  {
+    if(this.username == "admin")
+    {
+      this.router.navigate(['teacher-view']);
     }
   }
 
-  reg(credentials: { username: string, password: string }){
-    this.comm_component.register(credentials);
+  register(credentials: {username: string, password: string})
+  {
+    if(this.password == this.confirmPassword)
+    {
+      console.log(credentials);
+      this.http.post('localhost:3306/users.json', credentials).subscribe((res) =>
+      {
+        console.log(res);
+      })
+    }
   }
 
   //===INPUT ERRORS===//

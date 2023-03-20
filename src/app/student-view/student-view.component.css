@@ -1,0 +1,14 @@
+.div {
+    padding: 20px;
+}
+
+.bot-card {
+    padding: 20px;
+    height: 60vh;
+}
+
+.bot-frame {
+    border: none;
+    height: calc(60vh - 40px - 20px);
+    width: 100%;
+}

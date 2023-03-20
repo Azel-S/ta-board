@@ -1,1 +1,30 @@
-<p>student-view works!</p>
+<div>
+    <button data-cy="decrement" (click)="decrement()">-</button>
+    <span data-cy="counter">{{ count }}</span>
+    <button data-cy="increment" (click)="increment()">+</button>
+</div>
+
+<div class="div">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title-group>
+                <mat-card-title>{{courseName + ' (' + courseID + ')'}}</mat-card-title>
+                <mat-card-subtitle>{{courseProf.first + ' ' + courseProf.last}}</mat-card-subtitle>
+                <button mat-raised-button type="submit" color="accent" (click)="openSyllabus()">
+                    Open Syllabus
+                </button>
+            </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content></mat-card-content>
+    </mat-card>
+</div>
+
+<div class="div">
+    <mat-card class="bot-card">
+        <mat-card-content>
+            <iframe class="bot-frame" allow="microphone;"
+                src="https://console.dialogflow.com/api-client/demo/embedded/6d736956-0a55-41cf-8dc5-d7b7ebe842ad">
+            </iframe>
+        </mat-card-content>
+    </mat-card>
+</div>
