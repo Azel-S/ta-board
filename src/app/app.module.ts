@@ -32,6 +32,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 
 // Services
+import { DataBackendService } from './services/data-backend.service';
 
 
 const routes: Routes =
@@ -79,7 +80,7 @@ const routes: Routes =
     MatDividerModule,
     MatListModule
   ],
-  providers: [],
+  providers: [DataBackendService],
   bootstrap: [AppComponent]
 })
 

@@ -11,6 +11,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
+	endpoints "TA-Bot/backend/pkg/endpoints"
 	course "TA-Bot/backend/pkg/models/course"
 	user "TA-Bot/backend/pkg/models/user"
 )
@@ -19,6 +20,8 @@ type App struct {
 	DB     *gorm.DB
 	Router *mux.Router
 }
+
+const MASTERDropTables = `DROP TABLE IF EXISTS users, courses`
 
 // Opens a connection with the database
 func (a *App) Connect(cPath string) {
@@ -36,7 +39,9 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.Connect(username + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local")
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
+	a.DB.Exec(MASTERDropTables)
 	a.DB.Exec(user.UsersCreationQuery)
+	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
@@ -257,6 +262,74 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 /*
 
+	Frontent Integration
+
+*/
+
+func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REGISTER")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	var data endpoints.Register
+	var u user.User
+	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
+	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close() // close http body at end of function call
+	fmt.Println(data.Username)
+	fmt.Println(data.Password)
+	u.ProfessorName = data.Username
+	u.Password = data.Password
+	u.ClassID = "TEST_ID"
+	u.ClassName = "TEST_CLASS_NAME"
+
+	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
+		fmt.Println("Error adding user")
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, u)
+}
+
+func (a *App) TESTteacherLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("LOGIN")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	var data endpoints.TeacherLogin
+
+	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
+	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close() // close http body at end of function call
+	fmt.Println("data:", data)
+	u := user.User{
+		ProfessorName: data.Username,
+		Password:      data.Password,
+	}
+	fmt.Println("user:", u)
+	if err := u.GetUser(a.DB); err != nil {
+		fmt.Println("Not found")
+		respondWithError(w, http.StatusNotFound, "User not found")
+		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
+		return
+	}
+	respondWithJSON(w, http.StatusOK, u)
+}
+
+/*
+
 	HELPER + TESTING FUNCTIONS
 
 */
@@ -320,4 +393,8 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.GetUser).Methods("GET")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
+
+	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/teacherlogin", a.TESTteacherLogin).Methods("POST", "OPTIONS")
+	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 }

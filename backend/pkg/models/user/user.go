@@ -10,8 +10,13 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 	professor_name TEXT NOT NULL,
 	class_id TEXT NOT NULL,
 	class_name TEXT NOT NULL,
+	password TEXT NOT NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`
+
+const UsersAddAdminQuery = `INSERT INTO users(professor_name, class_id, class_name, password)
+VALUES('ADMIN', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
+`
 
 // Note: make setVar() funcs for these later
 type User struct {
@@ -19,6 +24,7 @@ type User struct {
 	ProfessorName string `json:"professor_name"`
 	ClassID       string `json:"class_id"`
 	ClassName     string `json:"class_name"`
+	Password      string `json:"password"`
 }
 
 /*
@@ -52,8 +58,9 @@ func (User) TableName() string {
 
 // RETURNS THE FIRST INSTANCE OF A MACHING USER IN DATABASE
 func (u *User) GetUser(db *gorm.DB) error {
-	//ret := db.Exec("SELECT professor_name, class_id, class_name FROM users WHERE id=?", u.ID) //.Row().Scan(&u.ProfessorName, &u.ClassID, &u.ClassName)
-	ret := db.First(&u)
+	//ret := db.Exec("SELECT professor_name, password FROM users WHERE professor_name=? AND password=?", u.ProfessorName, u.Password) //.Row().Scan(&u.ProfessorName, &u.ClassID, &u.ClassName)
+	ret := db.Where(User{ProfessorName: u.ProfessorName, Password: u.Password}).First(&u)
+	//ret := db.First(&u)
 	return ret.Error
 }
 
