@@ -5,7 +5,7 @@
                 <form fxLayoutAlign="stretch" fxLayout="column" class="input-form">
                     <mat-form-field>
                         <mat-label>Course ID</mat-label>
-                        <input matInput type="courseID" name="courseID" [(ngModel)]="courseID" [formControl]="courseIDFormControl">
+                        <input matInput type="courseID" name="courseID" [(ngModel)]="courseID">
                         <mat-error *ngIf="courseIDFormControl.hasError('required')">
                         Please enter a <strong>Course ID</strong>
                         </mat-error>
@@ -26,7 +26,7 @@
                         <input matInput type="password" name="password" [(ngModel)]="password">
                     </mat-form-field>
 
-                    <button mat-raised-button type="submit" color="accent" (click)="teacher()">Login</button>
+                    <button mat-raised-button type="submit" color="accent" (click)="teacherLogin()">Login</button>
                 </form>
             </mat-tab>
             <mat-tab label="Register">
