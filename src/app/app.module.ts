@@ -30,6 +30,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatStepperModule } from '@angular/material/stepper';
 
 // Services
 import { DataBackendService } from './services/data-backend.service';
@@ -56,6 +57,7 @@ const routes: Routes =
     StudentViewComponent,
     TeacherViewComponent,
     CourseViewComponent,
+    SignupComponent,
     SidebarComponent,
   ],
   imports:
@@ -78,7 +80,9 @@ const routes: Routes =
     FormsModule,
     MatSidenavModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatStepperModule,
+    ReactiveFormsModule
   ],
   providers: [DataBackendService],
   bootstrap: [AppComponent]
