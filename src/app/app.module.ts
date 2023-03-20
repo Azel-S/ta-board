@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,6 +30,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { TeacherDashComponent } from './teacher-dash/teacher-dash.component';
 import { MatStepperModule } from '@angular/material/stepper';
 
 // Services
@@ -46,6 +48,15 @@ const routes: Routes =
     { path: 'course-view', component: CourseViewComponent },
     { path: '', redirectTo: '/login', pathMatch: 'full' }
   ]
+[
+  { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'student-view', component: StudentViewComponent },
+  { path: 'teacher-view', component: TeacherViewComponent },
+  { path: 'teacher-dash', component: TeacherDashComponent },
+  { path: 'course-view', component: CourseViewComponent },
+  { path: '',   redirectTo: '/login', pathMatch: 'full' }
+]
 
 @NgModule
 ({
@@ -59,6 +70,7 @@ const routes: Routes =
     CourseViewComponent,
     SignupComponent,
     SidebarComponent,
+    TeacherDashComponent
   ],
   imports:
   [
@@ -81,9 +93,14 @@ const routes: Routes =
     MatSidenavModule,
     MatDividerModule,
     MatListModule,
+    MatExpansionModule
+    MatListModule,
     MatStepperModule,
     ReactiveFormsModule
   ],
+  providers: [],
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
   providers: [DataBackendService],
   bootstrap: [AppComponent]
 })

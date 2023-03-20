@@ -1,4 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { AppComponent } from '../app.component';
 
 import { LoginComponent } from './login.component';
 
@@ -8,9 +12,16 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ]
+      imports: [HttpClientModule, FormsModule],
+      declarations: [LoginComponent],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ],
+      providers: [
+        { provide: ComponentFixtureAutoDetect, useValue: true }
+      ],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -20,4 +31,36 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('same password works', async() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.password = "aaa";
+    fixture.componentInstance.confirmPassword = "aaa";
+    const result = fixture.componentInstance.register({username: "test", password: "aaa"});
+    expect(result).toBe(true);
+  })
+
+  it('different password works', async() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.password = "aaa";
+    fixture.componentInstance.confirmPassword = "bbb";
+    const result = fixture.componentInstance.register({username: "test", password: "aaa"});
+    expect(result).toBe(false);
+  })
+
+  it('student id should match \'admin\'', async() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.courseID = 'admin';
+    const result = fixture.componentInstance.student();
+    expect(result).toBe(true);
+  })
+
+  it('student id should match \'admin\'', async() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.courseID = 'password';
+    const result = fixture.componentInstance.student();
+    expect(result).toBe(false);
+  })
+
+
 });

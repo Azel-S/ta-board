@@ -1,1 +1,53 @@
-<p>teacher-view works!</p>
+<div>
+  <mat-card class = "mainQuestions">
+  
+    <mat-accordion>
+    <mat-expansion-panel hideToggle  *ngFor="let question of questions">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ question.student }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ question.question }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-form-field>
+        <mat-label>Response</mat-label>
+        <textarea matInput style="width: 100%; max-width: 100%;"></textarea>
+      </mat-form-field>
+      <div class ="submit">
+        <button mat-raised-button color="accent">Submit</button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  
+</mat-card>
+</div>
+
+<!--
+<div class="rightDiv">
+  <mat-card class = "mainQuestions">
+  
+    <mat-accordion>
+    <mat-expansion-panel hideToggle  *ngFor="let question of questions">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ question.student }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ question.question }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-form-field>
+        <mat-label>Response</mat-label>
+        <textarea matInput style="width: 100%; max-width: 100%;"></textarea>
+      </mat-form-field>
+      <div class ="submit">
+        <button mat-raised-button color="accent">Submit</button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  
+</mat-card>
+</div>
+-->

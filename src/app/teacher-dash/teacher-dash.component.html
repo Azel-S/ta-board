@@ -1,0 +1,28 @@
+<div class="grid-container">
+  <h1 class="mat-h1">Dashboard</h1>
+
+  <mat-card *ngFor="let card of cards | async">
+    <div *ngIf="card.pos == 'vertical'">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title-group>
+            <mat-card-title>{{"TEST"}}</mat-card-title>
+            <mat-card-subtitle>{{"FIRST LAST"}}</mat-card-subtitle>
+            <button mat-raised-button type="submit" color="accent">
+              Open Syllabus
+            </button>
+          </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content></mat-card-content>
+      </mat-card>
+
+      <mat-card class="padding">
+        <app-teacher-view></app-teacher-view>
+      </mat-card>
+    </div>
+    <div *ngIf="card.pos == 'horizontal'">
+      this is vertical
+    </div>
+  </mat-card>
+</div>
+<!---->
