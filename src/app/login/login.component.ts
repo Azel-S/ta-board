@@ -65,6 +65,7 @@ export class LoginComponent {
   }
 
   register(credentials: { username: string, password: string }) {
+    this.serve_back.RegisterUser(this.username!, this.password!).then(res => {this.service_comm.Navigate('signup')})
     /*
     const url = 'http://localhost:4222';
     console.log(credentials);
