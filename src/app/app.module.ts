@@ -48,15 +48,6 @@ const routes: Routes =
     { path: 'course-view', component: CourseViewComponent },
     { path: '', redirectTo: '/login', pathMatch: 'full' }
   ]
-[
-  { path: 'login', component: LoginComponent },
-  { path: 'home', component: HomeComponent },
-  { path: 'student-view', component: StudentViewComponent },
-  { path: 'teacher-view', component: TeacherViewComponent },
-  { path: 'teacher-dash', component: TeacherDashComponent },
-  { path: 'course-view', component: CourseViewComponent },
-  { path: '',   redirectTo: '/login', pathMatch: 'full' }
-]
 
 @NgModule
 ({
@@ -93,16 +84,14 @@ const routes: Routes =
     MatSidenavModule,
     MatDividerModule,
     MatListModule,
-    MatExpansionModule
+    MatExpansionModule,
     MatListModule,
     MatStepperModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [DataBackendService],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
-  providers: [DataBackendService],
-  bootstrap: [AppComponent]
 })
 
 export class AppModule { }
