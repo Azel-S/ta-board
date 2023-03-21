@@ -1,10 +1,26 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { DataComponentService } from '../services/data-component.service';
 
-// FormControl
-import { FormControl, Validators } from '@angular/forms';
+// Source: https://blog.angular-university.io/angular-custom-validators/
+export function createErrorVal(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+
+    const value = control.value;
+
+    if (!value) {
+      return null;
+    }
+
+    if (value == "error") {
+      return { errorVal: true };
+    }
+    else {
+      return null;
+    }
+  }
+}
 
 @Component
   ({
@@ -14,38 +30,65 @@ import { FormControl, Validators } from '@angular/forms';
   })
 
 export class LoginComponent {
-  constructor(private comm_component: DataComponentService) { }
-  
+  constructor(public router: Router, private http: HttpClient) { }
+
   // Input fields
-  courseID: string | undefined;
-  username: string | undefined;
-  password: string | undefined;
-  confirmPassword: string | undefined;
-  
-  studentLogin(){
-    if (this.courseID == 'admin'){
-      this.comm_component.Navigate('student-view');
-    }
-    // Else if
-  }
+  courseID: string | null = null;
+  username: string | null = null;
+  password: string | null = null;
+  confirmPassword: string | null = null;
 
-  teacherLogin(){
-    if(this.username == 'admin'){
-      this.comm_component.Navigate('teacher-view');
+  student() {
+    if (this.courseID == "admin") {
+      this.router.navigate(['student-view']);
     }
   }
 
-  reg(credentials: { username: string, password: string }){
-    this.comm_component.register(credentials);
+  teacher(credentials: { username: string, password: string }) {
+    // if (this.username == "admin") {
+    //   this.router.navigate(['teacher-view']);
+    // }
+    const url = 'http://localhost:4222';
+    console.log(credentials)
+    this.http.post(url + '/teacherlogin', {
+      username: this.username,
+      password: this.password
+    }).subscribe(res => {
+      console.log(res)
+      this.router.navigate(['teacher-view']);
+    })
   }
 
-  //===INPUT ERRORS===//
-  //==Student==//
-  courseIDFormControl = new FormControl('', [Validators.required]);
-  //==Teacher==//
-  usernameFormControl = new FormControl('', [Validators.required]);
-  passwordFormControl = new FormControl('', [Validators.required]);
-  //==Register==//
-  confirmPasswordFormControl = new FormControl('', [Validators.required]);
+  register(credentials: { username: string, password: string }) {
+    const url = 'http://localhost:4222';
+    console.log(credentials);
+    this.http.post(url + '/registeruser', {
+      username: this.username,
+      password: this.password
+    }).subscribe()
+  }
+  // register(credentials: { username: string, password: string }) {
+  //   if (true)//this.password == this.confirmPassword)
+  //   {
+  //     const url = 'http://localhost:4222';
+  //     console.log(credentials);
 
+  //     if(this.username == "get")
+  //     {
+  //       this.http.get<any>(url + '/userstest').subscribe((res) =>
+  //       {
+  //         console.log(res);
+  //         this.username = res.username;
+  //       })
+  //     }
+  //     else if(this.username == "post")
+  //     {
+  //       this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
+  //       {
+  //         console.log(res);
+  //         this.username = res.username;
+  //       });
+  //     }
+  //   }
+  // }
 }
