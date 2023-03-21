@@ -3,6 +3,10 @@ import { Component } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+// FormControl
+import { FormControl, Validators } from '@angular/forms';
+
+
 // Source: https://blog.angular-university.io/angular-custom-validators/
 export function createErrorVal(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -38,6 +42,7 @@ export class LoginComponent {
   password: string | null = null;
   confirmPassword: string | null = null;
 
+  // TODO: Add service component
   student() {
     if (this.courseID == "admin") {
       this.router.navigate(['student-view']);
@@ -67,28 +72,15 @@ export class LoginComponent {
       password: this.password
     }).subscribe()
   }
-  // register(credentials: { username: string, password: string }) {
-  //   if (true)//this.password == this.confirmPassword)
-  //   {
-  //     const url = 'http://localhost:4222';
-  //     console.log(credentials);
 
-  //     if(this.username == "get")
-  //     {
-  //       this.http.get<any>(url + '/userstest').subscribe((res) =>
-  //       {
-  //         console.log(res);
-  //         this.username = res.username;
-  //       })
-  //     }
-  //     else if(this.username == "post")
-  //     {
-  //       this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
-  //       {
-  //         console.log(res);
-  //         this.username = res.username;
-  //       });
-  //     }
-  //   }
-  // }
+    //===INPUT ERRORS===//
+  //==Student==//
+  courseIDFormControl = new FormControl('', [Validators.required]);
+  //==Teacher==//
+  usernameFormControl = new FormControl('', [Validators.required]);
+  passwordFormControl = new FormControl('', [Validators.required]);
+  //==Register==//
+  confirmPasswordFormControl = new FormControl('', [Validators.required]);
+
+
 }

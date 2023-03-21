@@ -6,6 +6,9 @@
                     <mat-form-field>
                         <mat-label>Course ID</mat-label>
                         <input matInput type="courseID" name="courseID" [(ngModel)]="courseID">
+                        <mat-error *ngIf="courseIDFormControl.hasError('required')">
+                            Please enter a <strong>Course ID</strong>
+                            </mat-error>
                     </mat-form-field>
 
                     <button mat-raised-button type="submit" color="accent" (click)="student()">Login</button>
