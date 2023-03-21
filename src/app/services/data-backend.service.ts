@@ -22,8 +22,8 @@ export class DataBackendService {
 
   // Returns (ok/bad)
   // TODO: Fix return
-  async LoginTeacher(username: string, passcode: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/LoginTeacher', { username: username, passcode: passcode }));
+  async LoginTeacher(username: string, password: string) {
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/teacherlogin', { username: username, password: password }));
     return result;
   }
 

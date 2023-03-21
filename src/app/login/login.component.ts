@@ -5,6 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 
 // FormControl
 import { FormControl, Validators } from '@angular/forms';
+import { DataComponentService } from '../services/data-component.service';
+import { DataBackendService}  from '../services/data-backend.service';
 
 
 // Source: https://blog.angular-university.io/angular-custom-validators/
@@ -34,7 +36,7 @@ export function createErrorVal(): ValidatorFn {
   })
 
 export class LoginComponent {
-  constructor(public router: Router, private http: HttpClient) { }
+  constructor(private service_comm: DataComponentService, private serve_back: DataBackendService) { }
 
   // Input fields
   courseID: string | null = null;
@@ -45,32 +47,32 @@ export class LoginComponent {
   // TODO: Add service component
   student() {
     if (this.courseID == "admin") {
-      this.router.navigate(['student-view']);
+      this.service_comm.Navigate('student-view');
     }
   }
 
   teacher(credentials: { username: string, password: string }) {
-    // if (this.username == "admin") {
-    //   this.router.navigate(['teacher-view']);
-    // }
-    const url = 'http://localhost:4222';
-    console.log(credentials)
+    this.serve_back.LoginTeacher(this.username!, this.password!).then(res => {this.service_comm.Navigate('teacher-view')});
+    /*
     this.http.post(url + '/teacherlogin', {
       username: this.username,
       password: this.password
     }).subscribe(res => {
-      console.log(res)
+      //this.service_comm.Navigate('teacher-view');
       this.router.navigate(['teacher-view']);
     })
+    */
   }
 
   register(credentials: { username: string, password: string }) {
+    /*
     const url = 'http://localhost:4222';
     console.log(credentials);
     this.http.post(url + '/registeruser', {
       username: this.username,
       password: this.password
     }).subscribe()
+    */
   }
 
     //===INPUT ERRORS===//
