@@ -7,7 +7,10 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class DataComponentService {
 
-  constructor(public router: Router, private http: HttpClient) { }
+  constructor(public router: Router, private http: HttpClient) { 
+    this.professorFirstName = 'Bruce';
+    this.professorLastName = 'Banner';
+  }
 
   professorFirstName: string | undefined;
   professorLastName: string | undefined;
@@ -15,5 +18,23 @@ export class DataComponentService {
   // Data Communication between component
   Navigate(component: string){
     this.router.navigate([component])
+  }
+
+  //==Setters==//
+  SetFirstName(newFirstName: string){
+    this.professorFirstName = newFirstName;
+  }
+
+  SetLastName(newLastName: string){
+    this.professorLastName = newLastName;
+  }
+
+  //==Getters==//
+  GetFirstName() : string | undefined{
+    return this.professorFirstName;
+  }
+
+  GetLastName() : string | undefined{
+    return this.professorLastName;
   }
 }
