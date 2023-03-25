@@ -14,6 +14,10 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`
 
+const CourseAddAdminQuery = `INSERT INTO courses(id, class_id, class_name, passcode, class_info_raw)
+VALUES('1', 'ADM101', 'ADMIN', 'ADMIN', 'ADMIN CLASS INFO')
+`
+
 type Course struct {
 	ID            int    `json:"id"`
 	ClassID       string `json:"class_id"`

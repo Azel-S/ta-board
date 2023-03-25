@@ -43,6 +43,7 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(user.UsersCreationQuery)
 	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
+	a.DB.Exec(course.CourseAddAdminQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
 

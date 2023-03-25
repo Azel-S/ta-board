@@ -34,27 +34,6 @@ type User struct {
 
 -----------------------------------
 */
-type Register struct {
-	ClassID  string `json:"class_id"`
-	Password string `json:"password"`
-}
-
-type StudenLogin struct {
-	ClassID string `json:"class_id"`
-}
-
-type ProfessorLogin struct {
-	ClassID  string `json:"class_id"`
-	Password string `json:"password"`
-}
-
-type Tabler interface {
-	TableName() string
-}
-
-func (User) TableName() string {
-	return "users"
-}
 
 // RETURNS THE FIRST INSTANCE OF A MACHING USER IN DATABASE
 func (u *User) GetUser(db *gorm.DB) error {
