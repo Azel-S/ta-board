@@ -20,6 +20,11 @@ export class DataBackendService {
     return result;
   }
 
+  async Register(username: string, password: string, confirmPassword: string) {
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/register', { username: username, password: password , confirmPassword: confirmPassword}));
+    return result;
+  }
+
   // Returns (ok/bad)
   // TODO: Fix return
   async LoginTeacher(username: string, password: string) {

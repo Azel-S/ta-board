@@ -395,7 +395,8 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
 
-	a.Router.HandleFunc("/registeruser", a.TESTteacherRegister).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/register", a.TESTteacherRegister).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/teacherlogin", a.TESTteacherLogin).Methods("POST", "OPTIONS")
+	// a router handle (/teacher-view/id:0-9, a.getcourses)
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 }
