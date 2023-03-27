@@ -17,28 +17,4 @@ export class DataComponentService {
     this.router.navigate([component])
   }
 
-  register(credentials: { username: string, password: string }) {
-    if (true)//this.password == this.confirmPassword)
-    {
-      const url = 'http://localhost:4222';
-      console.log(credentials);
-      if(credentials.username == "get")
-      {
-        this.http.get<any>(url + '/userstest').subscribe((res) =>
-        {
-          console.log(res);
-          credentials.username = res.username;
-        })
-      }
-      else if(credentials.username == "post")
-      {
-        this.http.post<any>(url + '/userstest', { title: 'POST Request' }).subscribe((res) =>
-        {
-          console.log(res);
-          credentials.username = res.username;
-        });
-      }
-    }
-  }
-
 }

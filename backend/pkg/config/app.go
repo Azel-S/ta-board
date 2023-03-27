@@ -354,7 +354,7 @@ func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() // close http body at end of function call
 	fmt.Println("data:", data)
 	c := course.Course{
-		ClassID: data.CourseID,
+		CourseID: data.CourseID,
 	}
 	fmt.Println("course:", c)
 	if err := c.GetCourse(a.DB); err != nil {
@@ -363,6 +363,25 @@ func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 		return
 	}
+	respondWithJSON(w, http.StatusOK, c)
+}
+
+func (a *App) GetCourseInfoAsStudent(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GET COURSE INFO")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	c := course.Course{
+		CourseID:       "ID",
+		CourseName:     "NAME",
+		ProfessorName:  "PROF",
+		CourseInfo_raw: "INFO",
+	}
+	fmt.Println(c)
+
 	respondWithJSON(w, http.StatusOK, c)
 }
 
@@ -437,4 +456,5 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/StudentLogin", a.StudentLogin).Methods("POST", "OPTIONS")
 	// a router handle (/teacher-view/id:0-9, a.getcourses)
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/CourseNameAsStudent", a.GetCourseInfoAsStudent).Methods("GET", "OPTIONS")
 }
