@@ -7,7 +7,7 @@ type Register struct {
 }
 
 type StudentLogin struct {
-	CourseID string `json:"course_id"`
+	CourseID string `json:"courseID"`
 }
 
 type TeacherLogin struct {

@@ -267,7 +267,7 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 */
 
-func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
+func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("REGISTER")
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
@@ -275,7 +275,7 @@ func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var data endpoints.Register
-	var u user.User
+	//var u user.User
 	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
 	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
 		fmt.Println("Invalid payload")
@@ -285,11 +285,12 @@ func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() // close http body at end of function call
 	fmt.Println(data.Username)
 	fmt.Println(data.Password)
-	u.ProfessorName = data.Username
-	u.Password = data.Password
-	u.ClassID = "TEST_ID"
-	u.ClassName = "TEST_CLASS_NAME"
-
+	u := user.User{
+		ProfessorName: data.Username,
+		Password:      data.Password,
+		ClassID:       "TEST_ID",
+		ClassName:     "TEST_CLASS_NAME",
+	}
 	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
 		fmt.Println("Error adding user")
 		respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -298,8 +299,8 @@ func (a *App) TESTteacherRegister(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, u)
 }
 
-func (a *App) TESTteacherLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("LOGIN")
+func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("TEACHER LOGIN")
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
@@ -327,6 +328,36 @@ func (a *App) TESTteacherLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, http.StatusOK, u)
+}
+
+func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("STUDENT LOGIN")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	var data endpoints.StudentLogin
+
+	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
+	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close() // close http body at end of function call
+	fmt.Println("data:", data)
+	c := course.Course{
+		ClassID: data.CourseID,
+	}
+	fmt.Println("course:", c)
+	if err := c.GetCourse(a.DB); err != nil {
+		fmt.Println("Not found")
+		respondWithError(w, http.StatusNotFound, "Course not found")
+		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
+		return
+	}
+	respondWithJSON(w, http.StatusOK, c)
 }
 
 /*
@@ -395,8 +426,9 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
 
-	a.Router.HandleFunc("/register", a.TESTteacherRegister).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/teacherlogin", a.TESTteacherLogin).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/Register", a.Register).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/TeacherLogin", a.TeacherLogin).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/StudentLogin", a.StudentLogin).Methods("POST", "OPTIONS")
 	// a router handle (/teacher-view/id:0-9, a.getcourses)
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 }

@@ -42,13 +42,13 @@ export class LoginComponent {
   courseID: string | null = null;
   username: string | null = null;
   password: string | null = null;
+  passcode: string | null = null;
   confirmPassword: string | null = null;
 
   // TODO: Add service component
-  student() {
-    if (this.courseID == "admin") {
-      this.service_comm.Navigate('student-view');
-    }
+  student(credentials: {courseID: string}) {
+    this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {this.service_comm.Navigate('student-view')});
+   
   }
 
   teacher(credentials: { username: string, password: string }) {

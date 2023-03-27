@@ -15,7 +15,7 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 )`
 
 const CourseAddAdminQuery = `INSERT INTO courses(id, class_id, class_name, passcode, class_info_raw)
-VALUES('1', 'ADM101', 'ADMIN', 'ADMIN', 'ADMIN CLASS INFO')
+VALUES('1', 'ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN CLASS INFO')
 `
 
 type Course struct {
@@ -31,7 +31,9 @@ func (Course) TableName() string {
 
 // RETURNS THE FIRST INSTANCE OF MATCHING COURSE IN DATABASE
 func (c *Course) GetCourse(db *gorm.DB) error {
-	ret := db.First(&c)
+	//ret := db.First(&c)
+	ret := db.Where(Course{ClassID: c.ClassID}).First(&c)
+	//ret := db.First(&u)
 	return ret.Error
 }
 
