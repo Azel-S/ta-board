@@ -274,9 +274,11 @@ func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	var data endpoints.Register
-	//var u user.User
-	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
+	var data endpoints.Register // Make a register endpoint struct; this matches the form of the JSON object that is being sent
+	// Note: Can view the JSON object from front-end view by pressing F12 -> console and clicking on the Post request when registering
+
+	// Attempts to put the data from the JSON object into the register struct **NOTE: JSON OBJECT AND STRUCT MUST MATCH UP
+	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
 		fmt.Println("Invalid payload")
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
@@ -301,15 +303,18 @@ func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("TEACHER LOGIN")
+	// SET CORS HEADERS TO ALLOW COMMUNICATION
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	var data endpoints.TeacherLogin
+	var data endpoints.TeacherLogin // Setup an endpoint struct
 
-	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
-	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
+	decoder := json.NewDecoder(r.Body) // Grab decoding data from json to put into a user struct later
+	// ATTEMPTS TO SEND JSON INFO (In this case, courseID) TO THE DATA ENDPOINT STRUCT
+	// CAN SEE WHAT IS IN JSON OBJECT BY PRESSING F12 -> CONSOLE AND CLICK ON POST REQUEST AFTER ATTEMPING LOGIN
+	if err := decoder.Decode(&data); err != nil {
 		fmt.Println("Invalid payload")
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
@@ -321,7 +326,7 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 		Password:      data.Password,
 	}
 	fmt.Println("user:", u)
-	if err := u.GetUser(a.DB); err != nil {
+	if err := u.GetUser(a.DB); err != nil { // Get the user with matching professor name and password
 		fmt.Println("Not found")
 		respondWithError(w, http.StatusNotFound, "User not found")
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
@@ -330,6 +335,7 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, u)
 }
 
+// STUDENT LOGIN WORKS SIMILARLY TO TEACHER LOGIN, EXPECT THE ENDPOINT IS A COURSE STRUCT
 func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("STUDENT LOGIN")
 	setCORSHeader(&w, r)
