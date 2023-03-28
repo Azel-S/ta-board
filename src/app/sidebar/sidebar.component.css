@@ -1,12 +1,9 @@
-.sidebar-content
-{
+.container {
     display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+    flex-flow: column nowrap;
 }
 
-.button
+button
 {
     display: table-cell;
     font-size: 14px;

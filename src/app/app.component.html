@@ -1,22 +1,25 @@
 <div>
     <mat-sidenav-container style="height: '100vh'">
-        <mat-sidenav color="primary" class="sidebar" #sidebar mode="over">
+        <mat-sidenav color="primary" class="pad-20" #sidebar mode="push">
             <app-sidebar>
             </app-sidebar>
         </mat-sidenav>
         <mat-sidenav-content>
-            <p>
-                <mat-toolbar color="primary">
-                    <button mat-icon-button (click)="sidebar.toggle()">
-                        <mat-icon>menu</mat-icon>
-                    </button>
-                    <span>TA-Bot</span>
-                    <span class="spacer"></span>
-                    <button mat-icon-button [routerLink]="'/login'">
-                        <mat-icon>account_circle</mat-icon>
-                    </button>
-                </mat-toolbar>
-            </p>
+            <mat-toolbar color="primary">
+                <button mat-icon-button (click)="sidebar.toggle()">
+                    <mat-icon>menu</mat-icon>
+                </button>
+                <span>TA-Bot</span>
+                <span class="spacer"></span>
+
+                <button *ngIf="serve_comm.GetLoggedIn() == 'F'" mat-icon-button [routerLink]="'/login'">
+                    <mat-icon>login</mat-icon>
+                </button>
+                <button *ngIf="serve_comm.GetLoggedIn() != 'F'" mat-icon-button [routerLink]="'/login'"
+                    (click)="serve_comm.SetLoggedIn('F')">
+                    <mat-icon>logout</mat-icon>
+                </button>
+            </mat-toolbar>
             <router-outlet></router-outlet>
         </mat-sidenav-content>
     </mat-sidenav-container>

@@ -1,54 +1,59 @@
-<div fxLayoutAlign="center center" fxFlexFill class="main-div">
-    <mat-card fxFlex="50">
-        <mat-tab-group>
-            <mat-tab label="Student">
-                <form fxLayoutAlign="stretch" fxLayout="column" class="input-form">
-                    <mat-form-field>
-                        <mat-label>Course ID</mat-label>
-                        <input matInput type="courseID" name="courseID" [(ngModel)]="courseID">
-                        <mat-error *ngIf="courseIDFormControl.hasError('required')">
-                            Please enter a <strong>Course ID</strong>
+<div class="login-container">
+    <div class="login-content">
+        <mat-card>
+            <mat-tab-group>
+                <mat-tab label="Student">
+                    <form #regForm="ngForm" class="pad-20">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Course ID</mat-label>
+                            <input matInput autofocus type="courseID" name="courseID" [(ngModel)]="courseID">
+                            <mat-error *ngIf="courseIDFormControl.hasError('required')">
+                                Please enter a <strong>Course ID</strong>
                             </mat-error>
-                    </mat-form-field>
+                        </mat-form-field>
 
-                    <button mat-raised-button type="submit" color="accent" (click)="student(regForm.value)">Login</button>
-                </form>
-            </mat-tab>
-            <mat-tab label="Teacher">
-                <form fxLayoutAlign="stretch" fxLayout="column" class="input-form">
-                    <mat-form-field>
-                        <mat-label>Username</mat-label>
-                        <input matInput type="username" name="username" [(ngModel)]="username">
-                    </mat-form-field>
+                        <button mat-raised-button type="submit" color="accent"
+                            (click)="student(regForm.value)">Login</button>
+                    </form>
+                    <mat-tab label="Teacher">
+                        <form class="pad-20">
+                            <mat-form-field  appearance="outline">
+                                <mat-label>Username</mat-label>
+                                <input matInput type="username" name="username" [(ngModel)]="username">
+                            </mat-form-field>
 
-                    <mat-form-field>
-                        <mat-label>Password</mat-label>
-                        <input matInput type="password" name="password" [(ngModel)]="password">
-                    </mat-form-field>
+                            <mat-form-field  appearance="outline">
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" name="password" [(ngModel)]="password">
+                            </mat-form-field>
 
-                    <button mat-raised-button type="submit" color="accent" (click)="teacher(regForm.value)">Login</button>
-                </form>
-            </mat-tab>
-            <mat-tab label="Register">
-                <form fxLayoutAlign="stretch" fxLayout="column" class="input-form" #regForm="ngForm" (ngSumbit)="register(regForm.value)">
-                    <mat-form-field>
-                        <mat-label>Username</mat-label>
-                        <input matInput type="username" name="username" [(ngModel)]="username">
-                    </mat-form-field>
+                            <button mat-raised-button type="submit" color="accent"
+                                (click)="teacher(regForm.value)">Login</button>
+                        </form>
+                    </mat-tab>
+                    <mat-tab label="Register">
+                        <form class="pad-20" #regForm="ngForm" (ngSumbit)="register(regForm.value)">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Username</mat-label>
+                                <input matInput type="username" name="username" [(ngModel)]="username">
+                            </mat-form-field>
 
-                    <mat-form-field>
-                        <mat-label>Password</mat-label>
-                        <input matInput type="password" name="password" [(ngModel)]="password">
-                    </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" name="password" [(ngModel)]="password">
+                            </mat-form-field>
 
-                    <mat-form-field>
-                        <mat-label>Confirm Password</mat-label>
-                        <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword">
-                    </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Confirm Password</mat-label>
+                                <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword">
+                            </mat-form-field>
 
-                    <button mat-raised-button type="submit" color="accent" (click)="register(regForm.value)">Register</button>
-                </form>
-            </mat-tab>
-        </mat-tab-group>     
-    </mat-card>
+                            <button mat-raised-button type="submit" color="accent"
+                                (click)="register(regForm.value)">Register</button>
+                        </form>
+                    </mat-tab>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card>
+    </div>
 </div>

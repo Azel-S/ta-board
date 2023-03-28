@@ -1,5 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
+import { DataBackendService } from '../services/data-backend.service';
+import { DataComponentService } from '../services/data-component.service';
 
 @Component({
   selector: 'app-teacher-view',
@@ -8,11 +10,6 @@ import { MatAccordion } from '@angular/material/expansion';
 })
 
 export class TeacherViewComponent {
-  questions: { student: string, question: string }[] = [
-    { student: 'Abbas', question: '...' },
-    { student: 'Riley', question: '...' },
-    { student: 'Nick', question: '...' },
-  ]
 
-  // Not sure if needed: panelOpenState = false;
+  constructor(private serve_back: DataBackendService, public serve_comm: DataComponentService) { }
 }

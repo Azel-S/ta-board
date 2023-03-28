@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DataComponentService } from '../services/data-component.service';
-import { DataBackendService}  from '../services/data-backend.service';
+import { DataBackendService } from '../services/data-backend.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -12,25 +12,6 @@ import { HttpClient } from '@angular/common/http';
   ]
 })
 
-export class StudentViewComponent implements OnInit {
-  passcode: string = "DEFAULT";
-  courseName: string = "[Course Name]";
-  courseID: string = "Course ID";
-  courseProf: string = "[Professor's Name]";
-  //courseProf: { first: string, last: string } = { first: "Professor's", last: "Name" };
-  
-  constructor(public service_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
-  }
-
-  ngOnInit() {
-    this.serve_back.GetCourseNameAsStudent().then(res => {
-      this.courseName = res.course_name;
-      this.courseID = res.course_id;
-      this.courseProf = res.professor_name;
-    });
-  }
-  openSyllabus() {
-    // TODO: Implement actual syllabus
-    window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
-  }
+export class StudentViewComponent {
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 }

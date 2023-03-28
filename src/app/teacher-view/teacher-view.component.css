@@ -1,17 +1,19 @@
-.mat-mdc-form-field + .mat-mdc-form-field {
-    margin-left: 8px;
-  }
-
-.leftDiv{
-  float: left;
-  width: 50%;
-  padding: 1px;
-  
+.pad-20 {
+  padding: 20px;
 }
 
-.rightDiv{
-  float: right;
-  width: 50%;
-  padding: 1px;
+.courses {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  gap: 10px 20px;
 }
 
+.course {
+  min-width: 400px;
+  max-width: 400px;
+}
+
+.description {
+  flex-grow: 1;
+}

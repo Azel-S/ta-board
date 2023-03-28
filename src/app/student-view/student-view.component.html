@@ -2,9 +2,9 @@
     <mat-card>
         <mat-card-header>
             <mat-card-title-group>
-                <mat-card-title>{{courseName + ' (' + courseID + ')'}}</mat-card-title>
-                <mat-card-subtitle>{{courseProf}}</mat-card-subtitle>
-                <button mat-raised-button type="submit" color="accent" (click)="openSyllabus()">
+                <mat-card-title>{{serve_comm.GetCourseName() + " (" + serve_comm.GetCourseID() + ")"}}</mat-card-title>
+                <mat-card-subtitle>{{serve_comm.GetProfName()}}</mat-card-subtitle>
+                <button mat-raised-button type="submit" color="accent" (click)="serve_comm.OpenSyllabus()">
                     Open Syllabus
                 </button>
             </mat-card-title-group>
