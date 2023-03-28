@@ -48,11 +48,18 @@ func (a *App) Initialize(username, password, dbname string) {
 				VALUES('1', '???', '???', '???', '???', '???')
 		`
 	*/
+	CreationQuery := `CREATE TABLE IF NOT EXISTS professorcourses
+(
+	user_serial INT,
+	course_serial INT,
+	CONSTRAINT pkey PRIMARY KEY (user_serial)
+)`
 	a.DB.Exec(MASTERDropTables)
 	a.DB.Exec(user.UsersCreationQuery)
 	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.Exec(course.CourseAddAdminQuery)
+	a.DB.Exec(CreationQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
 
@@ -196,21 +203,21 @@ func (a *App) GetCourse(w http.ResponseWriter, r *http.Request) {
 
 // RETURNS AN ARRAY OF COURSES AS A JSON OBJECT
 func (a *App) GetManyCourses(w http.ResponseWriter, r *http.Request) {
-	count, _ := strconv.Atoi(r.FormValue("count"))
-	start, _ := strconv.Atoi(r.FormValue("start"))
+	// count, _ := strconv.Atoi(r.FormValue("count"))
+	// start, _ := strconv.Atoi(r.FormValue("start"))
 
-	if count > 10 || count < 1 {
-		count = 10
-	}
-	if start < 0 {
-		start = 0
-	}
-	courses, err := course.GetManyCourses(a.DB, start, count)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, courses)
+	// if count > 10 || count < 1 {
+	// 	count = 10
+	// }
+	// if start < 0 {
+	// 	start = 0
+	// }
+	// courses, err := course.GetManyCourses(a.DB, user_id)
+	// if err != nil {
+	// 	respondWithError(w, http.StatusInternalServerError, err.Error())
+	// 	return
+	// }
+	// respondWithJSON(w, http.StatusOK, courses)
 }
 
 // CREATES A COURSE INTO DATABASE
@@ -394,6 +401,30 @@ func (a *App) GetCourseInfoAsStudent(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, c)
 }
 
+func (a *App) GetCoursesAsTeacher(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GET COURSES AS TEACHER")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var data string
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&data); err != nil {
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	var user_id, err = strconv.Atoi(data)
+	courses, err := course.GetManyCourses(a.DB, user_id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, courses)
+}
+
 /*
 
 	HELPER + TESTING FUNCTIONS
@@ -466,4 +497,5 @@ func (a *App) initializeRoutes() {
 	// a router handle (/teacher-view/id:0-9, a.getcourses)
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/CourseNameAsStudent", a.GetCourseInfoAsStudent).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/CoursesAsTeacher", a.GetCoursesAsTeacher).Methods("POST", "OPTIONS")
 }
