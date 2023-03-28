@@ -1,9 +1,24 @@
-describe('My First Test', () => {
-  it('Gets, types and asserts', () => {
-    cy.visit('http://localhost:60163/login')
+const url = 'http://localhost:4200'
 
-    cy.contains('Student').type('admin');
+describe('Homepage Exists', () => {
+  it('passes', () => {
+    cy.visit(url + '/home')
+  })
+})
+
+describe('Homepage -> Login Page', () => {
+  it('passes', () => {
+    cy.visit(url + '/home')
+    cy.get("button#login").should('be.visible').click();
+    cy.url().should('eq', url + '/login')
+  })
+})
+
+describe('Student can Login', () => {
+  it('Visits Login Page', () => {
+    cy.visit(url + '/login')
+    cy.contains('Course ID').type('Admin');
     cy.contains('Login').click();
-    cy.visit('http://localhost:60163/student-view')
+    cy.visit(url + '/student-view')
   })
 })

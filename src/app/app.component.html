@@ -12,10 +12,10 @@
                 <span>TA-Bot</span>
                 <span class="spacer"></span>
 
-                <button *ngIf="serve_comm.GetLoggedIn() == 'F'" mat-icon-button [routerLink]="'/login'">
+                <button *ngIf="serve_comm.GetLoggedIn() == 'F'" id="login" mat-icon-button [routerLink]="'/login'">
                     <mat-icon>login</mat-icon>
                 </button>
-                <button *ngIf="serve_comm.GetLoggedIn() != 'F'" mat-icon-button [routerLink]="'/login'"
+                <button *ngIf="serve_comm.GetLoggedIn() != 'F'" id="logout" mat-icon-button [routerLink]="'/login'"
                     (click)="serve_comm.SetLoggedIn('F')">
                     <mat-icon>logout</mat-icon>
                 </button>
