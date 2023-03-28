@@ -62,7 +62,7 @@ func (c *Course) CreateCourse(db *gorm.DB) error {
 
 // CONSTRUCTS AND RETURNS AN ARRAY OF COURSES STARTING FROM 'START' INDEX AND 'COUNT' INDICES FORWARD
 func GetManyCourses(db *gorm.DB, user_id int) ([]Course, error) {
-	rows, err := db.Raw("SELECT * FROM profcourselist WHERE user_id=?", user_id).Rows()
+	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_id=?", user_id).Rows()
 	if err != nil {
 		return nil, err
 	}

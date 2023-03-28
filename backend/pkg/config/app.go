@@ -21,7 +21,7 @@ type App struct {
 	Router *mux.Router
 }
 
-const MASTERDropTables = `DROP TABLE IF EXISTS users, courses`
+const MASTERDropTables = `DROP TABLE IF EXISTS users, courses, professorcourses`
 
 // Opens a connection with the database
 func (a *App) Connect(cPath string) {
