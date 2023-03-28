@@ -12,22 +12,22 @@
                             </mat-error>
                         </mat-form-field>
 
-                        <button mat-raised-button type="submit" color="accent"
+                        <button mat-raised-button type="submit" color="accent" id="SubmitS"
                             (click)="student(regForm.value)">Login</button>
                     </form>
                     <mat-tab label="Teacher">
                         <form class="pad-20">
-                            <mat-form-field  appearance="outline">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Username</mat-label>
                                 <input matInput type="username" name="username" [(ngModel)]="username">
                             </mat-form-field>
 
-                            <mat-form-field  appearance="outline">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Password</mat-label>
                                 <input matInput type="password" name="password" [(ngModel)]="password">
                             </mat-form-field>
 
-                            <button mat-raised-button type="submit" color="accent"
+                            <button mat-raised-button type="submit" color="accent" id="submitT"
                                 (click)="teacher(regForm.value)">Login</button>
                         </form>
                     </mat-tab>
@@ -48,7 +48,7 @@
                                 <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword">
                             </mat-form-field>
 
-                            <button mat-raised-button type="submit" color="accent"
+                            <button mat-raised-button type="submit" color="accent" id="SubmitR"
                                 (click)="register(regForm.value)">Register</button>
                         </form>
                     </mat-tab>

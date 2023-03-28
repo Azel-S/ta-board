@@ -15,10 +15,12 @@ describe('Homepage -> Login Page', () => {
 })
 
 describe('Student can Login', () => {
-  it('Visits Login Page', () => {
+  it('passes', () => {
     cy.visit(url + '/login')
     cy.contains('Course ID').type('Admin');
-    cy.contains('Login').click();
+    cy.get("button#SubmitS").should('be.visible').click();
+
+    // TODO: Check why this login is not interacting with db.
     cy.visit(url + '/student-view')
   })
 })
