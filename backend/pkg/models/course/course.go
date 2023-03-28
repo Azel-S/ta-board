@@ -29,7 +29,7 @@ type Course struct {
 
 type ProfCourseList struct {
 	user_id   int `json:"user_id"`
-	course_id int `json:"user_id"`
+	course_id int `json:"course_id"`
 }
 
 func (Course) TableName() string {
