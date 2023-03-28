@@ -23,6 +23,12 @@ export class StudentViewComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.serve_back.GetCourseNameAsStudent().then(res => {
+    //   this.courseName = res.course_name
+    //   this.courseID = res.course_id
+    //   this.courseProf = res.professor_name
+    // });
+    
     this.http.get<any>('http://localhost:4222/CourseNameAsStudent').subscribe(data => {
       this.courseName = data.course_name
       this.courseID = data.course_id
