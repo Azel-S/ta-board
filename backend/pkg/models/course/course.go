@@ -27,6 +27,11 @@ type Course struct {
 	CourseInfo_raw string `json:"course_info_raw"`
 }
 
+type ProfCourseList struct {
+	user_id   int `json:"user_id"`
+	course_id int `json:"user_id"`
+}
+
 func (Course) TableName() string {
 	return "courses"
 }
@@ -56,19 +61,32 @@ func (c *Course) CreateCourse(db *gorm.DB) error {
 }
 
 // CONSTRUCTS AND RETURNS AN ARRAY OF COURSES STARTING FROM 'START' INDEX AND 'COUNT' INDICES FORWARD
-func GetManyCourses(db *gorm.DB, start, count int) ([]Course, error) {
-	rows, err := db.Raw("SELECT id, class_id, class_name, class_info_raw FROM courses LIMIT ? OFFSET ?", count, start).Rows()
+func GetManyCourses(db *gorm.DB, user_id int) ([]Course, error) {
+	rows, err := db.Raw("SELECT * FROM profcourselist WHERE user_id=?", user_id).Rows()
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	courses := []Course{}
+	pcList := []ProfCourseList{}
 	for rows.Next() {
-		var c Course
-		if err := rows.Scan(&c.ID, &c.CourseID, &c.CourseName, &c.CourseInfo_raw); err != nil {
+		var c ProfCourseList
+		if err := rows.Scan(&c.course_id); err != nil {
 			return nil, err
 		}
-		courses = append(courses, c)
+		pcList = append(pcList, c)
 	}
-	return courses, nil
+
+	courseList := []Course{}
+	for i := 0; i < len(pcList); i++ {
+		c_rows, err := db.Raw("SELECT * FROM courses WHERE course_id=?", pcList[i].course_id).Rows()
+		if err != nil {
+			return nil, err
+		}
+		var c Course
+		if err := c_rows.Scan(&c.ID, &c.CourseID, &c.CourseName, &c.CourseInfo_raw); err != nil {
+			return nil, err
+		}
+		courseList = append(courseList, c)
+	}
+	return courseList, nil
 }
