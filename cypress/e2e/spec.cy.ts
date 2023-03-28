@@ -6,6 +6,34 @@ describe('Homepage Exists', () => {
   })
 })
 
+describe('Login Page Exists', () => {
+  it('passes', () => {
+    cy.visit(url + '/login')
+    cy.location('pathname').should('eq', '/login')
+  })
+})
+
+describe('Student View Page Exists', () => {
+  it('passes', () => {
+    cy.visit(url + '/student-view')
+    cy.location('pathname').should('eq', '/student-view')
+  })
+})
+
+describe('Teacher Page Exists', () => {
+  it('passes', () => {
+    cy.visit(url + '/teacher-view')
+    cy.location('pathname').should('eq', '/teacher-view')
+  })
+})
+
+describe('Course View Page Exists', () => {
+  it('passes', () => {
+    cy.visit(url + '/course-view')
+    cy.location('pathname').should('eq', '/course-view')
+  })
+})
+
 describe('Homepage -> Login Page', () => {
   it('passes', () => {
     cy.visit(url + '/home')
@@ -37,31 +65,9 @@ describe('Student can Open Syllabus', () => {
   })
 })
 
-describe('Check Login Location Exists', () => {
-  it('passes', () => {
-    cy.visit(url + '/login')
-    // Ensure login is successful:
-    // Successfully route to `/profile` path
-    cy.location('pathname').should('eq', '/login')
-  })
-})
-
-describe('Check Teacher Page Location', () => {
+describe('Check Teacher View Card Numbers', () => {
   it('passes', () => {
     cy.visit(url + '/teacher-view')
-    // Ensure login is successful:
-    // Successfully route to `/profile` path
-    cy.location('pathname').should('eq', '/teacher-view')
-  })
-})
-
-describe('Check Teacher View Card Number', () => {
-  it('passes', () => {
-    cy.visit(url + '/teacher-view')
-    cy.location('pathname').should('eq', '/teacher-view')
-    // cy.get(`:nth-child(${index}) > .jss90`)
-    // .should('contain', `Chapter Number ${index}`)
-    // cy.contains('You have 4 courses available')
-    cy.contains('You have 4 courses available')
+    cy.get('mat-card').should('have.length', 5)
   }) 
 })
