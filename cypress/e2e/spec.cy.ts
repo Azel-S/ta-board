@@ -55,10 +55,13 @@ describe('Check Teacher Page Location', () => {
   })
 })
 
-// describe('Check Teacher View Card Number', () => {
-//   it('passes', () => {
-//     cy.visit(url + '/teacher-view')
-//     cy.location('pathname').should('eq', '/teacher-view')
-//     cy.
-//   })
-// })
+describe('Check Teacher View Card Number', () => {
+  it('passes', () => {
+    cy.visit(url + '/teacher-view')
+    cy.location('pathname').should('eq', '/teacher-view')
+    // cy.get(`:nth-child(${index}) > .jss90`)
+    // .should('contain', `Chapter Number ${index}`)
+    // cy.contains('You have 4 courses available')
+    cy.contains('You have 4 courses available')
+  }) 
+})
