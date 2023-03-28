@@ -39,6 +39,15 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.Connect(username + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local")
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
+	// SKELETON CODE FOR QUERYING AN INSERT INTO MYSQL DATABASE:
+	/*
+				UserQuery_01 := `INSERT INTO users(professor_name, class_id, class_name, password)
+				VALUES('???', '???', '???', '???')
+
+				CourseQuery_01 := `INSERT INTO courses(id, course_id, course_name, passcode, professor_name, course_info_raw)
+				VALUES('1', '???', '???', '???', '???', '???')
+		`
+	*/
 	a.DB.Exec(MASTERDropTables)
 	a.DB.Exec(user.UsersCreationQuery)
 	a.DB.Exec(user.UsersAddAdminQuery)
