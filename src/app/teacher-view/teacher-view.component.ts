@@ -9,9 +9,8 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class TeacherViewComponent implements OnInit {
-  user_id: string | null = 'null'; // How to save user_id after login to send to GetCoursesAsTeacher??
   ngOnInit(): void {
-    this.serve_back.GetCoursesAsTeacher(this.user_id!);
+    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserID());
   }
 
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }

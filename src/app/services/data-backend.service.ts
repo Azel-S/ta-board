@@ -51,8 +51,8 @@ export class DataBackendService {
 
   // Returns (courseName: string)[]
   // TODO: Fix return
-  async GetCoursesAsTeacher(user_id: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/CoursesAsTeacher', {user_id: user_id}));
+  async GetCoursesAsTeacher(user_serial: number) {
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/CoursesAsTeacher', {user_serial: user_serial}));
     return result;
   }
 

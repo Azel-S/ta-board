@@ -13,7 +13,7 @@ export class DataComponentService {
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, course: number } = { loggedIn: "F", course: 0 };
+  status: { loggedIn: string, user_serial: number, course: number } = { loggedIn: "F", user_serial: 0, course: 0 };
 
   professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
 
@@ -29,6 +29,14 @@ export class DataComponentService {
     { student: 'Riley', question: "How much is an apple worth?" },
     { student: 'Nick', question: "Why is the sky blue?" },
   ];
+
+  SetUserID(user_serial: number) {
+    this.status.user_serial = user_serial;
+  }
+
+  GetUserID() {
+    return this.status.user_serial;
+  }
 
   SetLoggedIn(type: string) {
     this.status.loggedIn = type;
