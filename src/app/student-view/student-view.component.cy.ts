@@ -1,8 +1,14 @@
-import { StudentViewComponent } from './student-view.component'
-import { createOutputSpy } from 'cypress/angular'
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { StudentViewComponent } from './student-view.component';
 
-describe('StepperComponent', () => {
-    it('mounts', () => {
-        cy.mount(StudentViewComponent)
-    })
-})
+describe('StudentView', () => {
+    beforeEach(() => TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: []
+    }));
+
+    it('StudentView mounts', () => {
+        cy.mount(StudentViewComponent);
+    });
+});
