@@ -14,5 +14,5 @@ export class TeacherViewComponent implements OnInit {
     this.serve_back.GetCoursesAsTeacher(this.user_id!);
   }
 
-  constructor(public service_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 }
