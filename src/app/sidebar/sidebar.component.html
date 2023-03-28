@@ -1,8 +1,11 @@
 <div>
-    <mat-nav-list fxLayout="column">
+    <mat-nav-list class="container">
         <button class="button" mat-button color="primary" routerLink="/home">Home</button>
-        <button class="button" mat-button color="primary" routerLink="/student-view">Student View</button>
-        <button class="button" mat-button color="primary" routerLink="/teacher-view">Teacher View</button>
-        <button class="button" mat-button color="primary" routerLink="/teacher-view">Course View</button>
+        <button class="button" *ngIf="serve_comm.GetLoggedIn() == 'S'" mat-button color="primary"
+            routerLink="/student-view">Student View</button>
+        <button class="button" *ngIf="serve_comm.GetLoggedIn() == 'T'" mat-button color="primary"
+            routerLink="/teacher-view">Teacher View</button>
+        <button class="button" *ngIf="serve_comm.GetLoggedIn() == 'T'" mat-button color="primary"
+            routerLink="/course-view">Course View</button>
     </mat-nav-list>
 </div>

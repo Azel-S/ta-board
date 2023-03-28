@@ -1,0 +1,11 @@
+.pad-20 {
+    padding: 20px;
+}
+
+.names {
+    max-width: 80px;
+}
+
+.response {
+    display: flex;
+}

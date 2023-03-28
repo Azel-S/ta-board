@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -31,7 +30,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatExpansionModule} from '@angular/material/expansion';
-import { TeacherDashComponent } from './teacher-dash/teacher-dash.component';
 import { MatStepperModule } from '@angular/material/stepper';
 
 // Services
@@ -60,8 +58,7 @@ const routes: Routes =
     TeacherViewComponent,
     CourseViewComponent,
     SignupComponent,
-    SidebarComponent,
-    TeacherDashComponent
+    SidebarComponent
   ],
   imports:
   [
@@ -76,7 +73,6 @@ const routes: Routes =
     MatButtonModule,
     MatToolbarModule,
     LayoutModule,
-    FlexLayoutModule,
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,

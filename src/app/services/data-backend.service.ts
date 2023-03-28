@@ -21,33 +21,38 @@ export class DataBackendService {
   }
 
   async LoginStudent(courseID: string, passcode: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/LoginStudent', { courseID: courseID, passcode: passcode }));
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/StudentLogin', { courseID: courseID, passcode: passcode }));
+    return result;
+  }
+
+  async Register(username: string, password: string, confirmPassword: string) {
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/Register', { username: username, password: password, confirmPassword: confirmPassword }));
     return result;
   }
 
   // Returns (ok/bad)
   // TODO: Fix return
   async LoginTeacher(username: string, password: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/teacherlogin', { username: username, password: password }));
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/TeacherLogin', { username: username, password: password }));
     return result;
   }
 
   // Returns (firstName: string, lastName: string)
   async GetTeacherNameAsStudent(courseID: string, passcode: string) {
     const result = await lastValueFrom(this.http.post<any>(this.url + '/TeacherNameAsStudent', { courseID: courseID, passcode: passcode }));
-    return {firstName: result.firstName, lastName: result.lastName};
+    return { firstName: result.firstName, lastName: result.lastName };
   }
 
   // Returns (courseName: string)
-  async GetCourseNameAsStudent(courseID: string, passcode: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/CourseNameAsStudent', { courseID: courseID, passcode: passcode }));
-    return result.courseName;
+  async GetCourseNameAsStudent() {
+    const result = await lastValueFrom(this.http.get<any>(this.url + '/CourseNameAsStudent'));
+    return result;
   }
 
   // Returns (courseName: string)[]
   // TODO: Fix return
-  async GetCoursesAsTeacher(username: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/CoursesAsTeacher', { username: username }));
+  async GetCoursesAsTeacher(user_id: string) {
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/CoursesAsTeacher', {user_id: user_id}));
     return result;
   }
 
@@ -61,7 +66,7 @@ export class DataBackendService {
   // Returns (firstName: string, lastName: string)
   async GetTeacherNameAsTeacher(username: string) {
     const result = await lastValueFrom(this.http.post<any>(this.url + '/TeacherNameAsTeacher', { username: username }));
-    return {firstName: result.firstName, lastName: result.lastName};
+    return { firstName: result.firstName, lastName: result.lastName };
   }
 
   // Returns (courseName: string)

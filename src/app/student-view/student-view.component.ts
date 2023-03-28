@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DataComponentService } from '../services/data-component.service';
-import { DataBackendService}  from '../services/data-backend.service';
+import { DataBackendService } from '../services/data-backend.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-student-view',
@@ -12,15 +13,5 @@ import { DataBackendService}  from '../services/data-backend.service';
 })
 
 export class StudentViewComponent {
-  constructor(public service_comm: DataComponentService, private serve_back: DataBackendService) { }
-
-  // Variables
-  courseName: string = "Course Name";
-  courseID: string = "Course ID";
-  //courseProf: { first: string, last: string } = { first: "Professor's", last: "Name" };
-
-  openSyllabus() {
-    // TODO: Implement actual syllabus
-    window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
-  }
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 }

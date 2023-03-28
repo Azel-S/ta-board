@@ -1,9 +1,24 @@
-.main-div mat-card
-{
-    padding: 0px;
+.login-container {
+    height: 90%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.input-form
-{
-    padding: 20px;
+.login-content {
+    width: 50vw;
+}
+
+mat-form-field {
+    width: 100%;
+    display: block;
+}
+
+button {
+    width: 100%;
+}
+
+.pad-20 {
+    padding:20px
 }
