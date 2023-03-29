@@ -30,11 +30,11 @@ export class DataComponentService {
     { student: 'Nick', question: "Why is the sky blue?" },
   ];
 
-  SetUserID(user_serial: number) {
+  SetUserSerial(user_serial: number) {
     this.status.user_serial = user_serial;
   }
 
-  GetUserID() {
+  GetUserSerial() {
     return this.status.user_serial;
   }
 

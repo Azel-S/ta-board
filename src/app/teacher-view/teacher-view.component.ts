@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 
 export class TeacherViewComponent implements OnInit {
   ngOnInit(): void {
-    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserID());
+    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserSerial());
   }
 
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }

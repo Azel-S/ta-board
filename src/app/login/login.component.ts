@@ -31,7 +31,7 @@ export function createErrorVal(): ValidatorFn {
 })
 
 export class LoginComponent {
-  constructor(private service_comm: DataComponentService, private serve_back: DataBackendService) { }
+  constructor(private serve_comm: DataComponentService, private serve_back: DataBackendService) { }
 
   // Input fields
   courseID: string | null = null;
@@ -42,8 +42,8 @@ export class LoginComponent {
 
   student(credentials: { courseID: string }) {
     this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {
-      this.service_comm.SetLoggedIn("S");
-      this.service_comm.Navigate('student-view');
+      this.serve_comm.SetLoggedIn("S");
+      this.serve_comm.Navigate('student-view');
 
       // TODO: Update data in component class
       // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
@@ -55,11 +55,15 @@ export class LoginComponent {
 
   teacher(credentials: { username: string, password: string }) {
     this.serve_back.LoginTeacher(this.username!, this.password!).then(res => {
-      this.service_comm.SetLoggedIn("T");
-      this.service_comm.Navigate('teacher-view');
+      // Set logged in status to teacher.
+      this.serve_comm.SetLoggedIn("T");
 
-      // TODO: Update data in component class
+      // Update Data
+      this.serve_comm.SetUserSerial(res.id);
       // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
+
+      // Navigate to teacher-view
+      this.serve_comm.Navigate('teacher-view');
     }).catch(res => {
       // TODO: Show error message
       console.log("YAHOO!");
@@ -68,7 +72,7 @@ export class LoginComponent {
 
   register(credentials: { username: string, password: string, confirmPassword: string }) {
     this.serve_back.Register(this.username!, this.password!, this.confirmPassword!).then(res => {
-      this.service_comm.Navigate('signup');
+      this.serve_comm.Navigate('signup');
     }).catch(res => {
       // TODO: Show error message
       console.log("YAHOO!");
