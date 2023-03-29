@@ -20,6 +20,12 @@ type ProfessorCourse struct {
 	Course_serial int `json:"course_serial"`
 }
 
+type CourseQuestions struct {
+	Course_serial int    `json:"course_serial"`
+	Question      string `json:"question"`
+	Answer        string `json:"answer"`
+}
+
 type User struct {
 	ID       int
 	Username string `mux:"column:professor_name"`

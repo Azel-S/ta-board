@@ -54,12 +54,22 @@ func (a *App) Initialize(username, password, dbname string) {
 	course_serial INT,
 	CONSTRAINT pkey PRIMARY KEY (user_serial)
 )`
+
+	CreationQuestionQuery := `CREATE TABLE IF NOT EXISTS questions
+(
+	course_serial INT,
+	question varchar(255),
+	answer varchar(255),
+	CONSTRAINT pkey PRIMARY KEY (course_serial)
+)`
+
 	a.DB.Exec(MASTERDropTables)
 	a.DB.Exec(user.UsersCreationQuery)
 	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.Exec(course.CourseAddAdminQuery)
 	a.DB.Exec(CreationQuery)
+	a.DB.Exec(CreationQuestionQuery)
 	a.DB.Exec(user.ProfessorCoursesAddQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
@@ -432,6 +442,30 @@ func (a *App) GetCoursesAsTeacher(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, courses)
 }
 
+func (a *App) GetQuestionsAsTeacher(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("GetQuestionsAsTeacher")
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	var data endpoints.ProfessorCourse
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&data); err != nil {
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close() // close http body at end of function call
+
+	questions, err := course.GetManyQuestions(a.DB, data.User_serial)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, questions)
+}
+
 /*
 
 	HELPER + TESTING FUNCTIONS
@@ -505,4 +539,5 @@ func (a *App) initializeRoutes() {
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/CourseNameAsStudent", a.GetCourseInfoAsStudent).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/CoursesAsTeacher", a.GetCoursesAsTeacher).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/GetQuestionsAsTeacher", a.GetQuestionsAsTeacher).Methods("POST", "OPTIONS")
 }
