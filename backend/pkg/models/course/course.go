@@ -20,6 +20,13 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 const CourseAddAdminQuery = `INSERT INTO courses(id, course_id, course_name, passcode, professor_name, course_info_raw)
 VALUES('1', 'ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN PROF', 'ADMIN COURSE INFO')
 `
+const CoursesQuestionsCreationQuery = `CREATE TABLE IF NOT EXISTS courses
+(
+	course_serial SERIAL,
+	question TEXT NOT NULL,
+	answer TEXT NOT NULL,
+	CONSTRAINT users_pkey PRIMARY KEY (course_serial)
+)`
 
 type Course struct {
 	ID             int    `json:"id"`
@@ -27,6 +34,12 @@ type Course struct {
 	CourseName     string `json:"course_name"`
 	ProfessorName  string `json:"professor_name"`
 	CourseInfo_raw string `json:"course_info_raw"`
+}
+
+type CourseQuestions struct {
+	Course_serial int    `json:"course_serial"`
+	Question      string `json:"question"`
+	Answer        string `json:"answer"`
 }
 
 func (Course) TableName() string {
@@ -94,7 +107,43 @@ func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
 		}
 	}
 
-	
-
 	return courseList, nil
+}
+
+func GetManyQuestions(db *gorm.DB, user_serial int) ([]CourseQuestions, error) {
+	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_serial=?", user_serial).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	pcList := []endpoints.ProfessorCourse{}
+	for rows.Next() {
+		var c endpoints.ProfessorCourse
+		if err := rows.Scan(&c.User_serial, &c.Course_serial); err != nil {
+			return nil, err
+		}
+
+		pcList = append(pcList, c)
+	}
+
+	questionsList := []CourseQuestions{}
+	for i := 0; i < len(pcList); i++ {
+		c_rows, err := db.Raw("SELECT * FROM questions WHERE id=?", pcList[i].Course_serial).Rows()
+		if err != nil {
+			return nil, err
+		}
+
+		for c_rows.Next() {
+			var c CourseQuestions
+
+			if err := c_rows.Scan(&c.Course_serial, &c.Question, &c.Answer); err != nil {
+				return nil, err
+			}
+
+			questionsList = append(questionsList, c)
+		}
+	}
+
+	return questionsList, nil
 }
