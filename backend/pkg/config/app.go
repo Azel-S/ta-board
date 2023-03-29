@@ -60,6 +60,7 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.Exec(course.CourseAddAdminQuery)
 	a.DB.Exec(CreationQuery)
+	a.DB.Exec(user.ProfessorCoursesAddQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
 
@@ -325,6 +326,7 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
+
 	var data endpoints.TeacherLogin // Setup an endpoint struct
 
 	decoder := json.NewDecoder(r.Body) // Grab decoding data from json to put into a user struct later
@@ -405,22 +407,24 @@ func (a *App) GetCourseInfoAsStudent(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) GetCoursesAsTeacher(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GET COURSES AS TEACHER")
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	var data string
+	fmt.Println("GET COURSES AS TEACHER")
+
+	var data endpoints.ProfessorCourse
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&data); err != nil {
 		fmt.Println("Invalid payload")
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	var user_id, err = strconv.Atoi(data)
-	courses, err := course.GetManyCourses(a.DB, user_id)
+	defer r.Body.Close() // close http body at end of function call
+
+	courses, err := course.GetManyCourses(a.DB, data.User_serial)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return

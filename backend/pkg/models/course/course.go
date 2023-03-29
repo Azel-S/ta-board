@@ -1,6 +1,8 @@
 package models
 
 import (
+	"TA-Bot/backend/pkg/endpoints"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -25,11 +27,6 @@ type Course struct {
 	CourseName     string `json:"course_name"`
 	ProfessorName  string `json:"professor_name"`
 	CourseInfo_raw string `json:"course_info_raw"`
-}
-
-type ProfCourseList struct {
-	user_id   int `json:"user_id"`
-	course_id int `json:"course_id"`
 }
 
 func (Course) TableName() string {
@@ -61,32 +58,43 @@ func (c *Course) CreateCourse(db *gorm.DB) error {
 }
 
 // CONSTRUCTS AND RETURNS AN ARRAY OF COURSES STARTING FROM 'START' INDEX AND 'COUNT' INDICES FORWARD
-func GetManyCourses(db *gorm.DB, user_id int) ([]Course, error) {
-	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_id=?", user_id).Rows()
+func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
+	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_serial=?", user_serial).Rows()
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	pcList := []ProfCourseList{}
+
+	pcList := []endpoints.ProfessorCourse{}
 	for rows.Next() {
-		var c ProfCourseList
-		if err := rows.Scan(&c.course_id); err != nil {
+		var c endpoints.ProfessorCourse
+		if err := rows.Scan(&c.User_serial, &c.Course_serial); err != nil {
 			return nil, err
 		}
+
 		pcList = append(pcList, c)
 	}
 
 	courseList := []Course{}
 	for i := 0; i < len(pcList); i++ {
-		c_rows, err := db.Raw("SELECT * FROM courses WHERE course_id=?", pcList[i].course_id).Rows()
+		c_rows, err := db.Raw("SELECT * FROM courses WHERE id=?", pcList[i].Course_serial).Rows()
 		if err != nil {
 			return nil, err
 		}
-		var c Course
-		if err := c_rows.Scan(&c.ID, &c.CourseID, &c.CourseName, &c.CourseInfo_raw); err != nil {
-			return nil, err
+
+		for c_rows.Next() {
+			var c Course
+			var trash string
+
+			if err := c_rows.Scan(&c.ID, &c.CourseID, &c.CourseName, &trash, &c.ProfessorName, &c.CourseInfo_raw); err != nil {
+				return nil, err
+			}
+
+			courseList = append(courseList, c)
 		}
-		courseList = append(courseList, c)
 	}
+
+	
+
 	return courseList, nil
 }

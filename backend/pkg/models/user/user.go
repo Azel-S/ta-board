@@ -17,6 +17,9 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 const UsersAddAdminQuery = `INSERT INTO users(professor_name, class_id, class_name, password)
 VALUES('ADMIN', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
 `
+const ProfessorCoursesAddQuery = `INSERT INTO professorcourses(user_serial, course_serial)
+VALUES('1', '1')
+`
 
 // Note: make setVar() funcs for these later
 type User struct {

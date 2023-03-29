@@ -8,10 +8,17 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./teacher-view.component.css']
 })
 
-export class TeacherViewComponent implements OnInit {
-  ngOnInit(): void {
-    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserSerial());
-  }
+export class TeacherViewComponent {
 
-  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
+    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserSerial()).then(res => {
+      console.log(res);
+
+      for (let i = 0; i < res.length; i++) {
+        this.serve_comm.AddCourse(res[i]);
+      }
+    }).catch(res => {
+      console.log("YAHOO!");
+    });
+  }
 }

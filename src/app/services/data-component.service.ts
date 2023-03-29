@@ -104,6 +104,12 @@ export class DataComponentService {
     }
   }
 
+  AddCourse(course: {
+    course_id: string, course_info_raw: string, course_name: string, id: number, professor_name: string
+  }) {
+    this.courses.push({id: course.course_id, name: course.course_name, passcode: "", description: course.course_info_raw});
+  }
+
   GetNumQuestions() {
     return this.questions.length;
   }
