@@ -34,6 +34,13 @@ describe('Course View Page Exists', () => {
   })
 })
 
+describe('Sign-Up Page Exists', () => {
+  it('passes', () => {
+    cy.visit(url + '/signup')
+    cy.location('pathname').should('eq', '/signup')
+  })
+})
+
 describe('Homepage -> Login Page', () => {
   it('passes', () => {
     cy.visit(url + '/home')
@@ -48,25 +55,34 @@ describe('Student can Login', () => {
     cy.contains('Course ID').type('Admin');
     cy.get("button#SubmitS").should('be.visible').click();
 
-    // TODO: Check why this login is not interacting with db.
+    // INFO: Seems that cypress doesn't allow access to two origins.
+    //       Currently we are forcing a visit, need a better solution.
     cy.visit(url + '/student-view')
   })
 })
 
 describe('Student can Open Syllabus', () => {
   it('passes', () => {
-    cy.visit(url + '/login')
-    cy.contains('Course ID').type('Admin');
-    cy.get("button#SubmitS").should('be.visible').click();
-
-    // TODO: Check why this login is not interacting with db.
+    // INFO: Seems that cypress doesn't allow access to two origins.
+    //       Currently we are forcing a visit, need a better solution.
     cy.visit(url + '/student-view')
+    cy.get("button#syllabusButton").should('be.visible').click();
+  })
+})
+
+describe('Teacher can Open Syllabus', () => {
+  it('passes', () => {
+    // INFO: Seems that cypress doesn't allow access to two origins.
+    //       Currently we are forcing a visit, need a better solution.
+    cy.visit(url + '/course-view')
     cy.get("button#syllabusButton").should('be.visible').click();
   })
 })
 
 describe('Check Teacher View Card Numbers', () => {
   it('passes', () => {
+    // INFO: Seems that cypress doesn't allow access to two origins.
+    //       Currently we are forcing a visit, need a better solution.
     cy.visit(url + '/teacher-view')
     cy.get('mat-card').should('have.length', 5)
   }) 
