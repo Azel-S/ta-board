@@ -43,6 +43,17 @@ func (u *User) GetUser(db *gorm.DB) error {
 	return ret.Error
 }
 
+func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
+	type Result struct {
+		ID int
+	}
+	var ret Result
+	db.Table("users").Select("id").Where(User{ProfessorName: name, Password: pass}).Scan(&ret)
+	//db.Raw("SELECT id FROM users WHERE professor_name = ? AND password = ?", name, pass).Scan(&ret)
+	//fmt.Println("Serial:", ret.ID)
+	return ret.ID
+}
+
 // UPDATES THE FIRST INSTANCE OF A MATCHING USER IN DATABASE WITH NEW VALUES
 func (u *User) UpdateUser(db *gorm.DB) error {
 	//ret := db.Raw("UPDATE users SET professor_name=?, class_id=?, class_name=? WHERE id=?", u.ProfessorName, u.ClassID, u.ClassName, u.ID)

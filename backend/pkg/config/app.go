@@ -341,6 +341,7 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 		ProfessorName: data.Username,
 		Password:      data.Password,
 	}
+	s := 0
 	fmt.Println("user:", u)
 	if err := u.GetUser(a.DB); err != nil { // Get the user with matching professor name and password
 		fmt.Println("Not found")
@@ -348,6 +349,8 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 		return
 	}
+	s = u.GetUserSerial(a.DB, u.ProfessorName, u.Password)
+	u.ID = s
 	respondWithJSON(w, http.StatusOK, u)
 }
 
