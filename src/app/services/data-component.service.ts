@@ -110,6 +110,10 @@ export class DataComponentService {
     this.courses.push({id: course.course_id, name: course.course_name, passcode: "", description: course.course_info_raw});
   }
 
+  ClearCourses() {
+    this.courses = [];
+  }
+
   GetNumQuestions() {
     return this.questions.length;
   }

@@ -12,7 +12,7 @@ export class TeacherViewComponent {
 
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
     this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserSerial()).then(res => {
-      console.log(res);
+      // this.serve_comm.ClearCourses();
 
       for (let i = 0; i < res.length; i++) {
         this.serve_comm.AddCourse(res[i]);
