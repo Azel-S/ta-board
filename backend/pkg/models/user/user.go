@@ -17,6 +17,9 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 const UsersAddAdminQuery = `INSERT INTO users(professor_name, class_id, class_name, password)
 VALUES('ADMIN', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
 `
+const ProfessorCoursesAddQuery = `INSERT INTO professorcourses(user_serial, course_serial)
+VALUES('1', '1')
+`
 
 // Note: make setVar() funcs for these later
 type User struct {
@@ -41,6 +44,17 @@ func (u *User) GetUser(db *gorm.DB) error {
 	ret := db.Where(User{ProfessorName: u.ProfessorName, Password: u.Password}).First(&u)
 	//ret := db.First(&u)
 	return ret.Error
+}
+
+func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
+	type Result struct {
+		ID int
+	}
+	var ret Result
+	db.Table("users").Select("id").Where(User{ProfessorName: name, Password: pass}).Scan(&ret)
+	//db.Raw("SELECT id FROM users WHERE professor_name = ? AND password = ?", name, pass).Scan(&ret)
+	//fmt.Println("Serial:", ret.ID)
+	return ret.ID
 }
 
 // UPDATES THE FIRST INSTANCE OF A MATCHING USER IN DATABASE WITH NEW VALUES

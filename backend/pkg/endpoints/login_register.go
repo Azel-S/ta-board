@@ -15,6 +15,11 @@ type TeacherLogin struct {
 	Password string `json:"password"`
 }
 
+type ProfessorCourse struct {
+	User_serial   int `json:"user_serial"`
+	Course_serial int `json:"course_serial"`
+}
+
 type User struct {
 	ID       int
 	Username string `mux:"column:professor_name"`
