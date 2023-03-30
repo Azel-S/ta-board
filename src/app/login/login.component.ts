@@ -51,6 +51,7 @@ export class LoginComponent {
       // TODO: Show error message
       console.log("YAHOO!");
     });
+    this.serve_back.GetCourseNameAsStudent();
   }
 
   teacher(credentials: { username: string, password: string }) {

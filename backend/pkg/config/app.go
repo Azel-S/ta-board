@@ -398,7 +398,7 @@ func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) GetCourseInfoAsStudent(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GET COURSE INFO")
+	fmt.Println("GET COURSE INFO AS STUDENT")
 	setCORSHeader(&w, r)
 	if (*r).Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
