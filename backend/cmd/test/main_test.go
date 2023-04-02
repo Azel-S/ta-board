@@ -21,7 +21,7 @@ import (
 	models "TA-Bot/backend/pkg/models/user"
 )
 
-const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
+const tableCreationQuery = `CREATE TABLE IF NOT EXISTS userstest
 (
 	id SERIAL,
 	professor_name TEXT NOT NULL,
@@ -45,7 +45,7 @@ func TestMain(m *testing.M) {
 
 // CHECK WHETHER OR NOT TABLE 'USERS' EXISTS -> NECESSARY FOR TESTS TO RUN
 func checkTableExistence() bool {
-	a.DB.Exec("DROP TABLE IF EXISTS users")
+	a.DB.Exec("DROP TABLE IF EXISTS userstest")
 	exists := a.DB.Exec(tableCreationQuery)
 	return exists.Error == nil
 }
@@ -103,8 +103,8 @@ func TestCreateUser(t *testing.T) {
 	if m["class_name"] != "Alphabet101" {
 		t.Errorf("Expected class = 'Alphabet101'. Got '%v'", m["className"])
 	}
-	if m["id"] != 1.0 {
-		t.Errorf("Expected ID = '1'. Got '%v'", m["id"])
+	if m["id"] != 2.0 {
+		t.Errorf("Expected ID = '2'. Got '%v'", m["id"])
 	}
 }
 
@@ -114,7 +114,7 @@ func TestGetUser(t *testing.T) {
 	//addUserRaw("test user", "ABC123", "Alphabet101")
 	u := models.User{ProfessorName: "test user", ClassID: "ABC123", ClassName: "Alphabet101"}
 	u.CreateUser(a.DB)
-	req, _ := http.NewRequest("GET", "/users/2", nil) // no idea why /users/1 doesn't work, 'u' actually has an id of 2 right here
+	req, _ := http.NewRequest("GET", "/users/0", nil) // no idea why /users/1 doesn't work, 'u' actually has an id of 2 right here
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 }
@@ -157,15 +157,15 @@ func TestDeleteUser(t *testing.T) {
 	//addUserRaw("test user", "ABC123", "Alphabet101")
 	u := models.User{ProfessorName: "test user", ClassID: "ABC123", ClassName: "Alphabet101"}
 	u.CreateUser(a.DB)
-	req, _ := http.NewRequest("GET", "/users/4", nil)
+	req, _ := http.NewRequest("GET", "/users/0", nil)
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
-	req, _ = http.NewRequest("DELETE", "/users/4", nil)
+	req, _ = http.NewRequest("DELETE", "/users/0", nil)
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
-	req, _ = http.NewRequest("GET", "/users/4", nil)
+	req, _ = http.NewRequest("GET", "/users/0", nil)
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }

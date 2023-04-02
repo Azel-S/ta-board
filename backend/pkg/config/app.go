@@ -523,15 +523,18 @@ func setCORSHeader(w *http.ResponseWriter, req *http.Request) {
 
 // Sets up routes that need handling -> WHEN ROUTER SEES A HTTP REQUEST MATCHING THE TYPE AND URL, EXECUTE A GIVEN FUNCTION
 func (a *App) initializeRoutes() {
+	// for testing purposes
 	a.Router.HandleFunc("/userstest", a.TestGET).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/userstest", a.TestPOST).Methods("POST", "OPTIONS")
 
+	// for main_test.go unit tests
 	a.Router.HandleFunc("/users", a.GetManyUsers).Methods("GET")
 	a.Router.HandleFunc("/users", a.CreateUser).Methods("POST")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.GetUser).Methods("GET")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
 	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
 
+	// API functions
 	a.Router.HandleFunc("/Register", a.Register).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/TeacherLogin", a.TeacherLogin).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/StudentLogin", a.StudentLogin).Methods("POST", "OPTIONS")
