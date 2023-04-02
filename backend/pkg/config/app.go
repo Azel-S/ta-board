@@ -21,7 +21,7 @@ type App struct {
 	Router *mux.Router
 }
 
-const MASTERDropTables = `DROP TABLE IF EXISTS users, courses, professorcourses`
+const MASTERDropTables = `DROP TABLE IF EXISTS users, courses, professorcourses, questions`
 
 // Opens a connection with the database
 func (a *App) Connect(cPath string) {
@@ -48,19 +48,19 @@ func (a *App) Initialize(username, password, dbname string) {
 				VALUES('1', '???', '???', '???', '???', '???')
 		`
 	*/
-	CreationQuery := `CREATE TABLE IF NOT EXISTS professorcourses
+	ProfessorCreationQuery := `CREATE TABLE IF NOT EXISTS professorcourses
 (
 	user_serial INT,
 	course_serial INT,
-	CONSTRAINT pkey PRIMARY KEY (user_serial)
+	PRIMARY KEY (user_serial)
 )`
 
-	CreationQuestionQuery := `CREATE TABLE IF NOT EXISTS questions
+	QuestionCreationQuery := `CREATE TABLE IF NOT EXISTS questions
 (
 	course_serial INT,
-	question varchar(255),
-	answer varchar(255),
-	CONSTRAINT pkey PRIMARY KEY (course_serial)
+	question TEXT NOT NULL,
+	answer TEXT NOT NULL,
+	PRIMARY KEY (course_serial)
 )`
 
 	a.DB.Exec(MASTERDropTables)
@@ -68,8 +68,8 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.Exec(course.CourseAddAdminQuery)
-	a.DB.Exec(CreationQuery)
-	a.DB.Exec(CreationQuestionQuery)
+	a.DB.Exec(ProfessorCreationQuery)
+	a.DB.Exec(QuestionCreationQuery)
 	a.DB.Exec(user.ProfessorCoursesAddQuery)
 	a.DB.AutoMigrate(&user.User{})
 }
@@ -214,21 +214,21 @@ func (a *App) GetCourse(w http.ResponseWriter, r *http.Request) {
 
 // RETURNS AN ARRAY OF COURSES AS A JSON OBJECT
 func (a *App) GetManyCourses(w http.ResponseWriter, r *http.Request) {
-	// count, _ := strconv.Atoi(r.FormValue("count"))
-	// start, _ := strconv.Atoi(r.FormValue("start"))
+	count, _ := strconv.Atoi(r.FormValue("count"))
+	start, _ := strconv.Atoi(r.FormValue("start"))
 
-	// if count > 10 || count < 1 {
-	// 	count = 10
-	// }
-	// if start < 0 {
-	// 	start = 0
-	// }
-	// courses, err := course.GetManyCourses(a.DB, user_id)
-	// if err != nil {
-	// 	respondWithError(w, http.StatusInternalServerError, err.Error())
-	// 	return
-	// }
-	// respondWithJSON(w, http.StatusOK, courses)
+	if count > 10 || count < 1 {
+		count = 10
+	}
+	if start < 0 {
+		start = 0
+	}
+	courses, err := course.GetManyCourses(a.DB, 1)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, courses)
 }
 
 // CREATES A COURSE INTO DATABASE

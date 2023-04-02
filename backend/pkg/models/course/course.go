@@ -6,6 +6,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// For *whatever* reason, I cannot seem to rename 'id' to anything else other than 'id'. Trying to name it 'course_serial'
+// or 'user_serial' in user.go gives me an error :/
 const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 (
 	id SERIAL,
@@ -14,19 +16,12 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 	passcode TEXT NOT NULL,
 	professor_name TEXT NOT NULL,
 	course_info_raw TEXT NOT NULL,
-	CONSTRAINT users_pkey PRIMARY KEY (id)
+	PRIMARY KEY(id)
 )`
 
-const CourseAddAdminQuery = `INSERT INTO courses(id, course_id, course_name, passcode, professor_name, course_info_raw)
-VALUES('1', 'ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN PROF', 'ADMIN COURSE INFO')
+const CourseAddAdminQuery = `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
+VALUES('ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN PROF', 'ADMIN COURSE INFO')
 `
-const CoursesQuestionsCreationQuery = `CREATE TABLE IF NOT EXISTS courses
-(
-	course_serial SERIAL,
-	question TEXT NOT NULL,
-	answer TEXT NOT NULL,
-	CONSTRAINT users_pkey PRIMARY KEY (course_serial)
-)`
 
 type Course struct {
 	ID             int    `json:"id"`
@@ -72,7 +67,7 @@ func (c *Course) CreateCourse(db *gorm.DB) error {
 
 // CONSTRUCTS AND RETURNS AN ARRAY OF COURSES STARTING FROM 'START' INDEX AND 'COUNT' INDICES FORWARD
 func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
-	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_serial=?", user_serial).Rows()
+	rows, err := db.Raw("SELECT * FROM professorcourses WHERE id=?", user_serial).Rows()
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +106,7 @@ func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
 }
 
 func GetManyQuestions(db *gorm.DB, user_serial int) ([]CourseQuestions, error) {
-	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_serial=?", user_serial).Rows()
+	rows, err := db.Raw("SELECT * FROM professorcourses WHERE id=?", user_serial).Rows()
 	if err != nil {
 		return nil, err
 	}

@@ -11,7 +11,7 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 	class_id TEXT NOT NULL,
 	class_name TEXT NOT NULL,
 	password TEXT NOT NULL,
-	CONSTRAINT users_pkey PRIMARY KEY (id)
+	PRIMARY KEY (id)
 )`
 
 const UsersAddAdminQuery = `INSERT INTO users(professor_name, class_id, class_name, password)
