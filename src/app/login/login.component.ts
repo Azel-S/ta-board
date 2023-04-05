@@ -71,12 +71,14 @@ export class LoginComponent {
   }
 
   register(credentials: { username: string, password: string, confirmPassword: string }) {
-    this.serve_back.Register(this.username!, this.password!, this.confirmPassword!).then(res => {
-      this.serve_comm.Navigate('signup');
-    }).catch(res => {
-      // TODO: Show error message
-      console.log("YAHOO!");
-    });
+    if (this.password == this.confirmPassword) {
+      this.serve_back.Register(this.username!, this.password!).then(res => {
+        this.serve_comm.Navigate('signup');
+      }).catch(res => {
+        // TODO: Show error message
+        console.log("YAHOO!");
+      });
+    }
   }
 
   //===INPUT ERRORS===//

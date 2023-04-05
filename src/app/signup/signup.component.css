@@ -1,4 +1,32 @@
-.input-horizontal
-{
-    margin-right: 20px;
+.center-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content {
+    width: 50vw;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 10px;
+}
+
+mat-form-field {
+    width: 100%;
+    display: block;
+}
+
+button {
+    width: 100%;
+}
+
+.pad-20 {
+    padding: 20px
+}
+
+.pad-top-5 {
+    padding-top: 5px;
 }
