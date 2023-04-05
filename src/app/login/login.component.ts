@@ -72,7 +72,7 @@ export class LoginComponent {
 
   register(credentials: { username: string, password: string, confirmPassword: string }) {
     if (this.password == this.confirmPassword) {
-      this.serve_back.Register(this.username!, this.password!).then(res => {
+      this.serve_back.RegisterCredentials(this.username!, this.password!).then(res => {
         this.serve_comm.Navigate('signup');
       }).catch(res => {
         // TODO: Show error message

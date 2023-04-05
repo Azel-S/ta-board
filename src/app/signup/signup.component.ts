@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { DataBackendService } from '../services/data-backend.service';
 import { DataComponentService } from '../services/data-component.service';
 
 @Component({
@@ -32,14 +33,16 @@ export class SignupComponent {
     courseDescription: ['', Validators.required],
   });
 
-  constructor(private _formBuilder: FormBuilder, private serve_comm: DataComponentService) { };
+  constructor(private _formBuilder: FormBuilder, private serve_comm: DataComponentService, private serve_back: DataBackendService) { };
 
   RegisterUser() {
     // Register Name
-    
+    this.serve_back.RegisterName(this.serve_comm.GetUserSerial(), this.professor.firstName, this.professor.lastName);
 
     // Register Courses
-
+    for (let i = 0; i < this.numCourses; i++) {
+      this.serve_back.RegisterCourse(this.serve_comm.GetUserSerial(), this.ids[i], this.names[i], this.passcodes[i], this.descriptions[i]);
+    }
 
     // Navigate to login page
     this.serve_comm.Navigate("login");

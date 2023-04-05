@@ -58,8 +58,11 @@
             </mat-step>
             <mat-step>
                 <ng-template matStepLabel>Submit</ng-template>
-                <h3>Please verify information before submission!</h3>
-                <button mat-raised-button color="primary" (click)="RegisterUser()">Submit</button>
+                <div class="pad-20">
+                    <!-- TODO: Make this a checkbox before submit is enabled. -->
+                    <h3>Please verify information before submission!</h3>
+                    <button mat-raised-button color="primary" (click)="RegisterUser()">Submit</button>
+                </div>
             </mat-step>
         </mat-stepper>
     </div>
