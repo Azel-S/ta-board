@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataBackendService } from '../services/data-backend.service';
 import { DataComponentService } from '../services/data-component.service';
 
@@ -12,28 +13,25 @@ import { DataComponentService } from '../services/data-component.service';
 export class SignupComponent {
   // Data
   professor: { firstName: string, lastName: string } = { firstName: "", lastName: "" };
-  numCourses: number = 0;
-  // INFO: Cannot store as object since an array object's field is undefined.
-  ids: string[] = [];
-  passcodes: string[] = [];
-  names: string[] = [];
-  descriptions: string[] = [];
+  // INFO: Courses has to have array field and cannot itself be an array since ngModel requires the object to be created when linking.
+  courses: { id: string[], name: string[], passcode: string[], description: string[] } = { id: [], name: [], passcode: [], description: [] };
+  numCourses: number = 1;
+  agree: boolean = false;
 
   // Forms Stuff
-  initGroup = this._formBuilder.group({
+  initGroup = this.formBuilder.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
-    numCourses: ['', Validators.pattern('[0-9]')]
+    numCourses: ['', Validators.pattern('[0-9]+')]
   });
-
-  courseGroup = this._formBuilder.group({
+  courseGroup = this.formBuilder.group({
     courseID: ['', Validators.required],
     coursePasscode: ['', Validators.required],
     courseName: ['', Validators.required],
     courseDescription: ['', Validators.required],
   });
 
-  constructor(private _formBuilder: FormBuilder, private serve_comm: DataComponentService, private serve_back: DataBackendService) { };
+  constructor(private formBuilder: FormBuilder, private serve_comm: DataComponentService, private serve_back: DataBackendService) { };
 
   RegisterUser() {
     // Register Name
@@ -41,10 +39,11 @@ export class SignupComponent {
 
     // Register Courses
     for (let i = 0; i < this.numCourses; i++) {
-      this.serve_back.RegisterCourse(this.serve_comm.GetUserSerial(), this.ids[i], this.names[i], this.passcodes[i], this.descriptions[i]);
+      this.serve_back.RegisterCourse(this.serve_comm.GetUserSerial(), this.courses.id[i], this.courses.name[i], this.courses.passcode[i], this.courses.description[i]);
     }
 
-    // Navigate to login page
+    // Show success message and navigate to login page.
+    this.serve_comm.Notify("Registration Successful!");
     this.serve_comm.Navigate("login");
   };
 }

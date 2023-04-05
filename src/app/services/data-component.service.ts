@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class DataComponentService {
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
   // Use capital characters to assign value.
   // F - False
@@ -25,11 +26,11 @@ export class DataComponentService {
   ];
 
   questions: { index: number, student: string, question: string, answer: string }[] = [
-    { index: 0, student: 'Abbas', question: "How the heck is this easy?", answer: 'No response'},
-    { index: 1, student: 'Riley', question: "How much is an apple worth?", answer: 'No response'},
-    { index: 2, student: 'Nick', question: "Why is the sky blue?", answer: 'No response'},
+    { index: 0, student: 'Abbas', question: "How the heck is this easy?", answer: 'No response' },
+    { index: 1, student: 'Riley', question: "How much is an apple worth?", answer: 'No response' },
+    { index: 2, student: 'Nick', question: "Why is the sky blue?", answer: 'No response' },
   ];
-  
+
 
   SetUserSerial(user_serial: number) {
     this.status.user_serial = user_serial;
@@ -56,6 +57,12 @@ export class DataComponentService {
       // e.g. Cannot go to teacher-view without making sure loggedIn == "T"
       this.router.navigate([component]);
     }
+  }
+
+  // Shows a notification at the bottom of the screen.
+  Notify(message: string, action: string = "Close", duration: number = 3000)
+  {
+    this.snackBar.open(message, action, {duration: duration});
   }
 
   GetProfName() {
@@ -108,7 +115,7 @@ export class DataComponentService {
   AddCourse(course: {
     course_id: string, course_info_raw: string, course_name: string, id: number, professor_name: string
   }) {
-    this.courses.push({id: course.course_id, name: course.course_name, passcode: "", description: course.course_info_raw});
+    this.courses.push({ id: course.course_id, name: course.course_name, passcode: "", description: course.course_info_raw });
   }
 
   ClearCourses() {
@@ -135,6 +142,7 @@ export class DataComponentService {
 
   SetAnswer(index: number = 0, answer: string) {
     this.questions[index].answer = answer;
+    this.snackBar.open("Response Submitted!", "Close", {duration: 3000});
   }
 
   OpenSyllabus() {

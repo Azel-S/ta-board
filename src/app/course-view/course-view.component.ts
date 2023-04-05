@@ -12,9 +12,15 @@ import { HttpClient } from '@angular/common/http';
 
 export class CourseViewComponent {
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
-    serve_comm.Navigate("course-view");
+    for (let i = 0; i < serve_comm.GetNumQuestions(); i++) {
+      let answer = serve_comm.GetAnswer(i);
+
+      if (answer != "No Response") {
+        this.responses[i] = answer;
+      }
+    }
   }
 
   responses: string[] = [];
-  
+
 }

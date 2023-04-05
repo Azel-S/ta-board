@@ -18,7 +18,12 @@
                             <input matInput formControlName="numCourses" type="number" required
                                 [(ngModel)]="numCourses">
                         </mat-form-field>
-                        <button mat-raised-button color="primary" matStepperNext>Next</button>
+                        <button [disabled]="!professor.firstName || !professor.lastName || !numCourses"
+                            mat-raised-button color="accent" matStepperNext>Next
+                        </button>
+                        <mat-error *ngIf="numCourses <= 0"><strong>Error:
+                            </strong>Number of Courses must be a number above 0.
+                        </mat-error>
                     </div>
                 </form>
             </mat-step>
@@ -29,29 +34,32 @@
                         <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                             <mat-label>Course Name</mat-label>
                             <input matInput formControlName="courseName" placeholder="e.g. Intro to Software" required
-                                [(ngModel)]="ids[i]">
+                                [(ngModel)]="courses.id[i]">
                         </mat-form-field>
                         <div class="horizontal-container">
                             <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                                 <mat-label>Course ID</mat-label>
                                 <input matInput formControlName="courseID" placeholder="e.g. CEN3031" required
-                                    [(ngModel)]="names[i]">
+                                    [(ngModel)]="courses.name[i]">
                             </mat-form-field>
                             <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                                 <mat-label>Course Passcode</mat-label>
                                 <input matInput formControlName="coursePasscode" placeholder="e.g. #124" required
-                                    [(ngModel)]="passcodes[i]">
+                                    [(ngModel)]="courses.passcode[i]">
                             </mat-form-field>
                         </div>
                         <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                             <mat-label>Decription</mat-label>
-                            <input matInput formControlName="courseDescription" required [(ngModel)]="descriptions[i]">
+                            <textarea matInput formControlName="courseDescription" placeholder="Type a response..."
+                                required [(ngModel)]="courses.description[i]"></textarea>
                         </mat-form-field>
                         <div>
-                            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+                            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
                         </div>
                         <div class="pad-top-5">
-                            <button mat-raised-button color="primary" matStepperNext>Next</button>
+                            <button mat-raised-button color="accent" matStepperNext
+                                [disabled]="!courses.id[i] || !courses.passcode[i] || !courses.name[i] || !courses.description[i]">Next
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -59,9 +67,9 @@
             <mat-step>
                 <ng-template matStepLabel>Submit</ng-template>
                 <div class="pad-20">
-                    <!-- TODO: Make this a checkbox before submit is enabled. -->
-                    <h3>Please verify information before submission!</h3>
-                    <button mat-raised-button color="primary" (click)="RegisterUser()">Submit</button>
+                    <mat-checkbox [(ngModel)]="agree">I have verified the information above!</mat-checkbox>
+                    <button mat-raised-button color="accent" [disabled]="!agree"
+                        (click)="RegisterUser()">Submit</button>
                 </div>
             </mat-step>
         </mat-stepper>

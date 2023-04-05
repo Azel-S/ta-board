@@ -1,50 +1,45 @@
 <div class="div">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title-group>
-                <mat-card-title>{{serve_comm.GetCourseName() + " (" + serve_comm.GetCourseID() + ")"}}</mat-card-title>
-                <mat-card-subtitle>{{serve_comm.GetProfName()}}</mat-card-subtitle>
-                <button mat-raised-button type="submit" color="accent" id="syllabusButton" (click)="serve_comm.OpenSyllabus()">
-                    Open Syllabus
-                </button>
-            </mat-card-title-group>
-        </mat-card-header>
-        <mat-card-content></mat-card-content>
-    </mat-card>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>{{serve_comm.GetCourseName() + " (" + serve_comm.GetCourseID() + ")"}}</mat-card-title>
+        <mat-card-subtitle>{{serve_comm.GetProfName()}}</mat-card-subtitle>
+        <button mat-raised-button type="submit" color="accent" id="syllabusButton" (click)="serve_comm.OpenSyllabus()">
+          Open Syllabus
+        </button>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content></mat-card-content>
+  </mat-card>
 </div>
 
 <div class="pad-20">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title-group>
-          <mat-card-title>List of Questions:</mat-card-title>
-        </mat-card-title-group>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-accordion class="pad-20" multi>
-          <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions()">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="names">{{ question.student }}</mat-panel-title>
-              <mat-panel-description>{{ question.question }}</mat-panel-description>
-            </mat-expansion-panel-header>
-            <mat-label>Response</mat-label>
-            <!-- <mat-form-field appearance="outline" class="response">
-                <mat-label>Response</mat-label>
-               <textarea matInput placeholder="Type a response..."></textarea>
-            </mat-form-field> -->
-            {{ question.answer }}
-          </mat-expansion-panel>
-        </mat-accordion>
-      </mat-card-content>
-    </mat-card>
-  </div>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>List of Questions:</mat-card-title>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-accordion class="pad-20" multi>
+        <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions()">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="names">{{ question.student }}</mat-panel-title>
+            <mat-panel-description>{{ question.question }}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <h3>{{ question.answer }}</h3>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>
 
 <div class="div">
-    <mat-card class="bot-card">
-        <mat-card-content>
-            <iframe class="bot-frame" allow="microphone;"
-                src="https://console.dialogflow.com/api-client/demo/embedded/6d736956-0a55-41cf-8dc5-d7b7ebe842ad">
-            </iframe>
-        </mat-card-content>
-    </mat-card>
+  <mat-card class="bot-card">
+    <mat-card-content>
+      <iframe class="bot-frame" allow="microphone;"
+        src="https://console.dialogflow.com/api-client/demo/embedded/6d736956-0a55-41cf-8dc5-d7b7ebe842ad">
+      </iframe>
+    </mat-card-content>
+  </mat-card>
 </div>

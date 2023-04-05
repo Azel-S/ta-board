@@ -29,12 +29,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Services
 import { DataBackendService } from './services/data-backend.service';
-
+import { DataComponentService } from './services/data-component.service';
 
 const routes: Routes =
   [
@@ -48,46 +50,48 @@ const routes: Routes =
   ]
 
 @NgModule
-({
-  declarations:
-  [
-    AppComponent,
-    LoginComponent,
-    HomeComponent,
-    StudentViewComponent,
-    TeacherViewComponent,
-    CourseViewComponent,
-    SignupComponent,
-    SidebarComponent
-  ],
-  imports:
-  [
-    RouterModule.forRoot(routes),
-    BrowserModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    MatToolbarModule,
-    LayoutModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTabsModule,
-    FormsModule,
-    MatSidenavModule,
-    MatDividerModule,
-    MatListModule,
-    MatExpansionModule,
-    MatListModule,
-    MatStepperModule,
-    ReactiveFormsModule
-  ],
-  providers: [DataBackendService],
-  bootstrap: [AppComponent],
-  schemas: [NO_ERRORS_SCHEMA]
-})
+  ({
+    declarations:
+      [
+        AppComponent,
+        LoginComponent,
+        HomeComponent,
+        StudentViewComponent,
+        TeacherViewComponent,
+        CourseViewComponent,
+        SignupComponent,
+        SidebarComponent
+      ],
+    imports:
+      [
+        RouterModule.forRoot(routes),
+        BrowserModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatGridListModule,
+        MatCardModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        MatToolbarModule,
+        LayoutModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTabsModule,
+        FormsModule,
+        MatSidenavModule,
+        MatDividerModule,
+        MatListModule,
+        MatExpansionModule,
+        MatListModule,
+        MatStepperModule,
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatCheckboxModule
+      ],
+    providers: [DataBackendService, DataComponentService],
+    bootstrap: [AppComponent],
+    schemas: [NO_ERRORS_SCHEMA]
+  })
 
 export class AppModule { }

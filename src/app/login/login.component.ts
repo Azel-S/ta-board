@@ -35,9 +35,9 @@ export class LoginComponent {
 
   // Input fields
   courseID: string | null = null;
+  passcode: string | null = null;
   username: string | null = null;
   password: string | null = null;
-  passcode: string | null = null;
   confirmPassword: string | null = null;
 
   student(credentials: { courseID: string }) {
@@ -80,13 +80,4 @@ export class LoginComponent {
       });
     }
   }
-
-  //===INPUT ERRORS===//
-  //==Student==//
-  courseIDFormControl = new FormControl('', [Validators.required]);
-  //==Teacher==//
-  usernameFormControl = new FormControl('', [Validators.required]);
-  passwordFormControl = new FormControl('', [Validators.required]);
-  //==Register==//
-  confirmPasswordFormControl = new FormControl('', [Validators.required]);
 }
