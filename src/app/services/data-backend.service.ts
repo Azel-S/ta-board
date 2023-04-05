@@ -37,7 +37,7 @@ export class DataBackendService {
   }
 
   async RegisterCourse(user_serial: number, id: string, name: string, passcode: string, description: string) {
-    const result = await lastValueFrom(this.http.post<any>(this.url + '/Register', { user_serial: user_serial, id: id, name: name, passcode: passcode, description: description}));
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/RegisterCourse', { user_serial: user_serial, id: id, name: name, passcode: passcode, description: description}));
     return result;
   }
 
