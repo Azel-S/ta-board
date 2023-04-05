@@ -29,10 +29,10 @@
           </mat-expansion-panel-header>
           <mat-form-field appearance="outline" class="response">
             <mat-label>Response</mat-label>
-            <textarea matInput placeholder="Type a response..."></textarea>
+            <textarea matInput placeholder="Type a response..."  [(ngModel)]="responses[question.index]"></textarea>
           </mat-form-field>
           <div>
-            <button mat-raised-button color="accent">Submit</button>
+            <button mat-raised-button color="accent" (click)="serve_comm.SetAnswer(question.index, responses[question.index])">Submit</button>
           </div>
         </mat-expansion-panel>
       </mat-accordion>

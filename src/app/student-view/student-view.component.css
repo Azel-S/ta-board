@@ -12,3 +12,15 @@
     height: calc(60vh - 40px - 20px);
     width: 100%;
 }
+
+.pad-20 {
+    padding: 20px;
+}
+
+.names {
+    max-width: 80px;
+}
+
+.response {
+    display: flex;
+}

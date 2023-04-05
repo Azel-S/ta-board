@@ -24,11 +24,12 @@ export class DataComponentService {
     { id: "LEI2818", name: "Leisure", passcode: "", description: "Learn about how relaxing is great, however you don't get to do that because you are taking this course! Mwahaahaha." },
   ];
 
-  questions: { student: string, question: string }[] = [
-    { student: 'Abbas', question: "How the heck is this easy?" },
-    { student: 'Riley', question: "How much is an apple worth?" },
-    { student: 'Nick', question: "Why is the sky blue?" },
+  questions: { index: number, student: string, question: string, answer: string }[] = [
+    { index: 0, student: 'Abbas', question: "How the heck is this easy?", answer: 'No response'},
+    { index: 1, student: 'Riley', question: "How much is an apple worth?", answer: 'No response'},
+    { index: 2, student: 'Nick', question: "Why is the sky blue?", answer: 'No response'},
   ];
+  
 
   SetUserSerial(user_serial: number) {
     this.status.user_serial = user_serial;
@@ -124,6 +125,16 @@ export class DataComponentService {
 
   GetQuestion(index: number = 0) {
     return this.questions[index];
+  }
+
+  //GetIndex
+
+  GetAnswer(index: number = 0) {
+    return this.questions[index].answer;
+  }
+
+  SetAnswer(index: number = 0, answer: string) {
+    this.questions[index].answer = answer;
   }
 
   OpenSyllabus() {
