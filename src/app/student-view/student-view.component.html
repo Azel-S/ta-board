@@ -29,6 +29,21 @@
           </mat-expansion-panel-header>
           <h3>{{ question.answer }}</h3>
         </mat-expansion-panel>
+        <div class="addButton" *ngIf="addActive==true">
+          <button mat-raised-button type color="accent" (click)="toggleActive()">Ask Another Question</button>
+        </div>
+        <div *ngIf="addActive==false">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title class="names">Enter Question</mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+              <mat-label>Question</mat-label>
+              <input matInput formControlName="firstName">
+            </mat-form-field>
+            <button class="submitButton" mat-raised-button color="accent">Submit</button>
+          </mat-expansion-panel>
+        </div>
       </mat-accordion>
     </mat-card-content>
   </mat-card>

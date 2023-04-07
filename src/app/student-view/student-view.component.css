@@ -24,3 +24,12 @@
 .response {
     display: flex;
 }
+
+
+.addButton {
+    padding: 20px;
+}
+
+.submitButton {
+    padding: 20px;
+}

@@ -15,6 +15,11 @@ import { HttpClient } from '@angular/common/http';
 export class StudentViewComponent {
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 
-  
+  addActive:boolean = true;
+
+  toggleActive(){
+    this.addActive = !this.addActive;
+  }
+
 }
 
