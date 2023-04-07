@@ -59,7 +59,7 @@ export class LoginComponent {
       this.serve_comm.SetLoggedIn("T");
 
       // Update Data
-      this.serve_comm.SetUserSerial(res.id);
+      this.serve_comm.SetSerial(res.id);
       // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
 
       // Navigate to teacher-view

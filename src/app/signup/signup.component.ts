@@ -35,11 +35,11 @@ export class SignupComponent {
 
   RegisterUser() {
     // Register Name
-    this.serve_back.RegisterName(this.serve_comm.GetUserSerial(), this.professor.firstName, this.professor.lastName);
+    this.serve_back.RegisterName(this.serve_comm.GetSerial(), this.professor.firstName, this.professor.lastName);
 
     // Register Courses
     for (let i = 0; i < this.numCourses; i++) {
-      this.serve_back.RegisterCourse(this.serve_comm.GetUserSerial(), this.courses.id[i], this.courses.name[i], this.courses.passcode[i], this.courses.description[i]);
+      this.serve_back.RegisterCourse(this.serve_comm.GetSerial(), this.courses.id[i], this.courses.name[i], this.courses.passcode[i], this.courses.description[i]);
     }
 
     // Show success message and navigate to login page.

@@ -14,7 +14,7 @@ export class DataComponentService {
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, user_serial: number, course: number } = { loggedIn: "F", user_serial: 0, course: 0 };
+  status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
 
   professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
 
@@ -32,12 +32,12 @@ export class DataComponentService {
   ];
 
 
-  SetUserSerial(user_serial: number) {
-    this.status.user_serial = user_serial;
+  SetSerial(serial: number) {
+    this.status.serial = serial;
   }
 
-  GetUserSerial() {
-    return this.status.user_serial;
+  GetSerial() {
+    return this.status.serial;
   }
 
   SetLoggedIn(type: string) {
