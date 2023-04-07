@@ -7,15 +7,15 @@
 
 <div class="pad-20">
   <div class="courses">
-      <mat-card class="course" *ngFor="let course of this.serve_comm.GetCourses()">
+      <mat-card class="course" *ngFor="let course of this.serve_comm.GetCourses(); let i = index">
         <mat-card-header>
           <mat-card-subtitle>{{course.id}}</mat-card-subtitle>
           <mat-card-title>{{course.name}}</mat-card-title>
         </mat-card-header>
         <mat-card-content class="description">{{course.description}}</mat-card-content>
         <mat-card-actions align="end">
-          <button mat-button>MODIFY</button>
-          <button mat-button>DELETE</button>
+          <button mat-button (click)="modifyCourse(i)">MODIFY</button>
+          <button mat-button (click)="deleteCourse(course.id, course.passcode)">DELETE</button>
         </mat-card-actions>
       </mat-card>
   </div>
