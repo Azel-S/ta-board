@@ -48,11 +48,12 @@ func (a *App) Initialize(username, password, dbname string) {
 				VALUES('1', '???', '???', '???', '???', '???')
 		`
 	*/
-	CreationQuery := `CREATE TABLE IF NOT EXISTS professorcourses
+	ProfCourseCreationQuery := `CREATE TABLE IF NOT EXISTS professorcourses
 (
+	id SERIAL,
 	user_serial INT,
 	course_serial INT,
-	CONSTRAINT pkey PRIMARY KEY (user_serial)
+	CONSTRAINT pkey PRIMARY KEY (id)
 )`
 
 	CreationQuestionQuery := `CREATE TABLE IF NOT EXISTS questions
@@ -68,10 +69,30 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(user.UsersAddAdminQuery)
 	a.DB.Exec(course.CoursesCreationQuery)
 	a.DB.Exec(course.CourseAddAdminQuery)
-	a.DB.Exec(CreationQuery)
+	a.DB.Exec(ProfCourseCreationQuery)
 	a.DB.Exec(CreationQuestionQuery)
 	a.DB.Exec(user.ProfessorCoursesAddQuery)
+	a.InitializeADMINQuestions()
 	a.DB.AutoMigrate(&user.User{})
+}
+
+func (a *App) InitializeADMINQuestions() {
+	courses := `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
+	VALUES
+	('CEN3031', 'Software Engineering', 'ADMINCEN', 'ADMIN', 'This course goes over the fundamentals of programming in the real world.'),
+	('COP4600', 'Operating Systems', 'ADMINCOP', 'ADMIN', 'This course teaches the student about core concepts within the modern operating system.'),
+	('FOS2001', 'Mans Food', 'ADMINFOS', 'ADMIN', 'Learn about why eating tasty stuff is bad.'),
+	('LEI2818', 'Leisure', 'ADMINLEI', 'ADMIN','Learn about how relaxing is great, however you don\'t get to do that because you are taking this course! Mwahaahaha.');
+	`
+	profcourses := `INSERT INTO professorcourses(user_serial, course_serial)
+	VALUES
+	('1','2'),
+	('1','3'),
+	('1','4'),
+	('1','5');
+	`
+	a.DB.Exec(courses)
+	a.DB.Exec(profcourses)
 }
 
 // Listens for incoming requests from Angular
@@ -432,13 +453,16 @@ func (a *App) GetCoursesAsTeacher(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+	fmt.Println(data)
 	defer r.Body.Close() // close http body at end of function call
 
+	// error here, can see by logging into teacher with ADMIN
 	courses, err := course.GetManyCourses(a.DB, data.User_serial)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	fmt.Println(courses)
 	respondWithJSON(w, http.StatusOK, courses)
 }
 

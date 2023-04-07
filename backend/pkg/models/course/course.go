@@ -18,7 +18,7 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 )`
 
 const CourseAddAdminQuery = `INSERT INTO courses(id, course_id, course_name, passcode, professor_name, course_info_raw)
-VALUES('1', 'ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN PROF', 'ADMIN COURSE INFO')
+VALUES('1', 'ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN', 'ADMIN COURSE INFO')
 `
 const CoursesQuestionsCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 (

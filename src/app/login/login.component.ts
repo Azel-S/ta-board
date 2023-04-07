@@ -60,6 +60,7 @@ export class LoginComponent {
 
       // Update Data
       this.serve_comm.SetSerial(res.id);
+      console.log(res.id)
       // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
 
       // Navigate to teacher-view
