@@ -76,12 +76,13 @@ func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
 
 	pcList := []endpoints.ProfessorCourse{}
 	for rows.Next() {
 		var c endpoints.ProfessorCourse
-		if err := rows.Scan(&c.User_serial, &c.Course_serial); err != nil {
+		if err := rows.Scan(&c.ID, &c.User_serial, &c.Course_serial); err != nil {
 			return nil, err
 		}
 
@@ -106,7 +107,6 @@ func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
 			courseList = append(courseList, c)
 		}
 	}
-
 	return courseList, nil
 }
 

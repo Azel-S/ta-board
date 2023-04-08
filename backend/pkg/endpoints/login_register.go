@@ -16,6 +16,7 @@ type TeacherLogin struct {
 }
 
 type ProfessorCourse struct {
+	ID            int `json:"id"`
 	User_serial   int `json:"user_serial"`
 	Course_serial int `json:"course_serial"`
 }
