@@ -31,7 +31,7 @@ export class DataComponentService {
     { index: 2, date: new Date("2021-04-06"), question: "Why is the sky blue?", answer: 'No response' },
   ];
 
-
+  // Functions 
   SetSerial(serial: number) {
     this.status.serial = serial;
   }
@@ -133,8 +133,6 @@ export class DataComponentService {
     return this.questions[index];
   }
 
-  //GetIndex
-
   GetAnswer(index: number = 0) {
     return this.questions[index].answer;
   }
@@ -149,7 +147,7 @@ export class DataComponentService {
     window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
   }
 
-  GetDate(date: Date, time: boolean = false) {
+  GetDate(date: Date = new Date(), time: boolean = false) {
     let result: string = "";
 
     result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
@@ -159,20 +157,24 @@ export class DataComponentService {
     result += date.getFullYear();
 
     if (time) {
-      result += " ";
-
-      if (date.getHours() % 12 == 0) {
-        result += "12";
-      } else {
-        result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
-      }
-      result += ":";
-      result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-      result += date.getHours() < 12 ? "am" : "pm";
-
-      return result;
-    } else {
-      return result;
+      result += " " + this.GetTime(date);
     }
+
+    return result;
+  }
+
+  GetTime(date: Date = new Date()) {
+    let result = "";
+
+    if (date.getHours() % 12 == 0) {
+      result += "12";
+    } else {
+      result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+    }
+    result += ":";
+    result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    result += date.getHours() < 12 ? "am" : "pm";
+
+    return result;
   }
 }

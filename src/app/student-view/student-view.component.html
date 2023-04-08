@@ -29,20 +29,28 @@
           </mat-expansion-panel-header>
           <h3>{{ question.answer }}</h3>
         </mat-expansion-panel>
-        <div class="addButton" *ngIf="addActive==true">
-          <button mat-raised-button type color="accent" (click)="toggleActive()">Ask Another Question</button>
-        </div>
-        <div *ngIf="addActive==false">
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title class="names">Enter Question</mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-form-field appearance="outline" [hideRequiredMarker]="true">
-              <mat-label>Question</mat-label>
-              <input matInput formControlName="firstName">
-            </mat-form-field>
-            <button class="submitButton" mat-raised-button color="accent">Submit</button>
-          </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="!addActive" [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="names">{{ serve_comm.GetDate() + " " + serve_comm.GetTime() }}</mat-panel-title>
+            <mat-panel-description>{{ description }}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field appearance="outline" class="response">
+            <mat-label>Response</mat-label>
+            <textarea matInput [(ngModel)]="description"></textarea>
+          </mat-form-field>
+          <div>
+            <button class="pad-20-left" mat-raised-button color="accent" (click)="submit()">Submit</button>
+            <div class="cancel-button">
+              <button mat-raised-button color="primary" (click)="toggleActive()">Cancel</button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+        <div class="pad-20-top">
+          <button mat-raised-button *ngIf="addActive" color="accent" (click)="toggleActive()">
+            Ask a Question
+          </button>
         </div>
       </mat-accordion>
     </mat-card-content>

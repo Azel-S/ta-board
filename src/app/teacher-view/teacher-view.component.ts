@@ -9,7 +9,6 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class TeacherViewComponent {
-
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
     this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetSerial()).then(res => {
       // this.serve_comm.ClearCourses();
@@ -20,5 +19,13 @@ export class TeacherViewComponent {
     }).catch(res => {
       console.log("YAHOO!");
     });
+  }
+
+  modifyCourse(index: number) {
+    // TODO
+  }
+
+  deleteCourse(index: string, passcode: string) {
+    // TODO
   }
 }

@@ -17,6 +17,15 @@
     padding: 20px;
 }
 
+.pad-20-top {
+    padding-top: 20px;
+}
+
+.cancel-button {
+    display: inline;
+    padding-left: 20px;
+}
+
 .names {
     max-width: 80px;
 }
