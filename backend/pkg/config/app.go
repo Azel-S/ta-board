@@ -58,10 +58,11 @@ func (a *App) Initialize(username, password, dbname string) {
 
 	CreationQuestionQuery := `CREATE TABLE IF NOT EXISTS questions
 (
+	id SERIAL,
 	course_serial INT,
 	question varchar(255),
 	answer varchar(255),
-	CONSTRAINT pkey PRIMARY KEY (course_serial)
+	CONSTRAINT pkey PRIMARY KEY (id)
 )`
 
 	a.DB.Exec(MASTERDropTables)
@@ -72,11 +73,11 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(ProfCourseCreationQuery)
 	a.DB.Exec(CreationQuestionQuery)
 	a.DB.Exec(user.ProfessorCoursesAddQuery)
-	a.InitializeADMINQuestions()
+	a.InitializeADMINCourses()
 	a.DB.AutoMigrate(&user.User{})
 }
 
-func (a *App) InitializeADMINQuestions() {
+func (a *App) InitializeADMINCourses() {
 	courses := `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
 	VALUES
 	('CEN3031', 'Software Engineering', 'ADMINCEN', 'ADMIN', 'This course goes over the fundamentals of programming in the real world.'),
@@ -93,6 +94,17 @@ func (a *App) InitializeADMINQuestions() {
 	`
 	a.DB.Exec(courses)
 	a.DB.Exec(profcourses)
+}
+
+func (a *App) InitializeADMINQuestions() {
+	questions := `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
+	VALUES
+	('CEN3031', 'Software Engineering', 'ADMINCEN', 'ADMIN', 'This course goes over the fundamentals of programming in the real world.'),
+	('COP4600', 'Operating Systems', 'ADMINCOP', 'ADMIN', 'This course teaches the student about core concepts within the modern operating system.'),
+	('FOS2001', 'Mans Food', 'ADMINFOS', 'ADMIN', 'Learn about why eating tasty stuff is bad.'),
+	('LEI2818', 'Leisure', 'ADMINLEI', 'ADMIN','Learn about how relaxing is great, however you don\'t get to do that because you are taking this course! Mwahaahaha.');
+	`
+	a.DB.Exec(questions)
 }
 
 // Listens for incoming requests from Angular
