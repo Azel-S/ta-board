@@ -43,6 +43,19 @@ export class LoginComponent {
   student(credentials: { courseID: string }) {
     this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {
       this.serve_comm.SetLoggedIn("S");
+      this.serve_comm.SetSerial(res.ID);
+      this.serve_comm.ClearCourses();
+
+      this.serve_back.GetCourseInfoAsStudent(this.serve_comm.GetSerial()).then(res => {
+        this.serve_comm.AddCourse({
+          course_id: res.course_id,
+          course_info_raw: res.course_info_raw,
+          course_name: res.course_name,
+          id: res.id,
+          professor_name: res.professor_name
+        });
+      });
+
       this.serve_comm.Navigate('student-view');
 
       // TODO: Update data in component class

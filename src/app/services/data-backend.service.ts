@@ -55,8 +55,8 @@ export class DataBackendService {
   }
 
   // Returns (courseName: string)
-  async GetCourseNameAsStudent() {
-    const result = await lastValueFrom(this.http.get<any>(this.url + '/CourseNameAsStudent'));
+  async GetCourseInfoAsStudent(course_serial: number) {
+    const result = await lastValueFrom(this.http.get<any>(this.url + '/CourseInfoAsStudent'));
     return result;
   }
 

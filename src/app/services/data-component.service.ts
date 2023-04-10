@@ -14,7 +14,7 @@ export class DataComponentService {
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
+  status: { loggedIn: string, serial: number } = { loggedIn: "F", serial: 0 };
 
   professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
 
@@ -88,31 +88,16 @@ export class DataComponentService {
     return this.courses;
   }
 
-  GetCourse(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course];
-    }
-    else {
-      return this.courses[index];
-    }
+  GetCourse(index: number = 0) {
+    return this.courses[index];
   }
 
-  GetCourseID(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course].id;
-    }
-    else {
-      return this.courses[index].id;
-    }
+  GetCourseID(index: number = 0) {
+    return this.courses[index].id;
   }
 
-  GetCourseName(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course].name;
-    }
-    else {
-      return this.courses[index].name;
-    }
+  GetCourseName(index: number = 0) {
+    return this.courses[index].name;
   }
 
   AddCourse(course: {
