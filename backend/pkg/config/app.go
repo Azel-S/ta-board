@@ -326,6 +326,13 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 */
 
+func (a *App) GetProfName(user_id int) string {
+	u := user.User{
+		ID: user_id,
+	}
+	return u.GetProfName(a.DB)
+}
+
 func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("REGISTER")
 	setCORSHeader(&w, r)
@@ -501,6 +508,37 @@ func (a *App) GetQuestionsAsTeacher(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, questions)
 }
 
+func (a *App) AddCourseAsTeacher(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("AddCourseAsTeacher")
+	// Recieving: user_serial: user_serial, id: id, name: name, passcode: passcode, description: description
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	var data course.Course
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&data); err != nil {
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	defer r.Body.Close()
+	c := course.Course{
+		CourseID:       data.CourseID,
+		CourseName:     data.CourseName,
+		Passcode:       data.Passcode,
+		ProfessorName:  a.GetProfName(data.ID),
+		CourseInfo_raw: data.CourseInfo_raw,
+	}
+	if err := c.CreateCourse(a.DB); err != nil { // Attempts to add user into database
+		fmt.Println("Error adding course")
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, c)
+}
+
 /*
 
 	HELPER + TESTING FUNCTIONS
@@ -575,4 +613,5 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/CourseNameAsStudent", a.GetCourseInfoAsStudent).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/CoursesAsTeacher", a.GetCoursesAsTeacher).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/QuestionsAsTeacher", a.GetQuestionsAsTeacher).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/RegisterCourse", a.AddCourseAsTeacher).Methods("POST", "OPTIONS")
 }

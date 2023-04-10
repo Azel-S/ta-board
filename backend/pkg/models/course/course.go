@@ -33,6 +33,7 @@ type Course struct {
 	ID             int    `json:"id"`
 	CourseID       string `json:"course_id"`
 	CourseName     string `json:"course_name"`
+	Passcode       string `json:"passcode"`
 	ProfessorName  string `json:"professor_name"`
 	CourseInfo_raw string `json:"course_info_raw"`
 }

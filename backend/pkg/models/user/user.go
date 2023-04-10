@@ -46,6 +46,15 @@ func (u *User) GetUser(db *gorm.DB) error {
 	return ret.Error
 }
 
+func (u *User) GetProfName(db *gorm.DB) string {
+	type Result struct {
+		name string
+	}
+	var ret Result
+	db.Table("users").Select("professor_name").Where(User{ID: u.ID}).Scan(&ret)
+	return ret.name
+}
+
 func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
 	type Result struct {
 		ID int
