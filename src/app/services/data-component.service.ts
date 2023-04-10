@@ -16,7 +16,7 @@ export class DataComponentService {
   // T - Teacher
   status: { loggedIn: string, serial: number } = { loggedIn: "F", serial: 0 };
 
-  professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
+  professor: string = "John Doe";
 
   courses: { id: string, name: string, passcode: string, description: string }[] = [
     // { id: "CEN3031", name: "Software Engineering", passcode: "", description: "This course goes over the fundamentals of programming in the real world." },
@@ -69,15 +69,11 @@ export class DataComponentService {
   }
 
   GetProfName() {
-    return this.professor.firstName + " " + this.professor.lastName;
+    return this.professor;
   }
 
-  GetProfFirstName() {
-    return this.professor.firstName;
-  }
-
-  GetProfLastName() {
-    return this.professor.lastName;
+  SetProfName(professor: string) {
+    this.professor = professor;
   }
 
   GetNumCourses() {

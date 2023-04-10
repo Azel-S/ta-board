@@ -48,6 +48,7 @@ export class LoginComponent {
 
       this.serve_back.GetCourseInfoAsStudent(this.serve_comm.GetSerial()).then(res => {
         this.serve_comm.AddCourse(res);
+        this.serve_comm.SetProfName(res.professor_name);
         this.serve_comm.Navigate('student-view');
       });
 
