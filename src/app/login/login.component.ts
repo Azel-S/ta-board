@@ -48,9 +48,8 @@ export class LoginComponent {
 
       this.serve_back.GetCourseInfoAsStudent(this.serve_comm.GetSerial()).then(res => {
         this.serve_comm.AddCourse(res);
+        this.serve_comm.Navigate('student-view');
       });
-
-      this.serve_comm.Navigate('student-view');
 
       // TODO: Update data in component class
       // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));

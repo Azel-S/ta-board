@@ -19,10 +19,10 @@ export class DataComponentService {
   professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
 
   courses: { id: string, name: string, passcode: string, description: string }[] = [
-    { id: "CEN3031", name: "Software Engineering", passcode: "", description: "This course goes over the fundamentals of programming in the real world." },
-    { id: "COP4600", name: "Operating Systems", passcode: "", description: "This course teaches the student about core concepts within the modern operating system." },
-    { id: "FOS2001", name: "Mans Food", passcode: "", description: "Learn about why eating tasty stuff is bad." },
-    { id: "LEI2818", name: "Leisure", passcode: "", description: "Learn about how relaxing is great, however you don't get to do that because you are taking this course! Mwahaahaha." },
+    // { id: "CEN3031", name: "Software Engineering", passcode: "", description: "This course goes over the fundamentals of programming in the real world." },
+    // { id: "COP4600", name: "Operating Systems", passcode: "", description: "This course teaches the student about core concepts within the modern operating system." },
+    // { id: "FOS2001", name: "Mans Food", passcode: "", description: "Learn about why eating tasty stuff is bad." },
+    // { id: "LEI2818", name: "Leisure", passcode: "", description: "Learn about how relaxing is great, however you don't get to do that because you are taking this course! Mwahaahaha." },
     // NOTE:
     //  Displaying User courses now works ONLY AFTER LOGGING IN. If you refresh the page, the info isn't saved. Will have to get with
     //  front-end to fix this
@@ -89,15 +89,30 @@ export class DataComponentService {
   }
 
   GetCourse(index: number = 0) {
-    return this.courses[index];
+    if (this.courses.length > 0) {
+      return this.courses[index];
+    }
+    else {
+      return null;
+    }
   }
 
   GetCourseID(index: number = 0) {
-    return this.courses[index].id;
+    if (this.courses.length > 0) {
+      return this.courses[index].id;
+    }
+    else {
+      return "error";
+    }
   }
 
   GetCourseName(index: number = 0) {
-    return this.courses[index].name;
+    if (this.courses.length > 0) {
+      return this.courses[index].name;
+    }
+    else {
+      return "error";
+    }
   }
 
   AddCourse(course: {
