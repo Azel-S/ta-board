@@ -9,17 +9,7 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class TeacherViewComponent {
-  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
-    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetSerial()).then(res => {
-      // this.serve_comm.ClearCourses();
-      // here, addcourse() and GetCoursesAsTeacher. Go through the courses, grab, print and double-check, then return and add courses by user_id
-      for (let i = 0; i < res.length; i++) {
-        this.serve_comm.AddCourse(res[i]);
-      }
-    }).catch(res => {
-      console.log("YAHOO!");
-    });
-  }
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 
   modifyCourse(index: number) {
     // TODO
