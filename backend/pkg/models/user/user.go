@@ -10,16 +10,15 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 (
 	id SERIAL,
 	username TEXT NOT NULL,
-	professor_first TEXT NOT NULL,
-	professor_last TEXT NOT NULL,
+	professor_name TEXT NOT NULL,
 	class_id TEXT NOT NULL,
 	class_name TEXT NOT NULL,
 	password TEXT NOT NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`
 
-const UsersAddAdminQuery = `INSERT INTO users(professor_name, class_id, class_name, password)
-VALUES('ADMIN', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
+const UsersAddAdminQuery = `INSERT INTO users(username, professor_name, class_id, class_name, password)
+VALUES('ADMIN', 'ADMINNAME', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
 `
 const ProfessorCoursesAddQuery = `INSERT INTO professorcourses(user_serial, course_serial)
 VALUES('1', '1')
@@ -47,7 +46,7 @@ type User struct {
 // RETURNS THE FIRST INSTANCE OF A MACHING USER IN DATABASE
 func (u *User) GetUser(db *gorm.DB) error {
 	//ret := db.Exec("SELECT professor_name, password FROM users WHERE professor_name=? AND password=?", u.ProfessorName, u.Password) //.Row().Scan(&u.ProfessorName, &u.ClassID, &u.ClassName)
-	ret := db.Where(User{ProfessorName: u.ProfessorName, Password: u.Password}).First(&u)
+	ret := db.Where(User{Username: u.Username, Password: u.Password}).First(&u)
 	//ret := db.First(&u)
 	return ret.Error
 }
@@ -67,7 +66,7 @@ func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
 		ID int
 	}
 	var ret Result
-	db.Table("users").Select("id").Where(User{ProfessorName: name, Password: pass}).Scan(&ret)
+	db.Table("users").Select("id").Where(User{Username: name, Password: pass}).Scan(&ret)
 	//db.Raw("SELECT id FROM users WHERE professor_name = ? AND password = ?", name, pass).Scan(&ret)
 	//fmt.Println("Serial:", ret.ID)
 	return ret.ID
@@ -76,7 +75,12 @@ func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
 // UPDATES THE FIRST INSTANCE OF A MATCHING USER IN DATABASE WITH NEW VALUES
 func (u *User) UpdateUser(db *gorm.DB) error {
 	//ret := db.Raw("UPDATE users SET professor_name=?, class_id=?, class_name=? WHERE id=?", u.ProfessorName, u.ClassID, u.ClassName, u.ID)
-	ret := db.Model(&u).Omit("id").Updates(User{ProfessorName: u.ProfessorName, ClassID: u.ClassID, ClassName: u.ClassName})
+	ret := db.Model(&u).Omit("id").Updates(User{Username: u.Username, ClassID: u.ClassID, ClassName: u.ClassName})
+	return ret.Error
+}
+
+func (u *User) UpdateName(db *gorm.DB) error {
+	ret := db.Model(&u).Updates(User{ProfessorName: u.ProfessorName})
 	return ret.Error
 }
 
@@ -96,7 +100,7 @@ func (u *User) CreateUser(db *gorm.DB) error {
 
 // CONSTRUCTS AND RETURNS AN ARRAY OF USERS STARTING FROM 'START' INDEX AND 'COUNT' INDICES FORWARD
 func GetManyUsers(db *gorm.DB, start, count int) ([]User, error) {
-	rows, err := db.Raw("SELECT id, professor_name, class_id, class_name FROM users LIMIT ? OFFSET ?", count, start).Rows()
+	rows, err := db.Raw("SELECT id, username, class_id, class_name FROM users LIMIT ? OFFSET ?", count, start).Rows()
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +108,7 @@ func GetManyUsers(db *gorm.DB, start, count int) ([]User, error) {
 	users := []User{}
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.ID, &u.ProfessorName, &u.ClassID, &u.ClassName); err != nil {
+		if err := rows.Scan(&u.ID, &u.Username, &u.ClassID, &u.ClassName); err != nil {
 			return nil, err
 		}
 		users = append(users, u)

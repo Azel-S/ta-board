@@ -355,10 +355,10 @@ func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(data.Username)
 	fmt.Println(data.Password)
 	u := user.User{
-		ProfessorName: data.Username,
-		Password:      data.Password,
-		ClassID:       "TEST_ID",
-		ClassName:     "TEST_CLASS_NAME",
+		Username:  data.Username,
+		Password:  data.Password,
+		ClassID:   "TEST_ID",
+		ClassName: "TEST_CLASS_NAME",
 	}
 	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
 		fmt.Println("Error adding user")
@@ -390,8 +390,8 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() // close http body at end of function call
 	fmt.Println("data:", data)
 	u := user.User{
-		ProfessorName: data.Username,
-		Password:      data.Password,
+		Username: data.Username,
+		Password: data.Password,
 	}
 	s := 0
 	fmt.Println("user:", u)
@@ -401,7 +401,7 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 		return
 	}
-	s = u.GetUserSerial(a.DB, u.ProfessorName, u.Password)
+	s = u.GetUserSerial(a.DB, u.Username, u.Password)
 	u.ID = s
 	respondWithJSON(w, http.StatusOK, u)
 }
@@ -570,8 +570,18 @@ func (a *App) RegisterName(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	// set professorname, then grab
-
+	fmt.Println("Name data: ", data)
+	professorName := data.FirstName + " " + data.LastName
+	u := user.User{
+		ID:            data.User_serial,
+		ProfessorName: professorName,
+	}
+	if err := u.UpdateName(a.DB); err != nil {
+		fmt.Println("Error updating name")
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, u)
 }
 
 /*

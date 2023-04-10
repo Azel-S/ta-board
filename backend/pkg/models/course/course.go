@@ -54,6 +54,15 @@ func (c *Course) GetCourse(db *gorm.DB) error {
 	return ret.Error
 }
 
+func (c *Course) GetCourseID(db *gorm.DB, course_id string, passcode string) int {
+	type Result struct {
+		course_serial int
+	}
+	var ret Result
+	db.Table("courses").Select("id").Where(Course{CourseID: course_id, Passcode: passcode}).Scan(&ret)
+	return ret.course_serial
+}
+
 // UPDATES THE FIRST INSTANCE OF MACHING COURSE IN DATABASE WITH NEW VALUES
 func (c *Course) UpdateCourse(db *gorm.DB) error {
 	ret := db.Model(&c).Omit("id").Updates(Course{CourseID: c.CourseID, CourseName: c.CourseName, CourseInfo_raw: c.CourseInfo_raw})
@@ -69,6 +78,7 @@ func (c *Course) DeleteCourse(db *gorm.DB) error {
 // CREATES COURSE IN DATABASE
 func (c *Course) CreateCourse(db *gorm.DB) error {
 	ret := db.Create(&c)
+
 	return ret.Error
 }
 

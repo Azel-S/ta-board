@@ -29,7 +29,7 @@ type CourseQuestions struct {
 
 type User struct {
 	ID       int
-	Username string `mux:"column:professor_name"`
+	Username string `mux:"column:username"`
 	Password string `mux:"column:password"`
 }
 
