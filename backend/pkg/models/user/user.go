@@ -1,13 +1,17 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
 const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 (
 	id SERIAL,
-	professor_name TEXT NOT NULL,
+	username TEXT NOT NULL,
+	professor_first TEXT NOT NULL,
+	professor_last TEXT NOT NULL,
 	class_id TEXT NOT NULL,
 	class_name TEXT NOT NULL,
 	password TEXT NOT NULL,
@@ -22,8 +26,10 @@ VALUES('1', '1')
 `
 
 // Note: make setVar() funcs for these later
+// USER HAS TO BE USERNAME, FIRSTNAME, LASTNAME, PASSWORD - talk to frontend???
 type User struct {
 	ID            int    `json:"id"`
+	Username      string `json:"username"`
 	ProfessorName string `json:"professor_name"`
 	ClassID       string `json:"class_id"`
 	ClassName     string `json:"class_name"`
@@ -52,6 +58,7 @@ func (u *User) GetProfName(db *gorm.DB) string {
 	}
 	var ret Result
 	db.Table("users").Select("professor_name").Where(User{ID: u.ID}).Scan(&ret)
+	fmt.Println(ret.name)
 	return ret.name
 }
 

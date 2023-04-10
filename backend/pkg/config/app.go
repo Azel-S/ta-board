@@ -330,6 +330,7 @@ func (a *App) GetProfName(user_id int) string {
 	u := user.User{
 		ID: user_id,
 	}
+	fmt.Println("User ID: ", u.ID)
 	return u.GetProfName(a.DB)
 }
 
@@ -516,27 +517,61 @@ func (a *App) AddCourseAsTeacher(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-	var data course.Course
+	type DATA struct {
+		User_serial int    `json:"user_serial"`
+		ID          string `json:"id"`
+		Name        string `json:"name"`
+		Passcode    string `json:"passcode"`
+		Description string `json:"description"`
+	}
+	var data DATA
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&data); err != nil {
 		fmt.Println("Invalid payload")
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+	fmt.Println(data)
 	defer r.Body.Close()
+	fmt.Println("User serial: ", data.User_serial)
 	c := course.Course{
-		CourseID:       data.CourseID,
-		CourseName:     data.CourseName,
+		CourseID:       data.ID,
+		CourseName:     data.Name,
 		Passcode:       data.Passcode,
-		ProfessorName:  a.GetProfName(data.ID),
-		CourseInfo_raw: data.CourseInfo_raw,
+		ProfessorName:  a.GetProfName(data.User_serial), // user_serial is 0 here because of when registration is sent... talk to frontend?
+		CourseInfo_raw: data.Description,
 	}
+	fmt.Println(c)
 	if err := c.CreateCourse(a.DB); err != nil { // Attempts to add user into database
 		fmt.Println("Error adding course")
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	respondWithJSON(w, http.StatusCreated, c)
+}
+
+func (a *App) RegisterName(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("RegisterName")
+	// Recieving: user_serial: user_serial, firstName: firstName, lastName: lastName
+	setCORSHeader(&w, r)
+	if (*r).Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	type DATA struct {
+		User_serial int    `json:"user_serial"`
+		FirstName   string `json:"firstName"`
+		LastName    string `json:"lastName"`
+	}
+	var data DATA
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&data); err != nil {
+		fmt.Println("Invalid payload")
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	// set professorname, then grab
+
 }
 
 /*
@@ -614,4 +649,5 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/CoursesAsTeacher", a.GetCoursesAsTeacher).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/QuestionsAsTeacher", a.GetQuestionsAsTeacher).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/RegisterCourse", a.AddCourseAsTeacher).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/RegisterName", a.RegisterName).Methods("POST", "OPTIONS")
 }
