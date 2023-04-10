@@ -47,13 +47,7 @@ export class LoginComponent {
       this.serve_comm.ClearCourses();
 
       this.serve_back.GetCourseInfoAsStudent(this.serve_comm.GetSerial()).then(res => {
-        this.serve_comm.AddCourse({
-          course_id: res.course_id,
-          course_info_raw: res.course_info_raw,
-          course_name: res.course_name,
-          id: res.id,
-          professor_name: res.professor_name
-        });
+        this.serve_comm.AddCourse(res);
       });
 
       this.serve_comm.Navigate('student-view');
