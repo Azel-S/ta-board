@@ -50,7 +50,7 @@ func (Course) TableName() string {
 
 // RETURNS THE FIRST INSTANCE OF MATCHING COURSE IN DATABASE
 func (c *Course) GetCourse(db *gorm.DB) error {
-	ret := db.Where(Course{CourseID: c.CourseID}).First(&c) // Find course where classID matches
+	ret := db.Where(Course{CourseID: c.CourseID, Passcode: c.Passcode}).First(&c) // Find course where classID matches
 	return ret.Error
 }
 

@@ -8,6 +8,7 @@ type Register struct {
 
 type StudentLogin struct {
 	CourseID string `json:"courseID"`
+	Passcode string `json:"passcode"`
 }
 
 type TeacherLogin struct {

@@ -112,7 +112,7 @@ func TestCreateUser(t *testing.T) {
 func TestGetUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
-	u := models.User{ProfessorName: "test user", ClassID: "ABC123", ClassName: "Alphabet101"}
+	u := models.User{ProfessorName: "test user", Password: "test pass"}
 	u.CreateUser(a.DB)
 	req, _ := http.NewRequest("GET", "/users/2", nil) // no idea why /users/1 doesn't work, 'u' actually has an id of 2 right here
 	response := executeRequest(req)
@@ -123,7 +123,7 @@ func TestGetUser(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
-	u := models.User{ProfessorName: "test user", ClassID: "ABC123", ClassName: "Alphabet101"}
+	u := models.User{ProfessorName: "test user", Password: "test pass"}
 	u.CreateUser(a.DB)
 	req, _ := http.NewRequest("GET", "/users/1", nil)
 	response := executeRequest(req)
@@ -155,7 +155,7 @@ func TestUpdateUser(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
-	u := models.User{ProfessorName: "test user", ClassID: "ABC123", ClassName: "Alphabet101"}
+	u := models.User{ProfessorName: "test user", Password: "test pass"}
 	u.CreateUser(a.DB)
 	req, _ := http.NewRequest("GET", "/users/4", nil)
 	response := executeRequest(req)

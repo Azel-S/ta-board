@@ -11,14 +11,12 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 	id SERIAL,
 	username TEXT NOT NULL,
 	professor_name TEXT NOT NULL,
-	class_id TEXT NOT NULL,
-	class_name TEXT NOT NULL,
 	password TEXT NOT NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`
 
-const UsersAddAdminQuery = `INSERT INTO users(username, professor_name, class_id, class_name, password)
-VALUES('ADMIN', 'ADMINNAME', 'ADMINCLASSID', 'ADMINCLASS', 'ADMIN')
+const UsersAddAdminQuery = `INSERT INTO users(username, professor_name, password)
+VALUES('ADMIN', 'ADMINNAME', 'ADMIN')
 `
 const ProfessorCoursesAddQuery = `INSERT INTO professorcourses(user_serial, course_serial)
 VALUES('1', '1')
@@ -30,8 +28,6 @@ type User struct {
 	ID            int    `json:"id"`
 	Username      string `json:"username"`
 	ProfessorName string `json:"professor_name"`
-	ClassID       string `json:"class_id"`
-	ClassName     string `json:"class_name"`
 	Password      string `json:"password"`
 }
 
@@ -75,7 +71,7 @@ func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
 // UPDATES THE FIRST INSTANCE OF A MATCHING USER IN DATABASE WITH NEW VALUES
 func (u *User) UpdateUser(db *gorm.DB) error {
 	//ret := db.Raw("UPDATE users SET professor_name=?, class_id=?, class_name=? WHERE id=?", u.ProfessorName, u.ClassID, u.ClassName, u.ID)
-	ret := db.Model(&u).Omit("id").Updates(User{Username: u.Username, ClassID: u.ClassID, ClassName: u.ClassName})
+	ret := db.Model(&u).Omit("id").Updates(User{Username: u.Username, Password: u.Password})
 	return ret.Error
 }
 
@@ -108,7 +104,7 @@ func GetManyUsers(db *gorm.DB, start, count int) ([]User, error) {
 	users := []User{}
 	for rows.Next() {
 		var u User
-		if err := rows.Scan(&u.ID, &u.Username, &u.ClassID, &u.ClassName); err != nil {
+		if err := rows.Scan(&u.ID, &u.Username, &u.Password); err != nil {
 			return nil, err
 		}
 		users = append(users, u)

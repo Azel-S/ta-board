@@ -355,10 +355,8 @@ func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(data.Username)
 	fmt.Println(data.Password)
 	u := user.User{
-		Username:  data.Username,
-		Password:  data.Password,
-		ClassID:   "TEST_ID",
-		ClassName: "TEST_CLASS_NAME",
+		Username: data.Username,
+		Password: data.Password,
 	}
 	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
 		fmt.Println("Error adding user")
@@ -426,6 +424,7 @@ func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("data:", data)
 	c := course.Course{
 		CourseID: data.CourseID,
+		Passcode: data.Passcode,
 	}
 	fmt.Println("course:", c)
 	if err := c.GetCourse(a.DB); err != nil {
