@@ -2,6 +2,7 @@ package models
 
 import (
 	"TA-Bot/backend/pkg/endpoints"
+	"fmt"
 
 	"github.com/jinzhu/gorm"
 )
@@ -110,26 +111,28 @@ func GetManyCourses(db *gorm.DB, user_serial int) ([]Course, error) {
 	return courseList, nil
 }
 
-func GetManyQuestions(db *gorm.DB, user_serial int) ([]CourseQuestions, error) {
-	rows, err := db.Raw("SELECT * FROM professorcourses WHERE user_serial=?", user_serial).Rows()
+func GetManyQuestions(db *gorm.DB, course_serial int) ([]CourseQuestions, error) {
+	fmt.Println("Test")
+	rows, err := db.Raw("SELECT * FROM questions WHERE course_serial=?", course_serial).Rows()
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-
-	pcList := []endpoints.ProfessorCourse{}
+	fmt.Println("Test2")
+	qList := []endpoints.CourseQuestions{}
 	for rows.Next() {
-		var c endpoints.ProfessorCourse
-		if err := rows.Scan(&c.User_serial, &c.Course_serial); err != nil {
+		var c endpoints.CourseQuestions
+		if err := rows.Scan(&c.Course_serial, c.Question, c.Answer); err != nil {
 			return nil, err
 		}
 
-		pcList = append(pcList, c)
+		qList = append(qList, c)
 	}
+	fmt.Println("Test3")
 
 	questionsList := []CourseQuestions{}
-	for i := 0; i < len(pcList); i++ {
-		c_rows, err := db.Raw("SELECT * FROM questions WHERE id=?", pcList[i].Course_serial).Rows()
+	for i := 0; i < len(qList); i++ {
+		c_rows, err := db.Raw("SELECT * FROM questions WHERE id=?", qList[i].Course_serial).Rows()
 		if err != nil {
 			return nil, err
 		}
@@ -144,6 +147,7 @@ func GetManyQuestions(db *gorm.DB, user_serial int) ([]CourseQuestions, error) {
 			questionsList = append(questionsList, c)
 		}
 	}
+	fmt.Println("Test4")
 
 	return questionsList, nil
 }

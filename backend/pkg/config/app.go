@@ -21,7 +21,7 @@ type App struct {
 	Router *mux.Router
 }
 
-const MASTERDropTables = `DROP TABLE IF EXISTS users, courses, professorcourses`
+const MASTERDropTables = `DROP TABLE IF EXISTS users, courses, professorcourses, questions`
 
 // Opens a connection with the database
 func (a *App) Connect(cPath string) {
@@ -74,6 +74,7 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(CreationQuestionQuery)
 	a.DB.Exec(user.ProfessorCoursesAddQuery)
 	a.InitializeADMINCourses()
+	a.InitializeADMINQuestions()
 	a.DB.AutoMigrate(&user.User{})
 }
 
@@ -97,13 +98,11 @@ func (a *App) InitializeADMINCourses() {
 }
 
 func (a *App) InitializeADMINQuestions() {
-	questions := `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
+	questions := `INSERT INTO questions(course_serial, question, answer)
 	VALUES
-	('CEN3031', 'Software Engineering', 'ADMINCEN', 'ADMIN', 'This course goes over the fundamentals of programming in the real world.'),
-	('COP4600', 'Operating Systems', 'ADMINCOP', 'ADMIN', 'This course teaches the student about core concepts within the modern operating system.'),
-	('FOS2001', 'Mans Food', 'ADMINFOS', 'ADMIN', 'Learn about why eating tasty stuff is bad.'),
-	('LEI2818', 'Leisure', 'ADMINLEI', 'ADMIN','Learn about how relaxing is great, however you don\'t get to do that because you are taking this course! Mwahaahaha.');
-	`
+	('1', 'How the heck is this easy?','No response'),
+	('1', 'How much is an apple worth?','No response'),
+	('1', 'Why is the sky blue?','No response');`
 	a.DB.Exec(questions)
 }
 
@@ -575,5 +574,5 @@ func (a *App) initializeRoutes() {
 	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/CourseNameAsStudent", a.GetCourseInfoAsStudent).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/CoursesAsTeacher", a.GetCoursesAsTeacher).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/GetQuestionsAsTeacher", a.GetQuestionsAsTeacher).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/QuestionsAsTeacher", a.GetQuestionsAsTeacher).Methods("POST", "OPTIONS")
 }
