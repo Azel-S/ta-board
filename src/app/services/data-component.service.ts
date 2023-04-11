@@ -181,4 +181,24 @@ export class DataComponentService {
 
     return result;
   }
+
+  //==Local Storage==//
+  private saveData(key: string, data: any){
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  private getData(key: string) {
+    console.log('recObj: ', JSON.parse(localStorage.getItem(key)!));
+    
+    return JSON.parse(localStorage.getItem(key)!);
+  }
+
+  private removeData(key: string) {
+  localStorage.removeItem(key);
+}
+
+private clearData() {
+  localStorage.clear();
+}
+
 }
