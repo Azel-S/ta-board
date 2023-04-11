@@ -8,13 +8,17 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 })
 
 export class DataComponentService {
-  constructor(private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
+  constructor(private router: Router, private http: HttpClient, private snackBar: MatSnackBar) {
+    this.saveData("status.loggedIn", 'F');
+    this.saveData("status.serial", '0');
+    this.saveData("status.course", '0');
+   }
 
   // Use capital characters to assign value.
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
+  //status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
 
   professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
 
@@ -35,22 +39,15 @@ export class DataComponentService {
     { index: 2, date: new Date("2021-04-06"), question: "Why is the sky blue?", answer: 'No response' },
   ];
 
-  // Functions 
-  SetSerial(serial: number) {
-    this.status.serial = serial;
-  }
+  //==Serial Functions==// 
+  SetSerial(serial: number) { this.saveData("status.serial", serial); }
+  GetSerial() { return this.getData("status.serial"); }
 
-  GetSerial() {
-    return this.status.serial;
-  }
-
-  SetLoggedIn(type: string) {
-    this.status.loggedIn = type;
-  }
-
-  GetLoggedIn() {
-    return this.status.loggedIn;
-  }
+  //==Logged-In Functions==//
+  SetLoggedIn(loggedIn: string) { this.saveData("status.loggedIn", loggedIn); }
+  GetLoggedIn() { 
+    console.log("logged in set", this.getData("status.loggedIn"));
+    return this.getData("status.loggedIn"); }
 
   Navigate(component: string, force: boolean = false) {
     if (force) {
@@ -88,31 +85,28 @@ export class DataComponentService {
     return this.courses;
   }
 
-  GetCourse(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course];
-    }
-    else {
+  GetCourse(index: number = 0) {
+    if (this.courses.length > 0) {
       return this.courses[index];
     }
+    else
+      return null;
   }
 
-  GetCourseID(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course].id;
-    }
-    else {
+  GetCourseID(index: number = 0) {
+    if (this.courses.length > 0) {
       return this.courses[index].id;
     }
+    else
+      return null;
   }
 
-  GetCourseName(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course].name;
-    }
-    else {
+  GetCourseName(index: number = 0) {
+    if (this.courses.length > 0) {
       return this.courses[index].name;
     }
+    else
+      return null;
   }
 
   AddCourse(course: {
