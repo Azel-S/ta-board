@@ -18,8 +18,11 @@ const CoursesCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 )`
 
-const CourseAddAdminQuery = `INSERT INTO courses(id, course_id, course_name, passcode, professor_name, course_info_raw)
-VALUES('1', 'ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN', 'ADMIN COURSE INFO')
+const CourseAddAdminQuery = `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
+VALUES('ADMIN', 'ADMIN101', 'ADMIN', 'ADMIN', 'ADMIN COURSE INFO')
+`
+const CourseAddTESTQuery = `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
+VALUES('jon123', 'johnnys class', 'ADMIN', 'Johnny', 'Johnny\'s class for bad students')
 `
 const CoursesQuestionsCreationQuery = `CREATE TABLE IF NOT EXISTS courses
 (

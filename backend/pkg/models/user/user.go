@@ -18,6 +18,9 @@ const UsersCreationQuery = `CREATE TABLE IF NOT EXISTS users
 const UsersAddAdminQuery = `INSERT INTO users(username, professor_name, password)
 VALUES('ADMIN', 'ADMINNAME', 'ADMIN')
 `
+const UsersAddTESTQuery = `INSERT INTO users(username, professor_name, password)
+VALUES('Johnny123', 'John', 'ADMIN')
+`
 const ProfessorCoursesAddQuery = `INSERT INTO professorcourses(user_serial, course_serial)
 VALUES('1', '1')
 `

@@ -75,6 +75,9 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.DB.Exec(user.ProfessorCoursesAddQuery)
 	a.InitializeADMINCourses()
 	a.InitializeADMINQuestions()
+	a.DB.Exec(user.UsersAddTESTQuery)
+	a.DB.Exec(course.CourseAddTESTQuery)
+	a.DB.Exec(`INSERT INTO professorcourses(user_serial, course_serial) VALUES ('2','6')`)
 	a.DB.AutoMigrate(&user.User{})
 }
 
