@@ -64,13 +64,16 @@ export class LoginComponent {
 
       // Update Data
       this.serve_comm.SetSerial(res.id);
-
+      console.log(res);
+      this.serve_comm.SetProfName(res.professor_name);
       this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetSerial()).then(res => {
         this.serve_comm.ClearCourses();
         for (let i = 0; i < res.length; i++) {
           this.serve_comm.AddCourse(res[i]);
         }
-
+        
+        
+        
         // Navigate to teacher-view
         this.serve_comm.Navigate('teacher-view');
       }).catch(res => {

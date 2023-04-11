@@ -52,20 +52,20 @@ func (u *User) GetUser(db *gorm.DB) error {
 
 func (u *User) GetProfName(db *gorm.DB) string {
 	type Result struct {
-		name string
+		professor_name string
 	}
 	var ret Result
-	db.Table("users").Select("professor_name").Where(User{ID: u.ID}).Scan(&ret)
-	fmt.Println(ret.name)
-	return ret.name
+	db.Table("users").Select("professor_name").Where(User{Username: u.Username, Password: u.Password}).Scan(&ret)
+	fmt.Println("Ret name:", ret.professor_name)
+	return ret.professor_name
 }
 
-func (u *User) GetUserSerial(db *gorm.DB, name string, pass string) int {
+func (u *User) GetUserSerial(db *gorm.DB) int {
 	type Result struct {
 		ID int
 	}
 	var ret Result
-	db.Table("users").Select("id").Where(User{Username: name, Password: pass}).Scan(&ret)
+	db.Table("users").Select("id").Where(User{Username: u.Username, Password: u.Password}).Scan(&ret)
 	//db.Raw("SELECT id FROM users WHERE professor_name = ? AND password = ?", name, pass).Scan(&ret)
 	//fmt.Println("Serial:", ret.ID)
 	return ret.ID
