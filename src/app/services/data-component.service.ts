@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -8,12 +8,8 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 })
 
 export class DataComponentService {
-  constructor(private router: Router, private http: HttpClient, private snackBar: MatSnackBar) {
-    this.saveData("status.loggedIn", 'F');
-    this.saveData("status.serial", '0');
-    this.saveData("status.course", '0');
-   }
-
+  constructor(private router: Router, private http: HttpClient, private snackBar: MatSnackBar) {}
+  
   // Use capital characters to assign value.
   // F - False
   // S - Student
@@ -41,13 +37,11 @@ export class DataComponentService {
 
   //==Serial Functions==// 
   SetSerial(serial: number) { this.saveData("status.serial", serial); }
-  GetSerial() { return this.getData("status.serial"); }
+  GetSerial() { return this.getData("status.serial")  || 0; }
 
   //==Logged-In Functions==//
   SetLoggedIn(loggedIn: string) { this.saveData("status.loggedIn", loggedIn); }
-  GetLoggedIn() { 
-    console.log("logged in set", this.getData("status.loggedIn"));
-    return this.getData("status.loggedIn"); }
+  GetLoggedIn() { return this.getData("status.loggedIn") || "F"; }
 
   Navigate(component: string, force: boolean = false) {
     if (force) {
@@ -177,22 +171,22 @@ export class DataComponentService {
   }
 
   //==Local Storage==//
-  private saveData(key: string, data: any){
+  private saveData(key: string, data: any) {
+    console.log(key + '= ', JSON.parse(localStorage.getItem(key)!));
     localStorage.setItem(key, JSON.stringify(data));
   }
 
   private getData(key: string) {
-    console.log('recObj: ', JSON.parse(localStorage.getItem(key)!));
-    
+    console.log(key + ': ', JSON.parse(localStorage.getItem(key)!));
     return JSON.parse(localStorage.getItem(key)!);
   }
 
   private removeData(key: string) {
-  localStorage.removeItem(key);
-}
+    localStorage.removeItem(key);
+  }
 
-private clearData() {
-  localStorage.clear();
-}
+  private clearData() {
+    localStorage.clear();
+  }
 
 }
