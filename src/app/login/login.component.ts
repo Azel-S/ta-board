@@ -42,6 +42,7 @@ export class LoginComponent {
 
   student(credentials: { courseID: string }) {
     this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {
+      console.log(res);
       this.serve_comm.SetLoggedIn("S");
       this.serve_comm.SetSerial(res.ID);
       this.serve_comm.ClearCourses();

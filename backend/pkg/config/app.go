@@ -400,8 +400,6 @@ func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
 		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 		return
 	}
-	u.ID = u.GetUserSerial(a.DB)          // getting from user and pass
-	u.ProfessorName = u.GetProfName(a.DB) // getting from user_serial -- why does this not work.....................
 	fmt.Println("user:", u)
 	respondWithJSON(w, http.StatusOK, u)
 }
