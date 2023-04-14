@@ -23,14 +23,9 @@ export class StudentViewComponent {
   }
 
   submit() {
-    // TODO: Submit question.
-    // this.serve_back.AddQuestion(...)
-
-    // TODO: Delete as this is being faked
-    this.serve_comm.GetQuestions().push({ index: 1, date: new Date(), question: this.description, answer: "No response" });
-
+    this.serve_back.AddQuestion(this.serve_comm.GetCourseSerial(), this.description, "No response");
+    this.serve_comm.GetQuestions().push({ date: new Date(), question: this.description, answer: "No response" });
     this.serve_comm.Notify("Question was successfully added to the list!");
-
     this.toggleActive();
   }
 }

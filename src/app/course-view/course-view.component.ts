@@ -23,4 +23,8 @@ export class CourseViewComponent {
 
   responses: string[] = [];
 
+  submit(index: number) {
+    this.serve_back.UpdateAnswer(this.serve_comm.GetCourseSerial(), this.serve_comm.GetQuestion(index).question, this.responses[index]);
+    this.serve_comm.SetAnswer(index, this.responses[index])
+  }
 }

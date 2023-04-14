@@ -2,38 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { DataBackendService } from './data-backend.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class DataComponentService {
-  constructor(private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
+  constructor(private serve_back: DataBackendService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
   // Use capital characters to assign value.
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, serial: number } = { loggedIn: "F", serial: 0 };
+  status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
 
   professor: string = "John Doe";
 
-  courses: { id: string, name: string, passcode: string, description: string }[] = [
-    // { id: "CEN3031", name: "Software Engineering", passcode: "", description: "This course goes over the fundamentals of programming in the real world." },
-    // { id: "COP4600", name: "Operating Systems", passcode: "", description: "This course teaches the student about core concepts within the modern operating system." },
-    // { id: "FOS2001", name: "Mans Food", passcode: "", description: "Learn about why eating tasty stuff is bad." },
-    // { id: "LEI2818", name: "Leisure", passcode: "", description: "Learn about how relaxing is great, however you don't get to do that because you are taking this course! Mwahaahaha." },
-    // NOTE:
-    //  Displaying User courses now works ONLY AFTER LOGGING IN. If you refresh the page, the info isn't saved. Will have to get with
-    //  front-end to fix this
-    //
-  ];
+  courses: { serial: number, id: string, name: string, passcode: string, description: string }[] = [];
 
-  questions: { index: number, date: Date, question: string, answer: string }[] = [
-    { index: 0, date: new Date("2023-04-06"), question: "How the heck is this easy?", answer: 'No response' },
-    { index: 1, date: new Date("2022-04-06"), question: "How much is an apple worth?", answer: 'No response' },
-    { index: 2, date: new Date("2021-04-06"), question: "Why is the sky blue?", answer: 'No response' },
-  ];
+  questions: { date: Date, question: string, answer: string }[] = [];
 
   // Functions 
   SetSerial(serial: number) {
@@ -50,6 +38,14 @@ export class DataComponentService {
 
   GetLoggedIn() {
     return this.status.loggedIn;
+  }
+
+  SetCurrentCourse(index: number) {
+    this.status.course = index;
+  }
+
+  GetCurrentCourse() {
+    return this.status.course;
   }
 
   Navigate(component: string, force: boolean = false) {
@@ -84,37 +80,46 @@ export class DataComponentService {
     return this.courses;
   }
 
-  GetCourse(index: number = 0) {
+  GetCourse() {
     if (this.courses.length > 0) {
-      return this.courses[index];
+      return this.courses[this.status.course];
     }
     else {
       return null;
     }
   }
 
-  GetCourseID(index: number = 0) {
+  GetCourseSerial() {
     if (this.courses.length > 0) {
-      return this.courses[index].id;
+      return this.courses[this.status.course].serial;
     }
     else {
-      return "error";
+      return 0;
     }
   }
 
-  GetCourseName(index: number = 0) {
+  GetCourseID() {
     if (this.courses.length > 0) {
-      return this.courses[index].name;
+      return this.courses[this.status.course].id;
     }
     else {
-      return "error";
+      return "Error";
+    }
+  }
+
+  GetCourseName() {
+    if (this.courses.length > 0) {
+      return this.courses[this.status.course].name;
+    }
+    else {
+      return "Error";
     }
   }
 
   AddCourse(course: {
-    course_id: string, course_info_raw: string, course_name: string, id: number, professor_name: string
+    course_serial: number, course_id: string, description: string, course_name: string, id: number, professor_name: string
   }) {
-    this.courses.push({ id: course.course_id, name: course.course_name, passcode: "", description: course.course_info_raw });
+    this.courses.push({ serial: course.course_serial, id: course.course_id, name: course.course_name, passcode: "", description: course.description });
   }
 
   ClearCourses() {
@@ -142,6 +147,14 @@ export class DataComponentService {
     this.snackBar.open("Response Submitted!", "Close", { duration: 3000 });
   }
 
+  AddQuestion(question: { index: number, date: Date, question: string, answer: string }) {
+    this.questions.push(question);
+  }
+
+  ClearQuestions() {
+    this.questions = [];
+  }
+  
   OpenSyllabus() {
     // TODO: Implement actual syllabus
     window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');

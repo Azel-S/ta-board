@@ -1,19 +1,18 @@
 package config
 
 import (
+	models "TA-Bot/backend/pkg/models"
+
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	endpoints "TA-Bot/backend/pkg/endpoints"
-	course "TA-Bot/backend/pkg/models/course"
-	user "TA-Bot/backend/pkg/models/user"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 )
 
 type App struct {
@@ -21,7 +20,7 @@ type App struct {
 	Router *mux.Router
 }
 
-const MASTERDropTables = `DROP TABLE IF EXISTS users, courses, professorcourses, questions`
+const DropPrevTables = `DROP TABLE IF EXISTS users, courses, questions`
 
 // Opens a connection with the database
 func (a *App) Connect(cPath string) {
@@ -32,81 +31,92 @@ func (a *App) Connect(cPath string) {
 	a.DB = d
 }
 
-// Opens database according to given paramaters
-// Sets routes for server
-// Executes table creation queries
 func (a *App) Initialize(username, password, dbname string) {
+	// Opens database according to given paramaters
 	a.Connect(username + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8&parseTime=True&loc=Local")
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
-	// SKELETON CODE FOR QUERYING AN INSERT INTO MYSQL DATABASE:
-	/*
-				UserQuery_01 := `INSERT INTO users(professor_name, class_id, class_name, password)
-				VALUES('???', '???', '???', '???')
 
-				CourseQuery_01 := `INSERT INTO courses(id, course_id, course_name, passcode, professor_name, course_info_raw)
-				VALUES('1', '???', '???', '???', '???', '???')
-		`
-	*/
-	ProfCourseCreationQuery := `CREATE TABLE IF NOT EXISTS professorcourses
-(
-	id SERIAL,
-	user_serial INT,
-	course_serial INT,
-	CONSTRAINT pkey PRIMARY KEY (id)
-)`
+	UsersTableQuery := `CREATE TABLE IF NOT EXISTS users
+	(
+		user_serial SERIAL,
+		username TEXT NOT NULL,
+		password TEXT NOT NULL,
+		professor_name TEXT NOT NULL,
+		CONSTRAINT users_pkey PRIMARY KEY (user_serial)
+	)`
 
-	CreationQuestionQuery := `CREATE TABLE IF NOT EXISTS questions
-(
-	id SERIAL,
-	course_serial INT,
-	question varchar(255),
-	answer varchar(255),
-	CONSTRAINT pkey PRIMARY KEY (id)
-)`
+	CoursesTableQuery := `CREATE TABLE IF NOT EXISTS courses
+	(
+		course_serial SERIAL,
+		user_serial INT,
+		course_id TEXT NOT NULL,
+		course_code TEXT NOT NULL,
+		course_name TEXT NOT NULL,
+		professor_name TEXT NOT NULL,
+		description TEXT NOT NULL,
+		CONSTRAINT users_pkey PRIMARY KEY (course_serial)
+	)`
 
-	a.DB.Exec(MASTERDropTables)
-	a.DB.Exec(user.UsersCreationQuery)
-	a.DB.Exec(user.UsersAddAdminQuery)
-	a.DB.Exec(course.CoursesCreationQuery)
-	a.DB.Exec(course.CourseAddAdminQuery)
-	a.DB.Exec(ProfCourseCreationQuery)
-	a.DB.Exec(CreationQuestionQuery)
-	a.DB.Exec(user.ProfessorCoursesAddQuery)
-	a.InitializeADMINCourses()
-	a.InitializeADMINQuestions()
-	a.DB.Exec(user.UsersAddTESTQuery)
-	a.DB.Exec(course.CourseAddTESTQuery)
-	a.DB.Exec(`INSERT INTO professorcourses(user_serial, course_serial) VALUES ('2','6')`)
-	a.DB.AutoMigrate(&user.User{})
+	QuestionsTableQuery := `CREATE TABLE IF NOT EXISTS questions
+	(
+		id SERIAL,
+		course_serial INT,
+		question varchar(255),
+		answer varchar(255),
+		CONSTRAINT pkey PRIMARY KEY (id)
+	)`
+
+	// Drop/Remove old tables
+	a.DB.Exec(DropPrevTables)
+
+	// Executes table creation queries
+	a.DB.Exec(UsersTableQuery)
+	a.DB.Exec(CoursesTableQuery)
+	a.DB.Exec(QuestionsTableQuery)
+
+	// Add User John's data
+	a.AddUserParam("john", "john", "John Doe")
+	a.AddCourseParam(1, "CEN3031", "#0000", "Software Engineering", "John Doe", "This course goes over the fundamentals of programming in the real world.")
+	a.AddCourseParam(1, "COP4600", "#0003", "Operating Systems", "John Doe", "This course teaches the student about core concepts within the modern operating system.")
+	a.AddCourseParam(1, "JOHN1001", "#0002", "How to John: The Intro", "John Doe", "John's class for bad students!")
+	a.AddQuestionParam(1, "What is software Engineering anyways?", "No response")
+	a.AddQuestionParam(1, "Is this worth all the trouble? No, really?", "No response")
+	a.AddQuestionParam(2, "Is linux actually better?", "No!")
+	a.AddQuestionParam(2, "MacOS is the best system ever made, right?", "Hell nah!")
+	a.AddQuestionParam(2, "What about Windows?", "XP FTW!")
+	a.AddQuestionParam(3, "What does it mean to John?", "No response")
+	a.AddQuestionParam(3, "Why do I never get a response?", "Extra no response")
+
+	// Add User Jane's data
+	a.AddUserParam("jane", "jane", "Jane Doe")
+	a.AddCourseParam(2, "JANE1001", "#0001", "How to Jane: The Sequel", "Jane Doe", "Jane's class for great students!")
+	a.AddCourseParam(2, "LEI2818", "#1003", "Leisure", "Jane Doe", "Learn about how relaxing is great, however you don\"t get to do that because you are taking this course! Mwahaahaha.")
+	a.AddCourseParam(2, "FOS2001", "#0022", "Mans Food", "Jane Doe", "Learn about why eating tasty stuff is bad.")
+	a.AddQuestionParam(4, "What does it mean to Jane?", "No response")
+	a.AddQuestionParam(4, "I liked the prequel, John better. Thoughts?", "This is a sequel, they always suck!")
+	a.AddQuestionParam(5, "Why is called Mans food, I thought we were all for equality?", "No response")
+	a.AddQuestionParam(5, "Sugar is good, right?", "No response")
+	a.AddQuestionParam(6, "How come I never have any leisure in this class?", "No response")
+
+	a.AddUserParam("jay", "jay", "Jay Day")
+	a.AddCourseParam(3, "JAY2004", "#4004", "Music", "Jay Day", "Music is great, learn about it and stuff...")
+	a.AddQuestionParam(7, "So glad this is not a country music class, it's all the same now! Agreed?", "No response")
 }
 
-func (a *App) InitializeADMINCourses() {
-	courses := `INSERT INTO courses(course_id, course_name, passcode, professor_name, course_info_raw)
-	VALUES
-	('CEN3031', 'Software Engineering', 'ADMINCEN', 'ADMIN', 'This course goes over the fundamentals of programming in the real world.'),
-	('COP4600', 'Operating Systems', 'ADMINCOP', 'ADMIN', 'This course teaches the student about core concepts within the modern operating system.'),
-	('FOS2001', 'Mans Food', 'ADMINFOS', 'ADMIN', 'Learn about why eating tasty stuff is bad.'),
-	('LEI2818', 'Leisure', 'ADMINLEI', 'ADMIN','Learn about how relaxing is great, however you don\'t get to do that because you are taking this course! Mwahaahaha.');
-	`
-	profcourses := `INSERT INTO professorcourses(user_serial, course_serial)
-	VALUES
-	('1','2'),
-	('1','3'),
-	('1','4'),
-	('1','5');
-	`
-	a.DB.Exec(courses)
-	a.DB.Exec(profcourses)
+func (a *App) AddUserParam(username string, password string, professor_name string) {
+	userObj := models.User{Username: username, Password: password, ProfessorName: professor_name}
+	a.DB.Table(userObj.TableName()).Save(&userObj)
 }
 
-func (a *App) InitializeADMINQuestions() {
-	questions := `INSERT INTO questions(course_serial, question, answer)
-	VALUES
-	('1', 'How the heck is this easy?','No response'),
-	('1', 'How much is an apple worth?','No response'),
-	('1', 'Why is the sky blue?','No response');`
-	a.DB.Exec(questions)
+func (a *App) AddCourseParam(user_serial int, course_id string, course_code string, course_name string, professor_name string, description string) {
+	courseObj := models.Course{UserSerial: user_serial, CourseID: course_id, CourseCode: course_code, CourseName: course_name, ProfessorName: professor_name, Description: description}
+	a.DB.Table(courseObj.TableName()).Save(&courseObj)
+}
+
+func (a *App) AddQuestionParam(courseSerial int, questionStr string, answer string) {
+	questionObj := models.Question{CourseSerial: courseSerial, Question: questionStr, Answer: answer}
+	a.DB.Table(questionObj.TableName()).Save(&questionObj)
 }
 
 // Listens for incoming requests from Angular
@@ -130,84 +140,6 @@ func (a *App) GetRTR() *mux.Router {
 
 */
 
-// RETURNS A USER AS A JSON OBJECT
-func (a *App) GetUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)                 // Make a map of string to strings from the http Request
-	id, err := strconv.Atoi(vars["id"]) // convert the value of key "id" to readable integer
-	if err != nil {                     // error handling
-		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
-		return
-	}
-	u := user.User{ID: id} // create a user with ID of the 'id' grabbed earlier
-	if err := u.GetUser(a.DB); err != nil {
-		respondWithError(w, http.StatusNotFound, "User not found")
-		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
-		return
-	}
-	respondWithJSON(w, http.StatusOK, u)
-}
-
-// RETURNS AN ARRAY OF USERS AS A JSON OBJECT
-func (a *App) GetManyUsers(w http.ResponseWriter, r *http.Request) {
-	// convert the HTTP request's 'count' and 'start' values into readable integers
-	count, _ := strconv.Atoi(r.FormValue("count"))
-	start, _ := strconv.Atoi(r.FormValue("start"))
-
-	if count > 10 || count < 1 { // edge cases
-		count = 10
-	}
-	if start < 0 {
-		start = 0
-	}
-	users, err := user.GetManyUsers(a.DB, start, count) // call function to get multiple users
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, users)
-}
-
-// CREATES A USER INTO DATABASE
-func (a *App) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var u user.User
-	decoder := json.NewDecoder(r.Body)         // Grab decoding data from json to put into a user struct later
-	if err := decoder.Decode(&u); err != nil { // Attempts to decode data into user struct
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	defer r.Body.Close() // close http body at end of function call
-
-	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusCreated, u)
-}
-
-// UPDATES USER INFORMATION IN DATABASE
-func (a *App) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)                 // Make a map of string to strings from the http Request with various data
-	id, err := strconv.Atoi(vars["id"]) // convert the value of key "id" to readable integer
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
-		return
-	}
-	var u user.User
-	decoder := json.NewDecoder(r.Body)         // Get decode data like in CreateUser()
-	if err := decoder.Decode(&u); err != nil { // Attempt to decode info into user struct
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	defer r.Body.Close()
-	u.ID = id
-	// Attempts to find the user with given id above and update information with the decoded data earlier
-	if err := u.UpdateUser(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, u)
-}
-
 // DELETES A USER IN DATABASE
 func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r) // Same pattern as in UpdateUser() and GetUser()
@@ -216,7 +148,7 @@ func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
-	u := user.User{ID: id} // Create user struct with given ID
+	u := models.User{UserSerial: id} // Create user struct with given ID
 	// Attempts to find the User row with matching ID as created user struct above and delete it
 	if err := u.DeleteUser(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -231,82 +163,6 @@ func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 */
 
-// RETURNS A COURSE AS A JSON OBJECT
-func (a *App) GetCourse(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
-		return
-	}
-	c := course.Course{ID: id}
-	if err := c.GetCourse(a.DB); err != nil {
-		respondWithError(w, http.StatusNotFound, "Course not found")
-		return
-	}
-	respondWithJSON(w, http.StatusOK, c)
-}
-
-// RETURNS AN ARRAY OF COURSES AS A JSON OBJECT
-func (a *App) GetManyCourses(w http.ResponseWriter, r *http.Request) {
-	// count, _ := strconv.Atoi(r.FormValue("count"))
-	// start, _ := strconv.Atoi(r.FormValue("start"))
-
-	// if count > 10 || count < 1 {
-	// 	count = 10
-	// }
-	// if start < 0 {
-	// 	start = 0
-	// }
-	// courses, err := course.GetManyCourses(a.DB, user_id)
-	// if err != nil {
-	// 	respondWithError(w, http.StatusInternalServerError, err.Error())
-	// 	return
-	// }
-	// respondWithJSON(w, http.StatusOK, courses)
-}
-
-// CREATES A COURSE INTO DATABASE
-func (a *App) CreateCourse(w http.ResponseWriter, r *http.Request) {
-	var c course.Course
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&c); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	defer r.Body.Close()
-
-	if err := c.CreateCourse(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusCreated, c)
-}
-
-// UPDATES A COURSE INFORMATION IN DATABASE
-func (a *App) UpdateCourse(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
-		return
-	}
-	var c course.Course
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&c); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	defer r.Body.Close()
-	c.ID = id
-
-	if err := c.UpdateCourse(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, c)
-}
-
 // DELETES A COURSE IN DATABASE
 func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -315,7 +171,7 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
 		return
 	}
-	c := course.Course{ID: id}
+	c := models.Course{CourseSerial: id}
 	if err := c.DeleteCourse(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -329,265 +185,235 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 */
 
-func (a *App) GetProfName(user_id int) string {
-	u := user.User{
-		ID: user_id,
-	}
-	fmt.Println("User ID: ", u.ID)
-	return u.GetProfName(a.DB)
-}
-
+// Inputs: username, password
 func (a *App) Register(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("REGISTER")
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	var data endpoints.Register // Make a register endpoint struct; this matches the form of the JSON object that is being sent
-	// Note: Can view the JSON object from front-end view by pressing F12 -> console and clicking on the Post request when registering
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var userObj models.User
 
-	// Attempts to put the data from the JSON object into the register struct **NOTE: JSON OBJECT AND STRUCT MUST MATCH UP
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&userObj) == nil {
+			// TODO: Check for exists of username.
+			if err := userObj.CreateUser(a.DB); err == nil {
+				fmt.Println("Register(): Added ", userObj)
+				respondWithJSON(w, http.StatusCreated, userObj)
+			} else {
+				fmt.Println("Register(): Error adding user")
+				respondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		} else {
+			fmt.Println("TeacherLogin(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
 	}
-	defer r.Body.Close() // close http body at end of function call
-	fmt.Println(data.Username)
-	fmt.Println(data.Password)
-	u := user.User{
-		Username: data.Username,
-		Password: data.Password,
-	}
-	if err := u.CreateUser(a.DB); err != nil { // Attempts to add user into database
-		fmt.Println("Error adding user")
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusCreated, u)
 }
 
-func (a *App) TeacherLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("TEACHER LOGIN")
-	// SET CORS HEADERS TO ALLOW COMMUNICATION
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+// Inputs: user_serial, professor_name
+func (a *App) UpdateName(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var userObj models.User
 
-	var data endpoints.TeacherLogin // Setup an endpoint struct
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&userObj) == nil {
+			if userObj.Exists(a.DB) {
+				userObj.UpdateName(a.DB)
+				respondWithJSON(w, http.StatusOK, userObj)
+				fmt.Println("UpdateName(): Added ", userObj)
+			} else {
+				fmt.Println("UpdateName(): User not found in database")
+				respondWithError(w, http.StatusNotFound, "User not found in database")
+			}
+		} else {
+			fmt.Println("UpdateName(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
 
-	decoder := json.NewDecoder(r.Body) // Grab decoding data from json to put into a user struct later
-	// ATTEMPTS TO SEND JSON INFO (In this case, courseID) TO THE DATA ENDPOINT STRUCT
-	// CAN SEE WHAT IS IN JSON OBJECT BY PRESSING F12 -> CONSOLE AND CLICK ON POST REQUEST AFTER ATTEMPING LOGIN
-	if err := decoder.Decode(&data); err != nil {
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
+		r.Body.Close()
 	}
-	defer r.Body.Close() // close http body at end of function call
-	fmt.Println("data:", data)
-	u := user.User{
-		Username: data.Username,
-		Password: data.Password,
-	}
-	if err := u.GetUser(a.DB); err != nil { // Get the user with matching professor name and password
-		fmt.Println("Not found")
-		respondWithError(w, http.StatusNotFound, "User not found")
-		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
-		return
-	}
-	fmt.Println("user:", u)
-	respondWithJSON(w, http.StatusOK, u)
 }
 
-// STUDENT LOGIN WORKS SIMILARLY TO TEACHER LOGIN, EXPECT THE ENDPOINT IS A COURSE STRUCT
-func (a *App) StudentLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("STUDENT LOGIN")
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	var data endpoints.StudentLogin
+// Inputs: username, password
+func (a *App) Teacher(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var userObj models.User
 
-	decoder := json.NewDecoder(r.Body)            // Grab decoding data from json to put into a user struct later
-	if err := decoder.Decode(&data); err != nil { // Attempts to decode data into user struct
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&userObj) == nil {
+			if userObj.Exists(a.DB) {
+				userObj.Fill(a.DB)
+				respondWithJSON(w, http.StatusOK, userObj)
+				fmt.Println("TeacherLogin(): Sent", userObj)
+			} else {
+				fmt.Println("TeacherLogin(): User not found in database")
+				respondWithError(w, http.StatusNotFound, "User not found in database")
+				// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
+			}
+		} else {
+			fmt.Println("TeacherLogin(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
 	}
-	defer r.Body.Close() // close http body at end of function call
-	fmt.Println("data:", data)
-	c := course.Course{
-		ID:       0,
-		CourseID: data.CourseID,
-		Passcode: data.Passcode,
-	}
-	if err := c.GetCourse(a.DB); err != nil {
-		fmt.Println("Not found")
-		respondWithError(w, http.StatusNotFound, "Course not found")
-		// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
-		return
-	}
-	fmt.Println("course:", c)
-	c.ID = c.GetCourseID(a.DB, c.CourseID, c.Passcode)
-	respondWithJSON(w, http.StatusOK, c)
 }
 
-func (a *App) GetCourseInfoAsStudent(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GET COURSE INFO")
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+// Inputs: course_id, course_code
+func (a *App) Student(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var courseObj models.Course
 
-	c := course.Course{
-		CourseID:       "ID",
-		CourseName:     "NAME",
-		ProfessorName:  "PROF",
-		CourseInfo_raw: "INFO",
-	}
-	fmt.Println(c)
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+			if courseObj.Exists(a.DB) {
+				courseObj.Fill(a.DB)
+				respondWithJSON(w, http.StatusOK, courseObj)
+				fmt.Println("Student(): Sent", courseObj)
+			} else {
+				fmt.Println("Student(): Course not found in database")
+				respondWithError(w, http.StatusNotFound, "Course not found in database")
+			}
+		} else {
+			fmt.Println("Student(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
 
-	respondWithJSON(w, http.StatusOK, c)
+		r.Body.Close()
+	}
 }
 
-func (a *App) GetCoursesAsTeacher(w http.ResponseWriter, r *http.Request) {
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
+// Inputs: user_serial
+func (a *App) Courses(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var courseObj models.Course
 
-	fmt.Println("GET COURSES AS TEACHER")
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+			courses, err := courseObj.GetCourses(a.DB)
+			if err == nil {
+				respondWithJSON(w, http.StatusOK, courses)
+				fmt.Println("GetCourses(): Sent " + strconv.Itoa(len(courses)) + " courses")
+			} else {
+				fmt.Println("GetCourses(): Error encountered")
+				respondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		} else {
+			fmt.Println("GetCourses(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
 
-	var data endpoints.ProfessorCourse
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&data); err != nil {
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
+		r.Body.Close()
 	}
-	fmt.Println(data)
-	defer r.Body.Close() // close http body at end of function call
-
-	// error here, can see by logging into teacher with ADMIN
-	courses, err := course.GetManyCourses(a.DB, data.User_serial)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	fmt.Println(courses)
-	respondWithJSON(w, http.StatusOK, courses)
 }
 
-func (a *App) GetQuestionsAsTeacher(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GetQuestionsAsTeacher")
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	var data endpoints.ProfessorCourse
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&data); err != nil {
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	defer r.Body.Close() // close http body at end of function call
+// Inputs: user_serial course_id course_code course_name professor_name desciption
+func (a *App) AddCourse(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var courseObj models.Course
 
-	questions, err := course.GetManyQuestions(a.DB, data.User_serial)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+			err := courseObj.CreateCourse(a.DB)
+			if err == nil {
+				respondWithJSON(w, http.StatusOK, courseObj)
+				fmt.Println("AddCourse(): Added ", courseObj)
+			} else {
+				fmt.Println("AddCourse(): Error encountered")
+				respondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		} else {
+			fmt.Println("AddCourse(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
 	}
-	respondWithJSON(w, http.StatusOK, questions)
 }
 
-func (a *App) AddCourseAsTeacher(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("AddCourseAsTeacher")
-	// Recieving: user_serial: user_serial, id: id, name: name, passcode: passcode, description: description
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
+// Inputs: course_serial
+func (a *App) Questions(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var questionObj models.Question
+
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
+			questions, err := questionObj.GetQuestions(a.DB)
+			if err == nil {
+				respondWithJSON(w, http.StatusOK, questions)
+				fmt.Println("GetQuestions(): Sent " + strconv.Itoa(len(questions)) + " question(s)")
+			} else {
+				fmt.Println("GetQuestions(): Error encountered")
+				respondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		} else {
+			fmt.Println("GetQuestions(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
 	}
-	type DATA struct {
-		User_serial int    `json:"user_serial"`
-		ID          string `json:"id"`
-		Name        string `json:"name"`
-		Passcode    string `json:"passcode"`
-		Description string `json:"description"`
-	}
-	var data DATA
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&data); err != nil {
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	fmt.Println(data)
-	defer r.Body.Close()
-	fmt.Println("User serial: ", data.User_serial)
-	c := course.Course{
-		CourseID:       data.ID,
-		CourseName:     data.Name,
-		Passcode:       data.Passcode,
-		ProfessorName:  a.GetProfName(data.User_serial), // user_serial is 0 here because of when registration is sent... talk to frontend?
-		CourseInfo_raw: data.Description,
-	}
-	fmt.Println(c)
-	if err := c.CreateCourse(a.DB); err != nil { // Attempts to add user into database
-		fmt.Println("Error adding course")
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusCreated, c)
 }
 
-func (a *App) RegisterName(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("RegisterName")
-	// Recieving: user_serial: user_serial, firstName: firstName, lastName: lastName
-	setCORSHeader(&w, r)
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
+// Inputs: course_serial, question, answer
+func (a *App) AddQuestion(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var questionObj models.Question
+
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
+			err := questionObj.AddQuestion(a.DB)
+			if err == nil {
+				respondWithJSON(w, http.StatusOK, questionObj)
+				fmt.Println("AddQuestion(): Added ", questionObj)
+			} else {
+				fmt.Println("AddQuestion(): Error encountered")
+				respondWithError(w, http.StatusInternalServerError, err.Error())
+			}
+		} else {
+			fmt.Println("AddQuestion(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
 	}
-	type DATA struct {
-		User_serial int    `json:"user_serial"`
-		FirstName   string `json:"firstName"`
-		LastName    string `json:"lastName"`
+}
+
+// Inputs: course_serial, question, answer
+func (a *App) UpdateAnswer(w http.ResponseWriter, r *http.Request) {
+	// Non-CORS request
+	if !HandleCORS(&w, r) {
+		var questionObj models.Question
+
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
+			if questionObj.Exists(a.DB) {
+				questionObj.UpdateAnswer(a.DB)
+				respondWithJSON(w, http.StatusOK, questionObj)
+				fmt.Println("UpdateAnswer(): Updated ", questionObj)
+			} else {
+				fmt.Println("UpdateAnswer(): Question not found in database")
+				respondWithError(w, http.StatusNotFound, "Question not found in database")
+			}
+		} else {
+			fmt.Println("UpdateAnswer(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
 	}
-	var data DATA
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&data); err != nil {
-		fmt.Println("Invalid payload")
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	fmt.Println("Name data: ", data)
-	professorName := data.FirstName + " " + data.LastName
-	u := user.User{
-		ID:            data.User_serial,
-		ProfessorName: professorName,
-	}
-	if err := u.UpdateName(a.DB); err != nil {
-		fmt.Println("Error updating name")
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, u)
 }
 
 /*
 
-	HELPER + TESTING FUNCTIONS
+	HELPER FUNCTIONS
 
 */
 
@@ -604,61 +430,32 @@ func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
-// THESE ARE ALL TEST FUNCTIONS WHEN TRYING TO GET FRONTEND AND BACKEND WORKING TOGETHER
-func (a *App) TestPrintComm(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Test Successful")
-}
-
-func (a *App) TestGET(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Get recieved...")
-	setCORSHeader(&w, r)
-
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
-	respondWithJSON(w, http.StatusOK, map[string]string{"username": "successGet"})
-}
-
-func (a *App) TestPOST(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Post recieved...")
-	setCORSHeader(&w, r)
-
-	if (*r).Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
-	respondWithJSON(w, http.StatusOK, map[string]string{"username": "successPost"})
-}
-
-// Sets header for CORS. Allows for communication between Angular and GO on different ports.
-func setCORSHeader(w *http.ResponseWriter, req *http.Request) {
+// Automatically Sets CORS Header and respons with OK if required
+func HandleCORS(w *http.ResponseWriter, req *http.Request) bool {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	if (*req).Method == "OPTIONS" {
+		(*w).WriteHeader(http.StatusOK)
+		return true
+	} else {
+		return false
+	}
 }
 
 // Sets up routes that need handling -> WHEN ROUTER SEES A HTTP REQUEST MATCHING THE TYPE AND URL, EXECUTE A GIVEN FUNCTION
 func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/userstest", a.TestGET).Methods("GET", "OPTIONS")
-	a.Router.HandleFunc("/userstest", a.TestPOST).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/RegisterCredentials", a.Register).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/UpdateName", a.UpdateName).Methods("POST", "OPTIONS")
 
-	a.Router.HandleFunc("/users", a.GetManyUsers).Methods("GET")
-	a.Router.HandleFunc("/users", a.CreateUser).Methods("POST")
-	a.Router.HandleFunc("/users/{id:[0-9]}", a.GetUser).Methods("GET")
-	a.Router.HandleFunc("/users/{id:[0-9]}", a.UpdateUser).Methods("PUT")
-	a.Router.HandleFunc("/users/{id:[0-9]}", a.DeleteUser).Methods("DELETE")
+	a.Router.HandleFunc("/Teacher", a.Teacher).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/Student", a.Student).Methods("POST", "OPTIONS")
 
-	a.Router.HandleFunc("/Register", a.Register).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/TeacherLogin", a.TeacherLogin).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/StudentLogin", a.StudentLogin).Methods("POST", "OPTIONS")
-	// a router handle (/teacher-view/id:0-9, a.getcourses)
-	//a.Router.HandleFunc("/registeruser", a.TestPOST).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/CourseInfoAsStudent", a.GetCourseInfoAsStudent).Methods("GET", "OPTIONS")
-	a.Router.HandleFunc("/CoursesAsTeacher", a.GetCoursesAsTeacher).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/QuestionsAsTeacher", a.GetQuestionsAsTeacher).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/RegisterCourse", a.AddCourseAsTeacher).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/RegisterName", a.RegisterName).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/GetCourses", a.Courses).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/AddCourse", a.AddCourse).Methods("POST", "OPTIONS")
+
+	a.Router.HandleFunc("/GetQuestions", a.Questions).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/AddQuestion", a.AddQuestion).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/UpdateAnswer", a.UpdateAnswer).Methods("POST", "OPTIONS")
 }

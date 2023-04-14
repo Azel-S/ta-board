@@ -35,25 +35,35 @@ export class LoginComponent {
 
   // Input fields
   courseID: string | null = null;
-  passcode: string | null = null;
+  courseCode: string | null = null;
   username: string | null = null;
   password: string | null = null;
   confirmPassword: string | null = null;
 
   student(credentials: { courseID: string }) {
-    this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {
-      console.log(res);
+    this.serve_back.LoginStudent(this.courseID!, this.courseCode!).then(res => {
       this.serve_comm.SetLoggedIn("S");
-      this.serve_comm.SetSerial(res.ID);
-      this.serve_comm.ClearCourses();
+      this.serve_comm.SetSerial(res.course_serial);
+      this.serve_comm.SetCurrentCourse(0);
 
-      this.serve_back.GetCourseInfoAsStudent(this.serve_comm.GetSerial()).then(res => {
-        this.serve_comm.AddCourse(res);
-        this.serve_comm.SetProfName(res.professor_name);
-        this.serve_comm.Navigate('student-view');
+      this.serve_comm.SetProfName(res.professor_name);
+
+      this.serve_comm.ClearCourses();
+      this.serve_comm.AddCourse(res);
+
+      this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
+        this.serve_comm.ClearQuestions();
+        if (res != null) {
+          for (let i = 0; i < res.length; i++) {
+            this.serve_comm.AddQuestion(res[i]);
+          }
+        }
+
+        this.serve_comm.Navigate("student-view")
+      }).catch(res => {
+        console.log("YAHOO!");
       });
     }).catch(res => {
-      // TODO: Show error message
       console.log("YAHOO!");
     });
   }
@@ -62,21 +72,32 @@ export class LoginComponent {
     this.serve_back.LoginTeacher(this.username!, this.password!).then(res => {
       // Set logged in status to teacher.
       this.serve_comm.SetLoggedIn("T");
+      this.serve_comm.SetCurrentCourse(0);
 
       // Update Data
-      this.serve_comm.SetSerial(res.id);
-      console.log(res);
+      this.serve_comm.SetSerial(res.user_serial);
       this.serve_comm.SetProfName(res.professor_name);
-      this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetSerial()).then(res => {
+
+      this.serve_back.GetCourses(this.serve_comm.GetSerial()).then(res => {
         this.serve_comm.ClearCourses();
-        for (let i = 0; i < res.length; i++) {
-          this.serve_comm.AddCourse(res[i]);
+        if (res != null) {
+          for (let i = 0; i < res.length; i++) {
+            this.serve_comm.AddCourse(res[i]);
+          }
         }
-        
-        
-        
-        // Navigate to teacher-view
-        this.serve_comm.Navigate('teacher-view');
+
+        this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
+          this.serve_comm.ClearQuestions();
+          if (res != null) {
+            for (let i = 0; i < res.length; i++) {
+              this.serve_comm.AddQuestion(res[i]);
+            }
+          }
+
+          this.serve_comm.Navigate("teacher-view")
+        }).catch(res => {
+          console.log("YAHOO!");
+        });
       }).catch(res => {
         console.log("YAHOO!");
       });
@@ -89,6 +110,11 @@ export class LoginComponent {
   register(credentials: { username: string, password: string, confirmPassword: string }) {
     if (this.password == this.confirmPassword) {
       this.serve_back.RegisterCredentials(this.username!, this.password!).then(res => {
+        this.serve_comm.SetLoggedIn("T")
+        this.serve_comm.SetSerial(res.user_serial);
+        this.serve_comm.SetCurrentCourse(0);
+
+        // Navigate
         this.serve_comm.Navigate('signup');
       }).catch(res => {
         // TODO: Show error message

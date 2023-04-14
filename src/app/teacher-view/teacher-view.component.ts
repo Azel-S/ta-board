@@ -12,7 +12,18 @@ export class TeacherViewComponent {
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 
   modifyCourse(index: number) {
-    // TODO
+    this.serve_comm.SetCurrentCourse(index);
+
+    this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
+      this.serve_comm.ClearQuestions();
+      if(res != null) {
+        for (let i = 0; i < res.length; i++) {
+          this.serve_comm.AddQuestion(res[i]);
+        }
+      }
+
+      this.serve_comm.Navigate("course-view")
+    })
   }
 
   deleteCourse(index: string, passcode: string) {

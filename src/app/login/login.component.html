@@ -9,11 +9,11 @@
                             <input matInput autofocus name="courseID" [(ngModel)]="courseID" required>
                         </mat-form-field>
                         <mat-form-field appearance="outline" [hideRequiredMarker]="true">
-                            <mat-label>Passcode</mat-label>
-                            <input matInput autofocus name="passcode" [(ngModel)]="passcode" required>
+                            <mat-label>Course Code</mat-label>
+                            <input matInput autofocus name="courseCode" [(ngModel)]="courseCode" required>
                         </mat-form-field>
                         <button mat-raised-button type="submit" color="accent" id="SubmitS"
-                            (click)="student(regForm.value)" [disabled]="!courseID || !passcode">Login
+                            (click)="student(regForm.value)" [disabled]="!courseID || !courseCode">Login
                         </button>
                     </form>
                     <mat-tab label="Teacher">

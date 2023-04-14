@@ -34,18 +34,18 @@
                         <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                             <mat-label>Course Name</mat-label>
                             <input matInput formControlName="courseName" placeholder="e.g. Intro to Software" required
-                                [(ngModel)]="courses.id[i]">
+                                [(ngModel)]="courses.name[i]">
                         </mat-form-field>
                         <div class="horizontal-container">
                             <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                                 <mat-label>Course ID</mat-label>
                                 <input matInput formControlName="courseID" placeholder="e.g. CEN3031" required
-                                    [(ngModel)]="courses.name[i]">
+                                    [(ngModel)]="courses.id[i]">
                             </mat-form-field>
                             <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                                 <mat-label>Course Passcode</mat-label>
                                 <input matInput formControlName="coursePasscode" placeholder="e.g. #124" required
-                                    [(ngModel)]="courses.passcode[i]">
+                                    [(ngModel)]="courses.codes[i]">
                             </mat-form-field>
                         </div>
                         <mat-form-field appearance="outline" [hideRequiredMarker]="true">
@@ -58,7 +58,7 @@
                         </div>
                         <div class="pad-top-5">
                             <button mat-raised-button color="accent" matStepperNext
-                                [disabled]="!courses.id[i] || !courses.passcode[i] || !courses.name[i] || !courses.description[i]">Next
+                                [disabled]="!courses.id[i] || !courses.codes[i] || !courses.name[i] || !courses.description[i]">Next
                             </button>
                         </div>
                     </div>

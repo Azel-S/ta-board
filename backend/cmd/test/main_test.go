@@ -18,16 +18,16 @@ import (
 	"testing"
 
 	"TA-Bot/backend/pkg/config"
-	models "TA-Bot/backend/pkg/models/user"
+	models "TA-Bot/backend/pkg/models"
 )
 
 const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
 (
-	id SERIAL,
+	user_serial SERIAL,
+	username TEXT NOT NULL,
+	password TEXT NOT NULL,
 	professor_name TEXT NOT NULL,
-	class_id TEXT NOT NULL,
-	class_name TEXT NOT NULL,
-	CONSTRAINT users_pkey PRIMARY KEY (id)
+	CONSTRAINT users_pkey PRIMARY KEY (user_serial)
 )`
 
 var a config.App

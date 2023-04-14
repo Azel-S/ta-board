@@ -22,17 +22,17 @@
     </mat-card-header>
     <mat-card-content>
       <mat-accordion class="pad-20" multi>
-        <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions()">
+        <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions(); let i = index">
           <mat-expansion-panel-header>
             <mat-panel-title class="names">{{ serve_comm.GetDate(question.date, true) }}</mat-panel-title>
             <mat-panel-description>{{ question.question }}</mat-panel-description>
           </mat-expansion-panel-header>
           <mat-form-field appearance="outline" class="response">
             <mat-label>Response</mat-label>
-            <textarea matInput [(ngModel)]="responses[question.index]"></textarea>
+            <textarea matInput [(ngModel)]="responses[i]"></textarea>
           </mat-form-field>
           <div>
-            <button mat-raised-button color="accent" (click)="serve_comm.SetAnswer(question.index, responses[question.index])">Submit</button>
+            <button mat-raised-button color="accent" (click)="submit(i)">Submit</button>
           </div>
         </mat-expansion-panel>
       </mat-accordion>
