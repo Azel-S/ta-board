@@ -34,23 +34,44 @@ export class LoginComponent {
   constructor(private serve_comm: DataComponentService, private serve_back: DataBackendService) { }
 
   // Input fields
-  courseID: string | null = null;
-  passcode: string | null = null;
-  username: string | null = null;
-  password: string | null = null;
-  confirmPassword: string | null = null;
+  courseID: string = '';
+  passcode: string = '';
+  username: string = '';
+  password: string = '';
+  confirmPassword: string = '';
+  errorStudent: { status: boolean, message: string } = { status: true, message: '' };
+  errorTeacher: { status: boolean, message: string } = { status: true, message: '' };
+  errorRegister: { status: boolean, message: string } = { status: true, message: '' };
+  // Student Course ID - Validator
+  ValidateStudent() {
+    if (this.courseID.length > 0 && this.courseID[0] != '#') {
+      this.errorStudent.status = false;
+      this.errorStudent.message = 'Not long enough';
+      return false;
+    }
+    else {
+      this.errorStudent.status = true;
+      this.errorStudent.message = '';
+      return true;
+    }
+
+  }
 
   student(credentials: { courseID: string }) {
-    this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {
-      this.serve_comm.SetLoggedIn("S");
-      this.serve_comm.Navigate('student-view');
+    // let correct: boolean = false;
+    // correct = this.ValidateStudent(correct);
+    if (this.ValidateStudent()) {
+      this.serve_back.LoginStudent(this.courseID!, this.passcode!).then(res => {
+        this.serve_comm.SetLoggedIn("S");
+        this.serve_comm.Navigate('student-view');
 
-      // TODO: Update data in component class
-      // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
-    }).catch(res => {
-      // TODO: Show error message
-      console.log("YAHOO!");
-    });
+        // TODO: Update data in component class
+        // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
+      }).catch(res => {
+        // TODO: Show error message
+        console.log("YAHOO!");
+      });
+    }
   }
 
   teacher(credentials: { username: string, password: string }) {
@@ -81,4 +102,12 @@ export class LoginComponent {
       });
     }
   }
+
+  // // Course Code Validator
+  // ValidateStudent() {
+  //   let correct: boolean = false;
+  //   if (this.courseID!.length == 0)
+  //     console.log(this.courseID, 'not long enough');
+  // }
+
 }
