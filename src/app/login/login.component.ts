@@ -44,7 +44,6 @@ export class LoginComponent {
   errorTeacher: { status: boolean, message: string } = { status: true, message: '' };
   errorRegister: { status: boolean, message: string } = { status: true, message: '' };
 
-  // Student Course ID - Validator
   ValidateStudent() {
     if (this.courseCode.length > 0 && this.courseCode[0] != '#') {
       this.errorStudent.status = false;
@@ -58,7 +57,7 @@ export class LoginComponent {
     }
   }
 
-  student(credentials: { courseID: string }) {
+  student() {
     if (this.ValidateStudent()) {
       this.serve_back.LoginStudent(this.courseID!, this.courseCode!).then(res => {
         this.serve_comm.SetLoggedIn("S");
@@ -77,6 +76,8 @@ export class LoginComponent {
               this.serve_comm.AddQuestion(res[i]);
             }
           }
+
+          this.serve_comm.Navigate("student-view")
         }).catch(res => {
           // TODO: Show error message
           console.log("YAHOO!");
@@ -85,7 +86,7 @@ export class LoginComponent {
     }
   }
 
-  teacher(credentials: { username: string, password: string }) {
+  teacher() {
     this.serve_back.LoginTeacher(this.username!, this.password!).then(res => {
       // Set logged in status to teacher.
       this.serve_comm.SetLoggedIn("T");
@@ -124,7 +125,7 @@ export class LoginComponent {
     });
   }
 
-  register(credentials: { username: string, password: string, confirmPassword: string }) {
+  register() {
     if (this.password == this.confirmPassword) {
       this.serve_back.RegisterCredentials(this.username!, this.password!).then(res => {
         this.serve_comm.SetLoggedIn("T")

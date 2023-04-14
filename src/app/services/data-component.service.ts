@@ -15,7 +15,7 @@ export class DataComponentService {
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
+  status: { course: number } = { course: 0 };
 
   professor: string = "John Doe";
 
@@ -81,30 +81,12 @@ export class DataComponentService {
     return this.courses;
   }
 
-  GetCourse(index: number = -1) {
-    if (index == -1) {
+  GetCourse() {
+    if (this.courses.length > 0) {
       return this.courses[this.status.course];
     }
     else {
-      return this.courses[index];
-    }
-  }
-
-  GetCourseID(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course].id;
-    }
-    else {
-      return this.courses[index].id;
-    }
-  }
-
-  GetCourseName(index: number = -1) {
-    if (index == -1) {
-      return this.courses[this.status.course].name;
-    }
-    else {
-      return this.courses[index].name;
+      return null;
     }
   }
 
@@ -114,6 +96,24 @@ export class DataComponentService {
     }
     else {
       return 0;
+    }
+  }
+
+  GetCourseID() {
+    if (this.courses.length > 0) {
+      return this.courses[this.status.course].id;
+    }
+    else {
+      return "Error";
+    }
+  }
+
+  GetCourseName() {
+    if (this.courses.length > 0) {
+      return this.courses[this.status.course].name;
+    }
+    else {
+      return "Error";
     }
   }
 
