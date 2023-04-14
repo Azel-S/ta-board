@@ -81,7 +81,7 @@ export class LoginComponent {
           // TODO: Show error message
           console.log("YAHOO!");
         });
-      }
+      })
     }
   }
 
