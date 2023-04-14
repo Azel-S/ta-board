@@ -15,6 +15,10 @@
                         <button mat-raised-button type="submit" color="accent" id="SubmitS"
                             (click)="student(regForm.value)" [disabled]="!courseID || !courseCode">Login
                         </button>
+                        <mat-error *ngIf="errorStudent.status==false">
+                            <strong>Error:
+                            </strong>{{ errorStudent.message }}.
+                        </mat-error>
                     </form>
                     <mat-tab label="Teacher">
                         <form class="pad-20">

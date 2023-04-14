@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -15,7 +15,7 @@ export class DataComponentService {
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
+  //status: { loggedIn: string, serial: number, course: number } = { loggedIn: "F", serial: 0, course: 0 };
 
   professor: string = "John Doe";
 
@@ -23,22 +23,13 @@ export class DataComponentService {
 
   questions: { date: Date, question: string, answer: string }[] = [];
 
-  // Functions 
-  SetSerial(serial: number) {
-    this.status.serial = serial;
-  }
+  //==Serial Functions==// 
+  SetSerial(serial: number) { this.saveData("status.serial", serial); }
+  GetSerial() { return this.getData("status.serial")  || 0; }
 
-  GetSerial() {
-    return this.status.serial;
-  }
-
-  SetLoggedIn(type: string) {
-    this.status.loggedIn = type;
-  }
-
-  GetLoggedIn() {
-    return this.status.loggedIn;
-  }
+  //==Logged-In Functions==//
+  SetLoggedIn(loggedIn: string) { this.saveData("status.loggedIn", loggedIn); }
+  GetLoggedIn() { return this.getData("status.loggedIn") || "F"; }
 
   SetCurrentCourse(index: number) {
     this.status.course = index;
@@ -80,40 +71,37 @@ export class DataComponentService {
     return this.courses;
   }
 
-  GetCourse() {
-    if (this.courses.length > 0) {
+  GetCourse(index: number = -1) {
+    if (index == -1) {
       return this.courses[this.status.course];
     }
     else {
+      return this.courses[index];
+    }
+    else
       return null;
-    }
   }
 
-  GetCourseSerial() {
-    if (this.courses.length > 0) {
-      return this.courses[this.status.course].serial;
-    }
-    else {
-      return 0;
-    }
-  }
-
-  GetCourseID() {
-    if (this.courses.length > 0) {
+  GetCourseID(index: number = -1) {
+    if (index == -1) {
       return this.courses[this.status.course].id;
     }
     else {
-      return "Error";
+      return this.courses[index].id;
     }
+    else
+      return null;
   }
 
-  GetCourseName() {
-    if (this.courses.length > 0) {
+  GetCourseName(index: number = -1) {
+    if (index == -1) {
       return this.courses[this.status.course].name;
     }
     else {
-      return "Error";
+      return this.courses[index].name;
     }
+    else
+      return null;
   }
 
   AddCourse(course: {
@@ -190,4 +178,24 @@ export class DataComponentService {
 
     return result;
   }
+
+  //==Local Storage==//
+  private saveData(key: string, data: any) {
+    console.log(key + '= ', JSON.parse(localStorage.getItem(key)!));
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  private getData(key: string) {
+    console.log(key + ': ', JSON.parse(localStorage.getItem(key)!));
+    return JSON.parse(localStorage.getItem(key)!);
+  }
+
+  private removeData(key: string) {
+    localStorage.removeItem(key);
+  }
+
+  private clearData() {
+    localStorage.clear();
+  }
+
 }
