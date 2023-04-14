@@ -90,116 +90,125 @@ export class DataComponentService {
     }
   }
 
-GetCourseID(index: number = -1) {
-  if (index == -1) {
-    return this.courses[this.status.course].id;
-  }
-  else {
-    return this.courses[index].id;
-  }
-}
-
-GetCourseName(index: number = -1) {
-  if (index == -1) {
-    return this.courses[this.status.course].name;
-  }
-  else {
-    return this.courses[index].name;
-  }
-}
-
-AddCourse(course: {
-  course_serial: number, course_id: string, description: string, course_name: string, id: number, professor_name: string
-}) {
-  this.courses.push({ serial: course.course_serial, id: course.course_id, name: course.course_name, passcode: "", description: course.description });
-}
-
-ClearCourses() {
-  this.courses = [];
-}
-
-GetNumQuestions() {
-  return this.questions.length;
-}
-
-GetQuestions() {
-  return this.questions;
-}
-
-GetQuestion(index: number = 0) {
-  return this.questions[index];
-}
-
-GetAnswer(index: number = 0) {
-  return this.questions[index].answer;
-}
-
-SetAnswer(index: number = 0, answer: string) {
-  this.questions[index].answer = answer;
-  this.snackBar.open("Response Submitted!", "Close", { duration: 3000 });
-}
-
-AddQuestion(question: { index: number, date: Date, question: string, answer: string }) {
-  this.questions.push(question);
-}
-
-ClearQuestions() {
-  this.questions = [];
-}
-
-OpenSyllabus() {
-  // TODO: Implement actual syllabus
-  window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
-}
-
-GetDate(date: Date = new Date(), time: boolean = false) {
-  let result: string = "";
-
-  result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
-  result += "/";
-  result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  result += "/";
-  result += date.getFullYear();
-
-  if (time) {
-    result += " " + this.GetTime(date);
+  GetCourseID(index: number = -1) {
+    if (index == -1) {
+      return this.courses[this.status.course].id;
+    }
+    else {
+      return this.courses[index].id;
+    }
   }
 
-  return result;
-}
-
-GetTime(date: Date = new Date()) {
-  let result = "";
-
-  if (date.getHours() % 12 == 0) {
-    result += "12";
-  } else {
-    result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+  GetCourseName(index: number = -1) {
+    if (index == -1) {
+      return this.courses[this.status.course].name;
+    }
+    else {
+      return this.courses[index].name;
+    }
   }
-  result += ":";
-  result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-  result += date.getHours() < 12 ? "am" : "pm";
 
-  return result;
-}
+  GetCourseSerial() {
+    if (this.courses.length > 0) {
+      return this.courses[this.status.course].serial;
+    }
+    else {
+      return 0;
+    }
+  }
+
+  AddCourse(course: {
+    course_serial: number, course_id: string, description: string, course_name: string, id: number, professor_name: string
+  }) {
+    this.courses.push({ serial: course.course_serial, id: course.course_id, name: course.course_name, passcode: "", description: course.description });
+  }
+
+  ClearCourses() {
+    this.courses = [];
+  }
+
+  GetNumQuestions() {
+    return this.questions.length;
+  }
+
+  GetQuestions() {
+    return this.questions;
+  }
+
+  GetQuestion(index: number = 0) {
+    return this.questions[index];
+  }
+
+  GetAnswer(index: number = 0) {
+    return this.questions[index].answer;
+  }
+
+  SetAnswer(index: number = 0, answer: string) {
+    this.questions[index].answer = answer;
+    this.snackBar.open("Response Submitted!", "Close", { duration: 3000 });
+  }
+
+  AddQuestion(question: { index: number, date: Date, question: string, answer: string }) {
+    this.questions.push(question);
+  }
+
+  ClearQuestions() {
+    this.questions = [];
+  }
+
+  OpenSyllabus() {
+    // TODO: Implement actual syllabus
+    window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
+  }
+
+  GetDate(date: Date = new Date(), time: boolean = false) {
+    let result: string = "";
+
+    result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
+    result += "/";
+    result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    result += "/";
+    result += date.getFullYear();
+
+    if (time) {
+      result += " " + this.GetTime(date);
+    }
+
+    return result;
+  }
+
+  GetTime(date: Date = new Date()) {
+    let result = "";
+
+    if (date.getHours() % 12 == 0) {
+      result += "12";
+    } else {
+      result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+    }
+    result += ":";
+    result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    result += date.getHours() < 12 ? "am" : "pm";
+
+    return result;
+  }
 
   //==Local Storage==//
   private saveData(key: string, data: any) {
-  console.log(key + '= ', JSON.parse(localStorage.getItem(key)!));
-  localStorage.setItem(key, JSON.stringify(data));
-}
+    console.log(key + '= ', JSON.parse(localStorage.getItem(key)!));
+    localStorage.setItem(key, JSON.stringify(data));
+  }
 
   private getData(key: string) {
-  console.log(key + ': ', JSON.parse(localStorage.getItem(key)!));
-  return JSON.parse(localStorage.getItem(key)!);
-}
+    console.log(key + ': ', JSON.parse(localStorage.getItem(key)!));
+    return JSON.parse(localStorage.getItem(key)!);
+  }
 
   private removeData(key: string) {
-  localStorage.removeItem(key);
-}
+    localStorage.removeItem(key);
+  }
 
   private clearData() {
-  localStorage.clear();
-}
+    localStorage.clear();
+  }
 
 }

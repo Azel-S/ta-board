@@ -63,26 +63,26 @@ export class LoginComponent {
       this.serve_back.LoginStudent(this.courseID!, this.courseCode!).then(res => {
         this.serve_comm.SetLoggedIn("S");
         this.serve_comm.SetSerial(res.course_serial);
-      this.serve_comm.SetCurrentCourse(0);
+        this.serve_comm.SetCurrentCourse(0);
 
-      this.serve_comm.SetProfName(res.professor_name);
+        this.serve_comm.SetProfName(res.professor_name);
 
-      this.serve_comm.ClearCourses();
-      this.serve_comm.AddCourse(res);
+        this.serve_comm.ClearCourses();
+        this.serve_comm.AddCourse(res);
 
-      this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
-        this.serve_comm.ClearQuestions();
-        if (res != null) {
-          for (let i = 0; i < res.length; i++) {
-            this.serve_comm.AddQuestion(res[i]);
+        this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
+          this.serve_comm.ClearQuestions();
+          if (res != null) {
+            for (let i = 0; i < res.length; i++) {
+              this.serve_comm.AddQuestion(res[i]);
+            }
           }
-        }
-      // TODO: Update data in component class
-      // e.g. serve_comm.SetProfName(serve_back.GetProfName(...));
-    }).catch(res => {
-      // TODO: Show error message
-      console.log("YAHOO!");
-    });
+        }).catch(res => {
+          // TODO: Show error message
+          console.log("YAHOO!");
+        });
+      }
+    }
   }
 
   teacher(credentials: { username: string, password: string }) {
