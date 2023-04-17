@@ -379,9 +379,14 @@ func (a *App) AddQuestion(w http.ResponseWriter, r *http.Request) {
 
 		// JSON decode success
 		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
-			s := time.Now()
-			time_string := s.Format("2006-01-02 15:04:05")
-			questionObj.Date_time = time_string
+			if questionObj.Date_time == "" {
+				s := time.Now()
+				time_string := s.Format("01/02/2006 03:04:05PM")
+				// TODO: Verify am/pm
+
+				questionObj.Date_time = time_string
+			}
+
 			err := questionObj.AddQuestion(a.DB)
 			if err == nil {
 				respondWithJSON(w, http.StatusOK, questionObj)
