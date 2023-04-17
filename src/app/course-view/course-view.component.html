@@ -24,7 +24,8 @@
       <mat-accordion class="pad-20" multi>
         <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions(); let i = index">
           <mat-expansion-panel-header>
-            <mat-panel-title class="names">{{ serve_comm.GetDate(question.date, true) }}</mat-panel-title>
+            <!--<mat-panel-title class="names">{{ serve_comm.GetDate(question.date_time, true) }}</mat-panel-title>-->
+            <mat-panel-title class="names">{{ serve_comm.GetDateTime(i) }}</mat-panel-title>
             <mat-panel-description>{{ question.question }}</mat-panel-description>
           </mat-expansion-panel-header>
           <mat-form-field appearance="outline" class="response">

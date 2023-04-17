@@ -22,9 +22,10 @@
     </mat-card-header>
     <mat-card-content>
       <mat-accordion class="pad-20" multi>
-        <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions()">
+        <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions(); let i = index">
           <mat-expansion-panel-header>
-            <mat-panel-title class="names">{{ serve_comm.GetDate(question.date, true) }}</mat-panel-title>
+            <!--<mat-panel-title class="names">{{ serve_comm.GetDate(question.date_time, true) }}</mat-panel-title>-->
+            <mat-panel-title class="names">{{ serve_comm.GetDateTime(i) }}</mat-panel-title>
             <mat-panel-description>{{ question.question }}</mat-panel-description>
           </mat-expansion-panel-header>
           <h3>{{ question.answer }}</h3>
@@ -32,7 +33,8 @@
 
         <mat-expansion-panel *ngIf="!addActive" [expanded]="true">
           <mat-expansion-panel-header>
-            <mat-panel-title class="names">{{ serve_comm.GetDate() + " " + serve_comm.GetTime() }}</mat-panel-title>
+            <!--<mat-panel-title class="names">{{ serve_comm.GetDate() + " " + serve_comm.GetTime() }}</mat-panel-title>-->
+            <mat-panel-title class="names">{{ serve_comm.GetDateTime() }}</mat-panel-title>
             <mat-panel-description>{{ description }}</mat-panel-description>
           </mat-expansion-panel-header>
           <mat-form-field appearance="outline" class="response">

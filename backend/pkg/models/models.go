@@ -41,7 +41,7 @@ type Question struct {
 	CourseSerial int    `gorm:"column:course_serial" json:"course_serial"`
 	Question     string `gorm:"column:question" json:"question"`
 	Answer       string `gorm:"column:answer" json:"answer"`
-	// TODO: Add date field
+	Date_time    string `gorm:"column:date_time" json:"date_time"`
 }
 
 func (Question) TableName() string {
@@ -146,6 +146,7 @@ func (q *Question) Exists(db *gorm.DB) bool {
 
 // Creates a question in database.
 func (q *Question) AddQuestion(db *gorm.DB) error {
+	//q.Date_time.String();
 	ret := db.Table(q.TableName()).Create(&q)
 	return ret.Error
 }
@@ -164,7 +165,7 @@ func (q *Question) GetQuestions(db *gorm.DB) ([]Question, error) {
 	var questionsList []Question
 	for rows.Next() {
 		var q Question
-		if err := rows.Scan(&q.ID, &q.CourseSerial, &q.Question, &q.Answer); err != nil {
+		if err := rows.Scan(&q.ID, &q.CourseSerial, &q.Question, &q.Answer, &q.Date_time); err != nil {
 			return nil, err
 		}
 		// q.Fill(db)

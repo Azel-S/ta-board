@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { DataBackendService } from './data-backend.service';
+import { result } from 'cypress/types/lodash';
+//import moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +22,9 @@ export class DataComponentService {
   professor: string = "John Doe";
 
   courses: { serial: number, id: string, name: string, passcode: string, description: string }[] = [];
-
-  questions: { date: Date, question: string, answer: string }[] = [];
+  
+  questions: {question: string, answer: string, date_time: string}[] = [];
+  //questions: { date: Date, question: string, answer: string }[] = [];
 
   //==Serial Functions==// 
   SetSerial(serial: number) {
@@ -143,12 +146,17 @@ export class DataComponentService {
     return this.questions[index].answer;
   }
 
+  GetDateTime(index: number = 0) {
+    return this.questions[index].date_time;
+  }
+
   SetAnswer(index: number = 0, answer: string) {
     this.questions[index].answer = answer;
     this.snackBar.open("Response Submitted!", "Close", { duration: 3000 });
   }
 
-  AddQuestion(question: { index: number, date: Date, question: string, answer: string }) {
+  //AddQuestion(question: { index: number, date: Date, question: string, answer: string, date_time: Date }) {
+  AddQuestion(question: { index: number, question: string, answer: string, date_time: string }) {
     this.questions.push(question);
   }
 
@@ -161,22 +169,29 @@ export class DataComponentService {
     window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
   }
 
-  GetDate(date: Date = new Date(), time: boolean = false) {
-    let result: string = "";
+ /* 
+  GetDate(date: string, time: boolean = false) {
+    console.log(date);
 
-    result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
-    result += "/";
-    result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    result += "/";
-    result += date.getFullYear();
 
-    if (time) {
-      result += " " + this.GetTime(date);
-    }
+    
+  //GetDate(date: Date = new Date(), time: boolean = false) {
+
+    // result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
+    // result += "/";
+    // result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    // result += "/";
+    // result += date.getFullYear();
+
+    // if (time) {
+    //   result += " " + this.GetTime(date);
+    
 
     return result;
   }
+*/
 
+/*
   GetTime(date: Date = new Date()) {
     let result = "";
 
@@ -191,6 +206,7 @@ export class DataComponentService {
 
     return result;
   }
+  */
 
   //==Local Storage==//
   private saveData(key: string, data: any) {
