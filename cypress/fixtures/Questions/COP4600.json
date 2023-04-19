@@ -1,0 +1,23 @@
+[
+	{
+		"question_serial" : 3,
+		"course_serial" : 2,
+		"question" : "Is linux actually better?",
+		"answer" : "No!",
+		"date_time" : "03/12/2019 05:54pm"
+	},
+	{
+		"question_serial" : 4,
+		"course_serial" : 2,
+		"question" : "MacOS is the best system ever made, right?",
+		"answer" : "Hell nah!",
+		"date_time" : "03/12/2019 05:54pm"
+	},
+	{
+		"question_serial" : 5,
+		"course_serial" : 2,
+		"question" : "What about Windows?",
+		"answer" : "XP FTW!",
+		"date_time" : "03/12/2019 05:54pm"
+	}
+]

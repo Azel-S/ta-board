@@ -1,0 +1,20 @@
+[
+	{
+		"user_serial" : 1,
+		"username" : "john",
+		"password" : "john",
+		"professor_name" : "John Doe"
+	},
+	{
+		"user_serial" : 2,
+		"username" : "jane",
+		"password" : "jane",
+		"professor_name" : "Jane Doe"
+	},
+	{
+		"user_serial" : 3,
+		"username" : "jay",
+		"password" : "jay",
+		"professor_name" : "Jay Day"
+	}
+]

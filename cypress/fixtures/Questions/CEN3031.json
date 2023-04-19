@@ -1,0 +1,16 @@
+[
+	{
+		"question_serial" : 1,
+		"course_serial" : 1,
+		"question" : "What is software Engineering anyways?",
+		"answer" : "No response",
+		"date_time" : "03/12/2019 05:54pm"
+	},
+	{
+		"question_serial" : 2,
+		"course_serial" : 1,
+		"question" : "Is this worth all the trouble? No, really?",
+		"answer" : "No response",
+		"date_time" : "03/12/2019 05:54pm"
+	}
+]

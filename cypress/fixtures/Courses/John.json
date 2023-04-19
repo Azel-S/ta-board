@@ -1,0 +1,29 @@
+[
+	{
+		"course_serial" : 1,
+		"user_serial" : 1,
+		"course_id" : "CEN3031",
+		"course_code" : "#0000",
+		"course_name" : "Software Engineering",
+		"professor_name" : "John Doe",
+		"description" : "This course goes over the fundamentals of programming in the real world."
+	},
+	{
+		"course_serial" : 2,
+		"user_serial" : 1,
+		"course_id" : "COP4600",
+		"course_code" : "#0003",
+		"course_name" : "Operating Systems",
+		"professor_name" : "John Doe",
+		"description" : "This course teaches the student about core concepts within the modern operating system."
+	},
+	{
+		"course_serial" : 3,
+		"user_serial" : 1,
+		"course_id" : "JOHN1001",
+		"course_code" : "#0002",
+		"course_name" : "How to John: The Intro",
+		"professor_name" : "John Doe",
+		"description" : "John's class for bad students!"
+	}
+]

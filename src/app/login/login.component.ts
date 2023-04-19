@@ -51,7 +51,7 @@ export class LoginComponent {
       this.errorStudent.message = 'Please include a Course ID of length 7 (eg. CEN3031)';
       return false;
     }
-    if ( this.courseCode[0] != '#') {
+    if (this.courseCode[0] != '#') {
       this.errorStudent.status = false;
       this.errorStudent.message = 'Course Codes must start with: # (eg. #1234)';
       return false;
@@ -134,18 +134,7 @@ export class LoginComponent {
           }
         }
 
-        this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
-          this.serve_comm.ClearQuestions();
-          if (res != null) {
-            for (let i = 0; i < res.length; i++) {
-              this.serve_comm.AddQuestion(res[i]);
-            }
-          }
-
-          this.serve_comm.Navigate("teacher-view")
-        }).catch(res => {
-          console.log("YAHOO!");
-        });
+        this.serve_comm.Navigate("teacher-view")
       }).catch(res => {
         console.log("YAHOO!");
       });
