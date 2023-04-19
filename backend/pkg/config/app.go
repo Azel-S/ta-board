@@ -68,9 +68,6 @@ func (a *App) Initialize(username, password, dbname string) {
 		date_time varchar(255),
 		CONSTRAINT pkey PRIMARY KEY (id)
 	)`
-	//date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, //"Incorrect datetime value: '0000-00-00' for column 'date' at row 1"
-	//date TIMESTAMP, // same as above
-	//date varchar(255), with Date string `gorm:"column:date" json:"date"`
 
 	// Drop/Remove old tables
 	a.DB.Exec(DropPrevTables)
@@ -85,32 +82,30 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.AddCourseParam(1, "CEN3031", "#0000", "Software Engineering", "John Doe", "This course goes over the fundamentals of programming in the real world.")
 	a.AddCourseParam(1, "COP4600", "#0003", "Operating Systems", "John Doe", "This course teaches the student about core concepts within the modern operating system.")
 	a.AddCourseParam(1, "JOHN1001", "#0002", "How to John: The Intro", "John Doe", "John's class for bad students!")
-	/*
-		a.AddQuestionParam(1, "What is software Engineering anyways?", "No response")
-		a.AddQuestionParam(1, "Is this worth all the trouble? No, really?", "No response")
-		a.AddQuestionParam(2, "Is linux actually better?", "No!")
-		a.AddQuestionParam(2, "MacOS is the best system ever made, right?", "Hell nah!")
-		a.AddQuestionParam(2, "What about Windows?", "XP FTW!")
-		a.AddQuestionParam(3, "What does it mean to John?", "No response")
-		a.AddQuestionParam(3, "Why do I never get a response?", "Extra no response")
-	*/
+
+	a.AddQuestionParam(1, "What is software Engineering anyways?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(1, "Is this worth all the trouble? No, really?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(2, "Is linux actually better?", "No!", "03/12/2019 05:54PM")
+	a.AddQuestionParam(2, "MacOS is the best system ever made, right?", "Hell nah!", "03/12/2019 05:54PM")
+	a.AddQuestionParam(2, "What about Windows?", "XP FTW!", "03/12/2019 05:54PM")
+	a.AddQuestionParam(3, "What does it mean to John?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(3, "Why do I never get a response?", "Extra no response", "03/12/2019 05:54PM")
 
 	// Add User Jane's data
 	a.AddUserParam("jane", "jane", "Jane Doe")
 	a.AddCourseParam(2, "JANE1001", "#0001", "How to Jane: The Sequel", "Jane Doe", "Jane's class for great students!")
 	a.AddCourseParam(2, "LEI2818", "#1003", "Leisure", "Jane Doe", "Learn about how relaxing is great, however you don\"t get to do that because you are taking this course! Mwahaahaha.")
 	a.AddCourseParam(2, "FOS2001", "#0022", "Mans Food", "Jane Doe", "Learn about why eating tasty stuff is bad.")
-	/*
-		a.AddQuestionParam(4, "What does it mean to Jane?", "No response")
-		a.AddQuestionParam(4, "I liked the prequel, John better. Thoughts?", "This is a sequel, they always suck!")
-		a.AddQuestionParam(5, "Why is called Mans food, I thought we were all for equality?", "No response")
-		a.AddQuestionParam(5, "Sugar is good, right?", "No response")
-		a.AddQuestionParam(6, "How come I never have any leisure in this class?", "No response")
-	*/
+
+	a.AddQuestionParam(4, "What does it mean to Jane?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(4, "I liked the prequel, John better. Thoughts?", "This is a sequel, they always suck!", "03/12/2019 05:54PM")
+	a.AddQuestionParam(5, "Why is called Mans food, I thought we were all for equality?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(5, "Sugar is good, right?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(6, "How come I never have any leisure in this class?", "No response", "03/12/2019 05:54PM")
+
 	a.AddUserParam("jay", "jay", "Jay Day")
 	a.AddCourseParam(3, "JAY2004", "#4004", "Music", "Jay Day", "Music is great, learn about it and stuff...")
-	/*	a.AddQuestionParam(7, "So glad this is not a country music class, it's all the same now! Agreed?", "No response")
-	 */
+	a.AddQuestionParam(7, "So glad this is not a country music class, it's all the same now! Agreed?", "No response", "03/12/2019 05:54PM")
 }
 
 func (a *App) AddUserParam(username string, password string, professor_name string) {
@@ -125,7 +120,7 @@ func (a *App) AddCourseParam(user_serial int, course_id string, course_code stri
 
 // func (a *App) AddQuestionParam(courseSerial int, questionStr string, answer string, date_time time.Time) {
 func (a *App) AddQuestionParam(courseSerial int, questionStr string, answer string, date_time string) {
-	questionObj := models.Question{CourseSerial: courseSerial, Question: questionStr, Answer: answer, Date_time: date_time}
+	questionObj := models.Question{CourseSerial: courseSerial, Question: questionStr, Answer: answer, DateTime: date_time}
 	a.DB.Table(questionObj.TableName()).Save(&questionObj)
 }
 
@@ -402,9 +397,14 @@ func (a *App) AddQuestion(w http.ResponseWriter, r *http.Request) {
 
 		// JSON decode success
 		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
-			s := time.Now()
-			time_string := s.Format("2006-01-02 15:04:05")
-			questionObj.Date_time = time_string
+			if questionObj.DateTime == "" {
+				s := time.Now()
+				time_string := s.Format("01/02/2006 03:04:05PM")
+				// TODO: Verify am/pm
+
+				questionObj.DateTime = time_string
+			}
+
 			err := questionObj.AddQuestion(a.DB)
 			if err == nil {
 				respondWithJSON(w, http.StatusOK, questionObj)

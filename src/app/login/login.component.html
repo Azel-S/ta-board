@@ -57,6 +57,10 @@
                                 *ngIf="(password && confirmPassword) && password != confirmPassword"><strong>Error:
                                 </strong>Passwords do not match.
                             </mat-error>
+                            <mat-error *ngIf="!errorRegister.status">
+                                <strong>Error:
+                                </strong>{{ errorRegister.message }}.
+                            </mat-error>
                         </form>
                     </mat-tab>
                 </mat-tab>

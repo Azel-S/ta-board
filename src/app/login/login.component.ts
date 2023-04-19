@@ -45,14 +45,44 @@ export class LoginComponent {
   errorRegister: { status: boolean, message: string } = { status: true, message: '' };
 
   ValidateStudent() {
-    if (this.courseCode.length > 0 && this.courseCode[0] != '#') {
+
+    if (this.courseID.length < 7) {
       this.errorStudent.status = false;
-      this.errorStudent.message = 'Not long enough';
+      this.errorStudent.message = 'Please include a Course ID of length 7 (eg. CEN3031)';
+      return false;
+    }
+    if ( this.courseCode[0] != '#') {
+      this.errorStudent.status = false;
+      this.errorStudent.message = 'Course Codes must start with: # (eg. #1234)';
+      return false;
+    }
+    if (this.courseCode.length < 5) {
+      this.errorStudent.status = false;
+      this.errorStudent.message = 'Please include a Course Code of length 5 (eg. #1234)';
       return false;
     }
     else {
       this.errorStudent.status = true;
       this.errorStudent.message = '';
+      return true;
+    }
+  }
+
+  ValidateRegister() {
+
+    if (this.password.length < 4) {
+      this.errorRegister.status = false;
+      this.errorRegister.message = 'Please include a Password of minimum length 4 (eg. abcd)';
+      return false;
+    }
+    if (this.confirmPassword.length < 4) {
+      this.errorRegister.status = false;
+      this.errorRegister.message = 'Please include a Password of minimum length 4 (eg. abcd)';
+      return false;
+    }
+    else {
+      this.errorRegister.status = true;
+      this.errorRegister.message = '';
       return true;
     }
   }

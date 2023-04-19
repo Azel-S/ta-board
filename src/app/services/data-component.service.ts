@@ -134,6 +134,7 @@ export class DataComponentService {
   }
 
   GetQuestions() {
+    console.log(this.questions)
     return this.questions;
   }
 
@@ -168,44 +169,33 @@ export class DataComponentService {
     window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
   }
 
- /* 
-  GetDate(date: string, time: boolean = false) {
-    console.log(date);
-
-
-    
-  //GetDate(date: Date = new Date(), time: boolean = false) {
-
-    // result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
-    // result += "/";
-    // result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    // result += "/";
-    // result += date.getFullYear();
-
-    // if (time) {
-    //   result += " " + this.GetTime(date);
-    
-
-    return result;
-  }
-*/
-
-/*
-  GetTime(date: Date = new Date()) {
+  GetCurrentDate(date: Date = new Date(), time: boolean = true) {
     let result = "";
 
-    if (date.getHours() % 12 == 0) {
-      result += "12";
-    } else {
-      result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+    result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
+    result += "/";
+    result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    result += "/";
+    result += date.getFullYear();
+
+    if (time) {
+      result += " ";  // Spacer
+
+      if (date.getHours() % 12 == 0) {
+        result += "12";
+      } else {
+        result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+      }
+      result += ":";
+      result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      result += ":";
+      result += date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      result += date.getHours() < 12 ? "am" : "pm";
     }
-    result += ":";
-    result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-    result += date.getHours() < 12 ? "am" : "pm";
 
     return result;
   }
-  */
+
 
   //==Local Storage==//
   private saveData(key: string, data: any) {
