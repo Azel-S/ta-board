@@ -13,14 +13,16 @@ describe('Student Can Login', () => {
       course_name: 'Software Engineering',
       professor_name: 'John Doe',
       description: 'This course goes over the fundamentals of programming in the real world.'
-    }).as('Student')
+    }).as('Student');
 
     cy.intercept('POST', '/GetQuestions', {}).as(
       'GetQuestions'
-    )
+    );
 
     cy.get("button#SubmitS").should('be.visible').click();
-    cy.wait(4000) // <--- this is unnecessary
+
+    cy.wait('@Student');
+    cy.wait('@GetQuestions');
 
   })
 })
