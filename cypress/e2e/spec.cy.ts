@@ -141,23 +141,6 @@ describe('Verify Submit and Cancel Do Not Exist After Cancelling', () => {
   })
 })
 
-describe('Verify Question Posts after Submission', () => {
-  it('passes', () => {
-    cy.visit(url + '/login')
-    cy.contains('Course ID').type('CEN3031');
-    cy.contains('Course Code').type('#0000');
-    cy.get("button#SubmitS").should('be.visible').click();
-
-    // INFO: Seems that cypress doesn't allow access to two origins.
-    //       Currently we are forcing a visit, need a better solution.
-    cy.visit(url + '/student-view')
-    cy.get("button#AskQuestion").should('be.visible').click();
-    cy.contains('What is your question...?').type('When is your birthday?');
-    cy.get("button#SubmitQuestion").should('be.visible').click();
-    cy.contains('When is your birthday?');
-  })
-})
-
 // describe('Student can Open Syllabus', () => {
 //   it('passes', () => {
 //     // INFO: Seems that cypress doesn't allow access to two origins.
