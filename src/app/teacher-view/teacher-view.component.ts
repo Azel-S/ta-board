@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class TeacherViewComponent {
   constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 
-  modifyCourse(index: number) {
+  viewCourse(index: number) {
     this.serve_comm.SetCurrentCourse(index);
 
     this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {

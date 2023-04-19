@@ -146,22 +146,22 @@ func (a *App) GetRTR() *mux.Router {
 
 */
 
-// DELETES A USER IN DATABASE
-func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r) // Same pattern as in UpdateUser() and GetUser()
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
-		return
-	}
-	u := models.User{UserSerial: id} // Create user struct with given ID
-	// Attempts to find the User row with matching ID as created user struct above and delete it
-	if err := u.DeleteUser(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
-}
+// // DELETES A USER IN DATABASE
+// func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
+// 	vars := mux.Vars(r) // Same pattern as in UpdateUser() and GetUser()
+// 	id, err := strconv.Atoi(vars["id"])
+// 	if err != nil {
+// 		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
+// 		return
+// 	}
+// 	u := models.User{UserSerial: id} // Create user struct with given ID
+// 	// Attempts to find the User row with matching ID as created user struct above and delete it
+// 	if err := u.DeleteUser(a.DB); err != nil {
+// 		respondWithError(w, http.StatusInternalServerError, err.Error())
+// 		return
+// 	}
+// 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+// }
 
 /*
 
@@ -169,7 +169,8 @@ func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 */
 
-// DELETES A COURSE IN DATABASE
+// Delete a course in database
+// TODO: Delete associated questions from database
 func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 	if !HandleCORS(&w, r) {
 		var courseObj models.Course
@@ -183,6 +184,27 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 			} else {
 				fmt.Println("DeleteCourse(): Course not found in database")
 				respondWithError(w, http.StatusNotFound, "Course not found in database")
+			}
+		}
+	}
+}
+
+// Delete a question in database
+// TODO: Create DeleteQuestion function in model.go to make this work
+func (a *App) DeleteQuestion(w http.ResponseWriter, r *http.Request) {
+	if !HandleCORS(&w, r) {
+		var questionObj models.Question
+
+		// JSON decode success
+		if a.DecodeJSON(w, r, &questionObj) {
+			if questionObj.Exists(a.DB) {
+				// TODO: Create DeleteQuestion function in model.go
+				// questionObj.DeleteQuestion(a.DB)
+				fmt.Println("DeleteQuestion(): deleted ", questionObj)
+				respondWithJSON(w, http.StatusOK, questionObj)
+			} else {
+				fmt.Println("DeleteQuestion(): Question not found in database")
+				respondWithError(w, http.StatusNotFound, "Question not found in database")
 			}
 		}
 	}
@@ -440,5 +462,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/GetQuestions", a.Questions).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/AddQuestion", a.AddQuestion).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/UpdateAnswer", a.UpdateAnswer).Methods("POST", "OPTIONS")
+
 	a.Router.HandleFunc("/DeleteCourse", a.DeleteCourse).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/DeleteQuestion", a.DeleteQuestion).Methods("POST", "OPTIONS")
 }

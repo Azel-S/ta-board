@@ -33,7 +33,11 @@
             <textarea matInput [(ngModel)]="responses[i]"></textarea>
           </mat-form-field>
           <div>
-            <button mat-raised-button color="accent" (click)="submit(i)">Submit</button>
+            <button mat-raised-button color="accent" (click)="respond(i)">Respond</button>
+            <div class="delete-button">
+              <button mat-raised-button color="primary"
+                (click)="deleteQuestion(question.question_serial)">Delete</button>
+            </div>
           </div>
         </mat-expansion-panel>
       </mat-accordion>

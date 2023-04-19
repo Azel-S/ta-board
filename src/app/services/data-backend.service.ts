@@ -55,9 +55,13 @@ export class DataBackendService {
     return result;
   }
 
-  //
   async DeleteCourse(course_serial: number) {
     const result = await lastValueFrom(this.http.post<any>(this.url + '/DeleteCourse', { course_serial: course_serial }));
+    return result;
+  }
+
+  async DeleteQuestion(question_serial: number) {
+    const result = await lastValueFrom(this.http.post<any>(this.url + '/DeleteQuestion', { question_serial: question_serial }));
     return result;
   }
 

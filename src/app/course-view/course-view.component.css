@@ -9,3 +9,8 @@
 .response {
     display: flex;
 }
+
+.delete-button {
+    display: inline;
+    padding-left: 20px;
+}
