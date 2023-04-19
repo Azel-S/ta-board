@@ -175,6 +175,29 @@ func (a *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 // DELETES A COURSE IN DATABASE
 func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
+	if !HandleCORS(&w, r) {
+		var courseObj models.Course
+
+		// JSON decode success
+		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+			// TODO: Check for exists of username.
+			if courseObj.Exists(a.DB) {
+				courseObj.DeleteCourse(a.DB)
+				fmt.Println("DeleteCourse(): deleted ", courseObj)
+				respondWithJSON(w, http.StatusCreated, courseObj)
+			} else {
+				fmt.Println("DeleteCourse(): didn't work")
+
+				respondWithError(w, http.StatusInternalServerError, "Course Doesn't Exist")
+			}
+		} else {
+			//fmt.Println("TeacherLogin(): Invalid JSON recieved")
+			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		}
+
+		r.Body.Close()
+	}
+
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -471,4 +494,5 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/GetQuestions", a.Questions).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/AddQuestion", a.AddQuestion).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/UpdateAnswer", a.UpdateAnswer).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/DeleteCourse", a.DeleteCourse).Methods("POST", "OPTIONS")
 }

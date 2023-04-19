@@ -16,7 +16,7 @@ export class TeacherViewComponent {
 
     this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
       this.serve_comm.ClearQuestions();
-      if(res != null) {
+      if (res != null) {
         for (let i = 0; i < res.length; i++) {
           this.serve_comm.AddQuestion(res[i]);
         }
@@ -26,7 +26,22 @@ export class TeacherViewComponent {
     })
   }
 
-  deleteCourse(index: string, passcode: string) {
-    // TODO
+  deleteCourse(index: number) {
+    this.serve_comm.SetCurrentCourse(index);
+    this.serve_back.DeleteCourse(this.serve_comm.GetCourseSerial()).then(res => {
+      
+      this.serve_back.GetCourses(this.serve_comm.GetSerial()).then(res => {
+        this.serve_comm.ClearCourses();
+        if (res != null) {
+          for (let i = 0; i < res.length; i++) {
+            this.serve_comm.AddCourse(res[i]);
+          }
+        }
+        this.serve_comm.Navigate("teacher-view");
+
+      }).catch(res => {
+        console.log("YAHOO!");
+      });
+    });
   }
 }

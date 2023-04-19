@@ -24,7 +24,6 @@ export class DataComponentService {
   courses: { serial: number, id: string, name: string, passcode: string, description: string }[] = [];
   
   questions: {question: string, answer: string, date_time: string}[] = [];
-  //questions: { date: Date, question: string, answer: string }[] = [];
 
   //==Serial Functions==// 
   SetSerial(serial: number) {
