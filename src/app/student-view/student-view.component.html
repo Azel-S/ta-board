@@ -42,15 +42,15 @@
             <textarea matInput [(ngModel)]="description"></textarea>
           </mat-form-field>
           <div>
-            <button class="pad-20-left" mat-raised-button color="accent" (click)="submit()">Submit</button>
+            <button class="pad-20-left" mat-raised-button color="accent" id="SubmitQuestion" (click)="submit()">Submit</button>
             <div class="cancel-button">
-              <button mat-raised-button color="primary" (click)="toggleActive()">Cancel</button>
+              <button mat-raised-button color="primary" id="CancelQuestion" (click)="toggleActive()">Cancel</button>
             </div>
           </div>
         </mat-expansion-panel>
 
         <div class="pad-20-top">
-          <button mat-raised-button *ngIf="addActive" color="accent" (click)="toggleActive()">
+          <button mat-raised-button *ngIf="addActive" color="accent" id="AskQuestion" (click)="toggleActive()">
             Ask a Question
           </button>
         </div>
