@@ -1,0 +1,29 @@
+[
+	{
+		"course_serial" : 4,
+		"user_serial" : 2,
+		"course_id" : "JANE1001",
+		"course_code" : "#0001",
+		"course_name" : "How to Jane: The Sequel",
+		"professor_name" : "Jane Doe",
+		"description" : "Jane's class for great students!"
+	},
+	{
+		"course_serial" : 5,
+		"user_serial" : 2,
+		"course_id" : "LEI2818",
+		"course_code" : "#1003",
+		"course_name" : "Leisure",
+		"professor_name" : "Jane Doe",
+		"description" : "Learn about how relaxing is great, however you don\"t get to do that because you are taking this course! Mwahaahaha."
+	},
+	{
+		"course_serial" : 6,
+		"user_serial" : 2,
+		"course_id" : "FOS2001",
+		"course_code" : "#0022",
+		"course_name" : "Mans Food",
+		"professor_name" : "Jane Doe",
+		"description" : "Learn about why eating tasty stuff is bad."
+	}
+]

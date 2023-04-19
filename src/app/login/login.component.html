@@ -3,53 +3,64 @@
         <mat-card>
             <mat-tab-group>
                 <mat-tab label="Student">
-                    <form #regForm="ngForm" class="pad-20">
-                        <mat-form-field appearance="outline">
+                    <form class="pad-20">
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                             <mat-label>Course ID</mat-label>
-                            <input matInput autofocus type="courseID" name="courseID" [(ngModel)]="courseID">
-                            <mat-error *ngIf="courseIDFormControl.hasError('required')">
-                                Please enter a <strong>Course ID</strong>
-                            </mat-error>
+                            <input matInput autofocus name="courseID" [(ngModel)]="courseID" required>
                         </mat-form-field>
-
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                            <mat-label>Course Code</mat-label>
+                            <input matInput autofocus name="courseCode" [(ngModel)]="courseCode" required>
+                        </mat-form-field>
                         <button mat-raised-button type="submit" color="accent" id="SubmitS"
-                            (click)="student(regForm.value)">Login</button>
+                            (click)="student()" [disabled]="!courseID || !courseCode">Login
+                        </button>
+                        <mat-error *ngIf="!errorStudent.status">
+                            <strong>Error:
+                            </strong>{{ errorStudent.message }}.
+                        </mat-error>
                     </form>
                     <mat-tab label="Teacher">
                         <form class="pad-20">
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                                 <mat-label>Username</mat-label>
-                                <input matInput type="username" name="username" [(ngModel)]="username">
+                                <input matInput name="username" [(ngModel)]="username" required>
                             </mat-form-field>
-
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" [hideRequiredMarker]="true">
                                 <mat-label>Password</mat-label>
-                                <input matInput type="password" name="password" [(ngModel)]="password">
+                                <input matInput type="password" name="password" [(ngModel)]="password" required>
                             </mat-form-field>
-
-                            <button mat-raised-button type="submit" color="accent" id="submitT"
-                                (click)="teacher(regForm.value)">Login</button>
+                            <button mat-raised-button type="submit" color="accent" id="SubmitT"
+                                (click)="teacher()" [disabled]="!username || !password">Login
+                            </button>
                         </form>
                     </mat-tab>
                     <mat-tab label="Register">
-                        <form class="pad-20" #regForm="ngForm" (ngSumbit)="register(regForm.value)">
+                        <form class="pad-20">
                             <mat-form-field appearance="outline">
                                 <mat-label>Username</mat-label>
-                                <input matInput type="username" name="username" [(ngModel)]="username">
+                                <input matInput name="username" [(ngModel)]="username">
                             </mat-form-field>
-
                             <mat-form-field appearance="outline">
                                 <mat-label>Password</mat-label>
                                 <input matInput type="password" name="password" [(ngModel)]="password">
                             </mat-form-field>
-
                             <mat-form-field appearance="outline">
                                 <mat-label>Confirm Password</mat-label>
                                 <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword">
                             </mat-form-field>
-
                             <button mat-raised-button type="submit" color="accent" id="SubmitR"
-                                (click)="register(regForm.value)">Register</button>
+                                (click)="register()"
+                                [disabled]="!username || !password || !confirmPassword || password != confirmPassword">Register
+                            </button>
+                            <mat-error
+                                *ngIf="(password && confirmPassword) && password != confirmPassword"><strong>Error:
+                                </strong>Passwords do not match.
+                            </mat-error>
+                            <mat-error *ngIf="!errorRegister.status">
+                                <strong>Error:
+                                </strong>{{ errorRegister.message }}.
+                            </mat-error>
                         </form>
                     </mat-tab>
                 </mat-tab>

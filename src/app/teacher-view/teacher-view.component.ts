@@ -9,16 +9,36 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class TeacherViewComponent {
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) { }
 
-  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
-    this.serve_back.GetCoursesAsTeacher(this.serve_comm.GetUserSerial()).then(res => {
-      // this.serve_comm.ClearCourses();
+  viewCourse(index: number) {
+    this.serve_comm.SetCurrentCourse(index);
 
-      for (let i = 0; i < res.length; i++) {
-        this.serve_comm.AddCourse(res[i]);
+    this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
+      this.serve_comm.ClearQuestions();
+      if (res != null) {
+        for (let i = 0; i < res.length; i++) {
+          this.serve_comm.AddQuestion(res[i]);
+        }
       }
-    }).catch(res => {
-      console.log("YAHOO!");
+
+      this.serve_comm.Navigate("course-view")
+    })
+  }
+
+  deleteCourse(index: number) {
+    this.serve_comm.SetCurrentCourse(index);
+    this.serve_back.DeleteCourse(this.serve_comm.GetCourseSerial()).then(res => {
+      this.serve_back.GetCourses(this.serve_comm.GetSerial()).then(res => {
+        this.serve_comm.ClearCourses();
+        if (res != null) {
+          for (let i = 0; i < res.length; i++) {
+            this.serve_comm.AddCourse(res[i]);
+          }
+        }
+      }).catch(res => {
+        console.log("YAHOO!");
+      });
     });
   }
 }

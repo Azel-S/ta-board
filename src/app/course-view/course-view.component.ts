@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
+import { DataBackendService } from '../services/data-backend.service';
 import { DataComponentService } from '../services/data-component.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-course-view',
@@ -9,7 +11,25 @@ import { DataComponentService } from '../services/data-component.service';
 })
 
 export class CourseViewComponent {
-  constructor(public serve_comm: DataComponentService) {
-    serve_comm.Navigate("course-view");
+  constructor(public serve_comm: DataComponentService, private serve_back: DataBackendService, private http: HttpClient) {
+    for (let i = 0; i < serve_comm.GetNumQuestions(); i++) {
+      let answer = serve_comm.GetAnswer(i);
+
+      if (answer != "No Response") {
+        this.responses[i] = answer;
+      }
+    }
+  }
+
+  responses: string[] = [];
+
+  respond(index: number) {
+    this.serve_back.UpdateAnswer(this.serve_comm.GetCourseSerial(), this.serve_comm.GetQuestion(index).question, this.responses[index]).then(res => {
+      this.serve_comm.SetAnswer(index, this.responses[index]);
+    });
+  }
+
+  deleteQuestion(question_serial: number) {
+    this.serve_back.DeleteQuestion(question_serial);
   }
 }

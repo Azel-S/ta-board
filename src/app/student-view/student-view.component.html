@@ -1,24 +1,70 @@
 <div class="div">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title-group>
-                <mat-card-title>{{serve_comm.GetCourseName() + " (" + serve_comm.GetCourseID() + ")"}}</mat-card-title>
-                <mat-card-subtitle>{{serve_comm.GetProfName()}}</mat-card-subtitle>
-                <button mat-raised-button type="submit" color="accent" id="syllabusButton" (click)="serve_comm.OpenSyllabus()">
-                    Open Syllabus
-                </button>
-            </mat-card-title-group>
-        </mat-card-header>
-        <mat-card-content></mat-card-content>
-    </mat-card>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>{{serve_comm.GetCourseName() + " (" + serve_comm.GetCourseID() + ")"}}</mat-card-title>
+        <mat-card-subtitle>{{serve_comm.GetProfName()}}</mat-card-subtitle>
+        <button mat-raised-button type="submit" color="accent" id="syllabusButton" (click)="serve_comm.OpenSyllabus()">
+          Open Syllabus
+        </button>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content></mat-card-content>
+  </mat-card>
+</div>
+
+<div class="pad-20">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>List of Questions:</mat-card-title>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-accordion class="pad-20" multi>
+        <mat-expansion-panel *ngFor="let question of serve_comm.GetQuestions(); let i = index;">
+          <mat-expansion-panel-header>
+            <!--<mat-panel-title class="names">{{ serve_comm.GetDate(question.date_time, true) }}</mat-panel-title>-->
+            <mat-panel-title class="names">{{ serve_comm.GetDateTime(i) }}</mat-panel-title>
+            <mat-panel-description>{{ question.question }}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <h3>{{ question.answer }}</h3>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="!addActive" [expanded]="true">
+          <mat-expansion-panel-header>
+            <!--<mat-panel-title class="names">{{ serve_comm.GetDate() + " " + serve_comm.GetTime() }}</mat-panel-title>-->
+            <mat-panel-title class="names">{{ serve_comm.GetCurrentDate() }}</mat-panel-title>
+            <mat-panel-description>{{ description }}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field appearance="outline" class="response">
+            <mat-label>Response</mat-label>
+            <textarea matInput [(ngModel)]="description"></textarea>
+          </mat-form-field>
+          <div>
+            <button class="pad-20-left" mat-raised-button color="accent" id="SubmitQuestion" (click)="submit()">Submit</button>
+            <div class="cancel-button">
+              <button mat-raised-button color="primary" id="CancelQuestion" (click)="toggleActive()">Cancel</button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+        <div class="pad-20-top">
+          <button mat-raised-button *ngIf="addActive" color="accent" id="AskQuestion" (click)="toggleActive()">
+            Ask a Question
+          </button>
+        </div>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
 </div>
 
 <div class="div">
-    <mat-card class="bot-card">
-        <mat-card-content>
-            <iframe class="bot-frame" allow="microphone;"
-                src="https://console.dialogflow.com/api-client/demo/embedded/6d736956-0a55-41cf-8dc5-d7b7ebe842ad">
-            </iframe>
-        </mat-card-content>
-    </mat-card>
+  <mat-card class="bot-card">
+    <mat-card-content>
+      <iframe class="bot-frame" allow="microphone;"
+        src="https://console.dialogflow.com/api-client/demo/embedded/6d736956-0a55-41cf-8dc5-d7b7ebe842ad">
+      </iframe>
+    </mat-card-content>
+  </mat-card>
 </div>

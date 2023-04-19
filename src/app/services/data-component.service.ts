@@ -1,49 +1,52 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { DataBackendService } from './data-backend.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class DataComponentService {
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private serve_back: DataBackendService, private router: Router, private http: HttpClient, private snackBar: MatSnackBar) { }
 
   // Use capital characters to assign value.
   // F - False
   // S - Student
   // T - Teacher
-  status: { loggedIn: string, user_serial: number, course: number } = { loggedIn: "F", user_serial: 0, course: 0 };
+  status: { course: number } = { course: 0 };
 
-  professor: { firstName: string, lastName: string } = { firstName: "John", lastName: "Doe" };
+  professor: string = "John Doe";
 
-  courses: { id: string, name: string, passcode: string, description: string }[] = [
-    { id: "CEN3031", name: "Software Engineering", passcode: "", description: "This course goes over the fundamentals of programming in the real world." },
-    { id: "COP4600", name: "Operating Systems", passcode: "", description: "This course teaches the student about core concepts within the modern operating system." },
-    { id: "FOS2001", name: "Mans Food", passcode: "", description: "Learn about why eating tasty stuff is bad." },
-    { id: "LEI2818", name: "Leisure", passcode: "", description: "Learn about how relaxing is great, however you don't get to do that because you are taking this course! Mwahaahaha." },
-  ];
+  courses: { serial: number, id: string, name: string, passcode: string, description: string }[] = [];
+  
+  questions: {question_serial: number, question: string, answer: string, date_time: string}[] = [];
 
-  questions: { student: string, question: string }[] = [
-    { student: 'Abbas', question: "How the heck is this easy?" },
-    { student: 'Riley', question: "How much is an apple worth?" },
-    { student: 'Nick', question: "Why is the sky blue?" },
-  ];
-
-  SetUserSerial(user_serial: number) {
-    this.status.user_serial = user_serial;
+  //==Serial Functions==// 
+  SetSerial(serial: number) {
+    this.saveData("status.serial", serial);
   }
 
-  GetUserSerial() {
-    return this.status.user_serial;
+  GetSerial() {
+    return this.getData("status.serial") || 0;
   }
 
-  SetLoggedIn(type: string) {
-    this.status.loggedIn = type;
+  //==Logged-In Functions==//
+  SetLoggedIn(loggedIn: string) {
+    this.saveData("status.loggedIn", loggedIn);
   }
 
   GetLoggedIn() {
-    return this.status.loggedIn;
+    return this.getData("status.loggedIn") || "F";
+  }
+
+  SetCurrentCourse(index: number) {
+    this.status.course = index;
+  }
+
+  GetCurrentCourse() {
+    return this.status.course;
   }
 
   Navigate(component: string, force: boolean = false) {
@@ -57,16 +60,17 @@ export class DataComponentService {
     }
   }
 
+  // Shows a notification at the bottom of the screen.
+  Notify(message: string, action: string = "Close", duration: number = 3000) {
+    this.snackBar.open(message, action, { duration: duration });
+  }
+
   GetProfName() {
-    return this.professor.firstName + " " + this.professor.lastName;
+    return this.professor;
   }
 
-  GetProfFirstName() {
-    return this.professor.firstName;
-  }
-
-  GetProfLastName() {
-    return this.professor.lastName;
+  SetProfName(professor: string) {
+    this.professor = professor;
   }
 
   GetNumCourses() {
@@ -77,37 +81,46 @@ export class DataComponentService {
     return this.courses;
   }
 
-  GetCourse(index: number = -1) {
-    if (index == -1) {
+  GetCourse() {
+    if (this.courses.length > 0) {
       return this.courses[this.status.course];
     }
     else {
-      return this.courses[index];
+      return null;
     }
   }
 
-  GetCourseID(index: number = -1) {
-    if (index == -1) {
+  GetCourseSerial() {
+    if (this.courses.length > 0) {
+      return this.courses[this.status.course].serial;
+    }
+    else {
+      return 0;
+    }
+  }
+
+  GetCourseID() {
+    if (this.courses.length > 0) {
       return this.courses[this.status.course].id;
     }
     else {
-      return this.courses[index].id;
+      return "Error";
     }
   }
 
-  GetCourseName(index: number = -1) {
-    if (index == -1) {
+  GetCourseName() {
+    if (this.courses.length > 0) {
       return this.courses[this.status.course].name;
     }
     else {
-      return this.courses[index].name;
+      return "Error";
     }
   }
 
   AddCourse(course: {
-    course_id: string, course_info_raw: string, course_name: string, id: number, professor_name: string
+    course_serial: number, course_id: string, description: string, course_name: string, id: number, professor_name: string
   }) {
-    this.courses.push({id: course.course_id, name: course.course_name, passcode: "", description: course.course_info_raw});
+    this.courses.push({ serial: course.course_serial, id: course.course_id, name: course.course_name, passcode: "", description: course.description });
   }
 
   ClearCourses() {
@@ -119,6 +132,7 @@ export class DataComponentService {
   }
 
   GetQuestions() {
+    console.log(this.questions)
     return this.questions;
   }
 
@@ -126,8 +140,76 @@ export class DataComponentService {
     return this.questions[index];
   }
 
+  GetAnswer(index: number = 0) {
+    return this.questions[index].answer;
+  }
+
+  GetDateTime(index: number = 0) {
+    return this.questions[index].date_time;
+  }
+
+  SetAnswer(index: number = 0, answer: string) {
+    this.questions[index].answer = answer;
+    this.snackBar.open("Response Submitted!", "Close", { duration: 3000 });
+  }
+
+  //AddQuestion(question: { index: number, date: Date, question: string, answer: string, date_time: Date }) {
+  AddQuestion(question: { question_serial: number, question: string, answer: string, date_time: string }) {
+    this.questions.push(question);
+  }
+
+  ClearQuestions() {
+    this.questions = [];
+  }
+
   OpenSyllabus() {
     // TODO: Implement actual syllabus
     window.open('https://www.africau.edu/images/default/sample.pdf', '_blank');
   }
+
+  GetCurrentDate(date: Date = new Date(), time: boolean = true) {
+    let result = "";
+
+    result += date.getMonth() < 10 ? "0" + date.getMonth() : date.getMonth();
+    result += "/";
+    result += date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    result += "/";
+    result += date.getFullYear();
+
+    if (time) {
+      result += " ";  // Spacer
+
+      if (date.getHours() % 12 == 0) {
+        result += "12";
+      } else {
+        result += date.getHours() % 12 < 10 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+      }
+      result += ":";
+      result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      result += date.getHours() < 12 ? "am" : "pm";
+    }
+
+    return result;
+  }
+
+
+  //==Local Storage==//
+  private saveData(key: string, data: any) {
+    console.log(key + '= ', JSON.parse(localStorage.getItem(key)!));
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  private getData(key: string) {
+    console.log(key + ': ', JSON.parse(localStorage.getItem(key)!));
+    return JSON.parse(localStorage.getItem(key)!);
+  }
+
+  private removeData(key: string) {
+    localStorage.removeItem(key);
+  }
+
+  private clearData() {
+    localStorage.clear();
+  }
+
 }

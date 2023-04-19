@@ -1,53 +1,77 @@
-<div class="main-div">
-    <mat-stepper orientation="vertical" [linear]="true" #stepper>
-        <mat-step [stepControl]="contactGroup">
-            <form [formGroup]="contactGroup">
-                <ng-template matStepLabel>Contact Information</ng-template>
-                <div>
-                    <mat-form-field class="input-horizontal">
-                        <mat-label>First Name</mat-label>
-                        <input matInput formControlName="firstName" required>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Last Name</mat-label>
-                        <input matInput formControlName="lastName" required>
-                    </mat-form-field>
+<div class="center-container">
+    <div class="content">
+        <mat-stepper orientation="vertical" linear #stepper>
+            <mat-step [stepControl]="initGroup">
+                <form [formGroup]="initGroup">
+                    <ng-template matStepLabel>Initial Information</ng-template>
+                    <div class="pad-20">
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                            <mat-label>First Name</mat-label>
+                            <input matInput formControlName="firstName" required [(ngModel)]="professor.firstName">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput formControlName="lastName" required [(ngModel)]="professor.lastName">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                            <mat-label>Number of Courses</mat-label>
+                            <input matInput formControlName="numCourses" type="number" required
+                                [(ngModel)]="numCourses">
+                        </mat-form-field>
+                        <button [disabled]="!professor.firstName || !professor.lastName || !numCourses"
+                            mat-raised-button color="accent" matStepperNext>Next
+                        </button>
+                        <mat-error *ngIf="numCourses <= 0"><strong>Error:
+                            </strong>Number of Courses must be a number above 0.
+                        </mat-error>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step *ngFor="let course of [].constructor(numCourses); let i = index" [stepControl]="courseGroup">
+                <form [formGroup]="courseGroup">
+                    <ng-template matStepLabel>Course {{i + 1}}</ng-template>
+                    <div class="pad-20">
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                            <mat-label>Course Name</mat-label>
+                            <input matInput formControlName="courseName" placeholder="e.g. Intro to Software" required
+                                [(ngModel)]="courses.name[i]">
+                        </mat-form-field>
+                        <div class="horizontal-container">
+                            <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                                <mat-label>Course ID</mat-label>
+                                <input matInput formControlName="courseID" placeholder="e.g. CEN3031" required
+                                    [(ngModel)]="courses.id[i]">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                                <mat-label>Course Passcode</mat-label>
+                                <input matInput formControlName="coursePasscode" placeholder="e.g. #124" required
+                                    [(ngModel)]="courses.codes[i]">
+                            </mat-form-field>
+                        </div>
+                        <mat-form-field appearance="outline" [hideRequiredMarker]="true">
+                            <mat-label>Decription</mat-label>
+                            <textarea matInput formControlName="courseDescription" placeholder="Type a response..."
+                                required [(ngModel)]="courses.description[i]"></textarea>
+                        </mat-form-field>
+                        <div>
+                            <button mat-raised-button color="primary" matStepperPrevious>Back</button>
+                        </div>
+                        <div class="pad-top-5">
+                            <button mat-raised-button color="accent" matStepperNext
+                                [disabled]="!courses.id[i] || !courses.codes[i] || !courses.name[i] || !courses.description[i]">Next
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step>
+                <ng-template matStepLabel>Submit</ng-template>
+                <div class="pad-20">
+                    <mat-checkbox [(ngModel)]="agree">I have verified the information above!</mat-checkbox>
+                    <button mat-raised-button color="accent" [disabled]="!agree"
+                        (click)="RegisterUser()">Submit</button>
                 </div>
-                <div>
-                    <mat-form-field class="input-horizontal">
-                        <mat-label>Email Address</mat-label>
-                        <input matInput formControlName="email" required>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Phone</mat-label>
-                        <input matInput maxlength="10" formControlName="phone">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <button mat-raised-button color="accent" matStepperNext>Next</button>
-                </div>
-            </form>
-        </mat-step>
-        <mat-step [stepControl]="contactGroup">
-            <form [formGroup]="contactGroup">
-                <ng-template matStepLabel>Fill out your address</ng-template>
-                <mat-form-field appearance="fill">
-                    <mat-label>Address</mat-label>
-                    <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY" required>
-                </mat-form-field>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </form>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Done</ng-template>
-            <p>You are now done.</p>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button (click)="stepper.reset()">Reset</button>
-            </div>
-        </mat-step>
-    </mat-stepper>
+            </mat-step>
+        </mat-stepper>
+    </div>
 </div>

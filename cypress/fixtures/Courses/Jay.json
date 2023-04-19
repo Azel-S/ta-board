@@ -1,0 +1,11 @@
+[
+	{
+		"course_serial" : 7,
+		"user_serial" : 3,
+		"course_id" : "JAY2004",
+		"course_code" : "#4004",
+		"course_name" : "Music",
+		"professor_name" : "Jay Day",
+		"description" : "Music is great, learn about it and stuff..."
+	}
+]
