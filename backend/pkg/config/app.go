@@ -190,7 +190,6 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete a question in database
-// TODO: Create DeleteQuestion function in model.go to make this work
 func (a *App) DeleteQuestion(w http.ResponseWriter, r *http.Request) {
 	if !HandleCORS(&w, r) {
 		var questionObj models.Question
@@ -198,8 +197,7 @@ func (a *App) DeleteQuestion(w http.ResponseWriter, r *http.Request) {
 		// JSON decode success
 		if a.DecodeJSON(w, r, &questionObj) {
 			if questionObj.Exists(a.DB) {
-				// TODO: Create DeleteQuestion function in model.go
-				// questionObj.DeleteQuestion(a.DB)
+				questionObj.DeleteQuestion(a.DB)
 				fmt.Println("DeleteQuestion(): deleted ", questionObj)
 				respondWithJSON(w, http.StatusOK, questionObj)
 			} else {
