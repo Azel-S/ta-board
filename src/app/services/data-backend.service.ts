@@ -75,11 +75,12 @@ export class DataBackendService {
     return result;
   }
 
-  async AddQuestion(course_serial: number, question: string, answer: string) {
+  async AddQuestion(course_serial: number, question: string, answer: string, date_time: string) {
     const result = await lastValueFrom(this.http.post<any>(this.url + '/AddQuestion', {
       course_serial: course_serial,
       question: question,
-      answer: answer
+      answer: answer,
+      date_time: date_time
     }));
     return result;
   }

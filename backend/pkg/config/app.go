@@ -2,6 +2,7 @@ package config
 
 import (
 	models "TA-Bot/backend/pkg/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -61,12 +62,12 @@ func (a *App) Initialize(username, password, dbname string) {
 
 	QuestionsTableQuery := `CREATE TABLE IF NOT EXISTS questions
 	(
-		id SERIAL,
+		question_serial SERIAL,
 		course_serial INT,
 		question varchar(255),
 		answer varchar(255),
 		date_time varchar(255),
-		CONSTRAINT pkey PRIMARY KEY (id)
+		CONSTRAINT pkey PRIMARY KEY (question_serial)
 	)`
 
 	// Drop/Remove old tables
@@ -83,13 +84,13 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.AddCourseParam(1, "COP4600", "#0003", "Operating Systems", "John Doe", "This course teaches the student about core concepts within the modern operating system.")
 	a.AddCourseParam(1, "JOHN1001", "#0002", "How to John: The Intro", "John Doe", "John's class for bad students!")
 
-	a.AddQuestionParam(1, "What is software Engineering anyways?", "No response", "03/12/2019 05:54PM")
-	a.AddQuestionParam(1, "Is this worth all the trouble? No, really?", "No response", "03/12/2019 05:54PM")
-	a.AddQuestionParam(2, "Is linux actually better?", "No!", "03/12/2019 05:54PM")
-	a.AddQuestionParam(2, "MacOS is the best system ever made, right?", "Hell nah!", "03/12/2019 05:54PM")
-	a.AddQuestionParam(2, "What about Windows?", "XP FTW!", "03/12/2019 05:54PM")
-	a.AddQuestionParam(3, "What does it mean to John?", "No response", "03/12/2019 05:54PM")
-	a.AddQuestionParam(3, "Why do I never get a response?", "Extra no response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(1, "What is software Engineering anyways?", "No response", "03/12/2019 05:54pm")
+	a.AddQuestionParam(1, "Is this worth all the trouble? No, really?", "No response", "03/12/2019 05:54pm")
+	a.AddQuestionParam(2, "Is linux actually better?", "No!", "03/12/2019 05:54pm")
+	a.AddQuestionParam(2, "MacOS is the best system ever made, right?", "Hell nah!", "03/12/2019 05:54pm")
+	a.AddQuestionParam(2, "What about Windows?", "XP FTW!", "03/12/2019 05:54pm")
+	a.AddQuestionParam(3, "What does it mean to John?", "No response", "03/12/2019 05:54pm")
+	a.AddQuestionParam(3, "Why do I never get a response?", "Extra no response", "03/12/2019 05:54pm")
 
 	// Add User Jane's data
 	a.AddUserParam("jane", "jane", "Jane Doe")
@@ -97,15 +98,15 @@ func (a *App) Initialize(username, password, dbname string) {
 	a.AddCourseParam(2, "LEI2818", "#1003", "Leisure", "Jane Doe", "Learn about how relaxing is great, however you don\"t get to do that because you are taking this course! Mwahaahaha.")
 	a.AddCourseParam(2, "FOS2001", "#0022", "Mans Food", "Jane Doe", "Learn about why eating tasty stuff is bad.")
 
-	a.AddQuestionParam(4, "What does it mean to Jane?", "No response", "03/12/2019 05:54PM")
-	a.AddQuestionParam(4, "I liked the prequel, John better. Thoughts?", "This is a sequel, they always suck!", "03/12/2019 05:54PM")
-	a.AddQuestionParam(5, "Why is called Mans food, I thought we were all for equality?", "No response", "03/12/2019 05:54PM")
-	a.AddQuestionParam(5, "Sugar is good, right?", "No response", "03/12/2019 05:54PM")
-	a.AddQuestionParam(6, "How come I never have any leisure in this class?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(4, "What does it mean to Jane?", "No response", "03/12/2019 05:54pm")
+	a.AddQuestionParam(4, "I liked the prequel, John better. Thoughts?", "This is a sequel, they always suck!", "03/12/2019 05:54pm")
+	a.AddQuestionParam(5, "Why is called Mans food, I thought we were all for equality?", "No response", "03/12/2019 05:54pm")
+	a.AddQuestionParam(5, "Sugar is good, right?", "No response", "03/12/2019 05:54pm")
+	a.AddQuestionParam(6, "How come I never have any leisure in this class?", "No response", "03/12/2019 05:54pm")
 
 	a.AddUserParam("jay", "jay", "Jay Day")
 	a.AddCourseParam(3, "JAY2004", "#4004", "Music", "Jay Day", "Music is great, learn about it and stuff...")
-	a.AddQuestionParam(7, "So glad this is not a country music class, it's all the same now! Agreed?", "No response", "03/12/2019 05:54PM")
+	a.AddQuestionParam(7, "So glad this is not a country music class, it's all the same now! Agreed?", "No response", "03/12/2019 05:54pm")
 }
 
 func (a *App) AddUserParam(username string, password string, professor_name string) {
@@ -174,23 +175,16 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 		var courseObj models.Course
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
-			// TODO: Check for exists of username.
+		if a.DecodeJSON(w, r, &courseObj) {
 			if courseObj.Exists(a.DB) {
 				courseObj.DeleteCourse(a.DB)
 				fmt.Println("DeleteCourse(): deleted ", courseObj)
-				respondWithJSON(w, http.StatusCreated, courseObj)
+				respondWithJSON(w, http.StatusOK, courseObj)
 			} else {
-				fmt.Println("DeleteCourse(): didn't work")
-
-				respondWithError(w, http.StatusInternalServerError, "Course Doesn't Exist")
+				fmt.Println("DeleteCourse(): Course not found in database")
+				respondWithError(w, http.StatusNotFound, "Course not found in database")
 			}
-		} else {
-			//fmt.Println("TeacherLogin(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -207,7 +201,7 @@ func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 		var userObj models.User
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&userObj) == nil {
+		if a.DecodeJSON(w, r, &userObj) {
 			// TODO: Check for exists of username.
 			if err := userObj.CreateUser(a.DB); err == nil {
 				fmt.Println("Register(): Added ", userObj)
@@ -216,12 +210,7 @@ func (a *App) Register(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("Register(): Error adding user")
 				respondWithError(w, http.StatusInternalServerError, err.Error())
 			}
-		} else {
-			fmt.Println("TeacherLogin(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -232,7 +221,7 @@ func (a *App) UpdateName(w http.ResponseWriter, r *http.Request) {
 		var userObj models.User
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&userObj) == nil {
+		if a.DecodeJSON(w, r, &userObj) {
 			if userObj.Exists(a.DB) {
 				userObj.UpdateName(a.DB)
 				respondWithJSON(w, http.StatusOK, userObj)
@@ -241,12 +230,7 @@ func (a *App) UpdateName(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("UpdateName(): User not found in database")
 				respondWithError(w, http.StatusNotFound, "User not found in database")
 			}
-		} else {
-			fmt.Println("UpdateName(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -257,7 +241,7 @@ func (a *App) Teacher(w http.ResponseWriter, r *http.Request) {
 		var userObj models.User
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&userObj) == nil {
+		if a.DecodeJSON(w, r, &userObj) {
 			if userObj.Exists(a.DB) {
 				userObj.Fill(a.DB)
 				respondWithJSON(w, http.StatusOK, userObj)
@@ -265,14 +249,8 @@ func (a *App) Teacher(w http.ResponseWriter, r *http.Request) {
 			} else {
 				fmt.Println("TeacherLogin(): User not found in database")
 				respondWithError(w, http.StatusNotFound, "User not found in database")
-				// should have a check for error type and a respondWithError(w, http.StatusInternalServerError, err.Error()), but it's causing some issues
 			}
-		} else {
-			fmt.Println("TeacherLogin(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -283,7 +261,7 @@ func (a *App) Student(w http.ResponseWriter, r *http.Request) {
 		var courseObj models.Course
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+		if a.DecodeJSON(w, r, &courseObj) {
 			if courseObj.Exists(a.DB) {
 				courseObj.Fill(a.DB)
 				respondWithJSON(w, http.StatusOK, courseObj)
@@ -292,12 +270,7 @@ func (a *App) Student(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("Student(): Course not found in database")
 				respondWithError(w, http.StatusNotFound, "Course not found in database")
 			}
-		} else {
-			fmt.Println("Student(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -308,7 +281,7 @@ func (a *App) Courses(w http.ResponseWriter, r *http.Request) {
 		var courseObj models.Course
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+		if a.DecodeJSON(w, r, &courseObj) {
 			courses, err := courseObj.GetCourses(a.DB)
 			if err == nil {
 				respondWithJSON(w, http.StatusOK, courses)
@@ -317,12 +290,7 @@ func (a *App) Courses(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("GetCourses(): Error encountered")
 				respondWithError(w, http.StatusInternalServerError, err.Error())
 			}
-		} else {
-			fmt.Println("GetCourses(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -333,7 +301,7 @@ func (a *App) AddCourse(w http.ResponseWriter, r *http.Request) {
 		var courseObj models.Course
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&courseObj) == nil {
+		if a.DecodeJSON(w, r, &courseObj) {
 			err := courseObj.CreateCourse(a.DB)
 			if err == nil {
 				respondWithJSON(w, http.StatusOK, courseObj)
@@ -342,12 +310,7 @@ func (a *App) AddCourse(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("AddCourse(): Error encountered")
 				respondWithError(w, http.StatusInternalServerError, err.Error())
 			}
-		} else {
-			fmt.Println("AddCourse(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -358,7 +321,7 @@ func (a *App) Questions(w http.ResponseWriter, r *http.Request) {
 		var questionObj models.Question
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
+		if a.DecodeJSON(w, r, &questionObj) {
 			questions, err := questionObj.GetQuestions(a.DB)
 			if err == nil {
 				respondWithJSON(w, http.StatusOK, questions)
@@ -367,12 +330,7 @@ func (a *App) Questions(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("GetQuestions(): Error encountered")
 				respondWithError(w, http.StatusInternalServerError, err.Error())
 			}
-		} else {
-			fmt.Println("GetQuestions(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -383,12 +341,10 @@ func (a *App) AddQuestion(w http.ResponseWriter, r *http.Request) {
 		var questionObj models.Question
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
+		if a.DecodeJSON(w, r, &questionObj) {
 			if questionObj.DateTime == "" {
 				s := time.Now()
-				time_string := s.Format("01/02/2006 03:04:05PM")
-				// TODO: Verify am/pm
-
+				time_string := strings.ToLower(s.Format("01/02/2006 03:04PM"))
 				questionObj.DateTime = time_string
 			}
 
@@ -400,12 +356,7 @@ func (a *App) AddQuestion(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("AddQuestion(): Error encountered")
 				respondWithError(w, http.StatusInternalServerError, err.Error())
 			}
-		} else {
-			fmt.Println("AddQuestion(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -416,7 +367,7 @@ func (a *App) UpdateAnswer(w http.ResponseWriter, r *http.Request) {
 		var questionObj models.Question
 
 		// JSON decode success
-		if json.NewDecoder(r.Body).Decode(&questionObj) == nil {
+		if a.DecodeJSON(w, r, &questionObj) {
 			if questionObj.Exists(a.DB) {
 				questionObj.UpdateAnswer(a.DB)
 				respondWithJSON(w, http.StatusOK, questionObj)
@@ -425,12 +376,7 @@ func (a *App) UpdateAnswer(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("UpdateAnswer(): Question not found in database")
 				respondWithError(w, http.StatusNotFound, "Question not found in database")
 			}
-		} else {
-			fmt.Println("UpdateAnswer(): Invalid JSON recieved")
-			respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
 		}
-
-		r.Body.Close()
 	}
 }
 
@@ -465,6 +411,19 @@ func HandleCORS(w *http.ResponseWriter, req *http.Request) bool {
 	} else {
 		return false
 	}
+}
+
+// Handles any decoding, and responds with error message
+func (a *App) DecodeJSON(w http.ResponseWriter, r *http.Request, data any) bool {
+	defer r.Body.Close()
+
+	if json.NewDecoder(r.Body).Decode(&data) != nil {
+		fmt.Println("Invalid JSON recieved")
+		respondWithError(w, http.StatusBadRequest, "Invalid JSON recieved")
+		return false
+	}
+
+	return true
 }
 
 // Sets up routes that need handling -> WHEN ROUTER SEES A HTTP REQUEST MATCHING THE TYPE AND URL, EXECUTE A GIVEN FUNCTION

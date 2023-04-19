@@ -23,7 +23,7 @@ export class DataComponentService {
 
   courses: { serial: number, id: string, name: string, passcode: string, description: string }[] = [];
   
-  questions: {question: string, answer: string, date_time: string}[] = [];
+  questions: {question_serial: number, question: string, answer: string, date_time: string}[] = [];
 
   //==Serial Functions==// 
   SetSerial(serial: number) {
@@ -156,7 +156,7 @@ export class DataComponentService {
   }
 
   //AddQuestion(question: { index: number, date: Date, question: string, answer: string, date_time: Date }) {
-  AddQuestion(question: { index: number, question: string, answer: string, date_time: string }) {
+  AddQuestion(question: { question_serial: number, question: string, answer: string, date_time: string }) {
     this.questions.push(question);
   }
 
@@ -184,12 +184,10 @@ export class DataComponentService {
       if (date.getHours() % 12 == 0) {
         result += "12";
       } else {
-        result += date.getHours() % 12 < 12 ? "0" + date.getHours() % 12 : date.getHours() % 12;
+        result += date.getHours() % 12 < 10 ? "0" + date.getHours() % 12 : date.getHours() % 12;
       }
       result += ":";
       result += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-      result += ":";
-      result += date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       result += date.getHours() < 12 ? "am" : "pm";
     }
 

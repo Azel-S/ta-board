@@ -37,11 +37,11 @@ func (Course) TableName() string {
 
 // --Question--
 type Question struct {
-	ID           int    `gorm:"column:id; PRIMARY_KEY" json:"id"`
-	CourseSerial int    `gorm:"column:course_serial" json:"course_serial"`
-	Question     string `gorm:"column:question" json:"question"`
-	Answer       string `gorm:"column:answer" json:"answer"`
-	DateTime     string `gorm:"column:date_time" json:"date_time"`
+	QuestionSerial int    `gorm:"column:question_serial; PRIMARY_KEY" json:"question_serial"`
+	CourseSerial   int    `gorm:"column:course_serial" json:"course_serial"`
+	Question       string `gorm:"column:question" json:"question"`
+	Answer         string `gorm:"column:answer" json:"answer"`
+	DateTime       string `gorm:"column:date_time" json:"date_time"`
 }
 
 func (Question) TableName() string {
@@ -132,7 +132,7 @@ func (c *Course) DeleteCourse(db *gorm.DB) error {
 
 // --- QUESTION FUNCTIONS ---
 
-// Returns true if course_serial && question exists, or id exists.
+// Returns true if course_serial && question exists, or question_serial exists.
 // Note: Does not validate full object
 func (q *Question) Exists(db *gorm.DB) bool {
 	var temp Question
@@ -140,7 +140,7 @@ func (q *Question) Exists(db *gorm.DB) bool {
 	if db.Where("course_serial = ? AND question = ?", q.CourseSerial, q.Question).Limit(1).Find(&temp).RowsAffected > 0 {
 		return true
 	} else {
-		return db.Where("id = ?", q.ID).Limit(1).Find(&temp).RowsAffected > 0
+		return db.Where("question_serial = ?", q.QuestionSerial).Limit(1).Find(&temp).RowsAffected > 0
 	}
 }
 
@@ -165,10 +165,9 @@ func (q *Question) GetQuestions(db *gorm.DB) ([]Question, error) {
 	var questionsList []Question
 	for rows.Next() {
 		var q Question
-		if err := rows.Scan(&q.ID, &q.CourseSerial, &q.Question, &q.Answer, &q.DateTime); err != nil {
+		if err := rows.Scan(&q.QuestionSerial, &q.CourseSerial, &q.Question, &q.Answer, &q.DateTime); err != nil {
 			return nil, err
 		}
-		// q.Fill(db)
 		questionsList = append(questionsList, q)
 	}
 	rows.Close()
