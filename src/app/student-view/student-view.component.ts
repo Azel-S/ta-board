@@ -26,7 +26,6 @@ export class StudentViewComponent {
     this.serve_back.AddQuestion(this.serve_comm.GetCourseSerial(), this.description, "No response", this.serve_comm.GetCurrentDate()).then(res => {
       this.serve_comm.GetQuestions().push({ question_serial: res.question_serial, date_time: this.serve_comm.GetCurrentDate(), question: this.description, answer: "No response" });
       this.serve_comm.Notify("Question was successfully added to the list!");
-      this.serve_comm.Notify("ID is: " + res.id);
       this.toggleActive();
     });
   }

@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { DataBackendService } from './data-backend.service';
-import { result } from 'cypress/types/lodash';
-//import moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
