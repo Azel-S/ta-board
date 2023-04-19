@@ -192,19 +192,6 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 
 		r.Body.Close()
 	}
-
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid course identifier")
-		return
-	}
-	c := models.Course{CourseSerial: id}
-	if err := c.DeleteCourse(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
 /*

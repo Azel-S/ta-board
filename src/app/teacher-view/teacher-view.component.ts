@@ -29,7 +29,6 @@ export class TeacherViewComponent {
   deleteCourse(index: number) {
     this.serve_comm.SetCurrentCourse(index);
     this.serve_back.DeleteCourse(this.serve_comm.GetCourseSerial()).then(res => {
-      
       this.serve_back.GetCourses(this.serve_comm.GetSerial()).then(res => {
         this.serve_comm.ClearCourses();
         if (res != null) {
@@ -37,8 +36,6 @@ export class TeacherViewComponent {
             this.serve_comm.AddCourse(res[i]);
           }
         }
-        this.serve_comm.Navigate("teacher-view");
-
       }).catch(res => {
         console.log("YAHOO!");
       });
