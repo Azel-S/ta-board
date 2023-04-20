@@ -190,7 +190,6 @@ func (a *App) DeleteCourse(w http.ResponseWriter, r *http.Request) {
 }
 
 // Delete a question in database
-// TODO: Create DeleteQuestion function in model.go to make this work
 func (a *App) DeleteQuestion(w http.ResponseWriter, r *http.Request) {
 	if !HandleCORS(&w, r) {
 		var questionObj models.Question
@@ -198,8 +197,7 @@ func (a *App) DeleteQuestion(w http.ResponseWriter, r *http.Request) {
 		// JSON decode success
 		if a.DecodeJSON(w, r, &questionObj) {
 			if questionObj.Exists(a.DB) {
-				// TODO: Create DeleteQuestion function in model.go
-				// questionObj.DeleteQuestion(a.DB)
+				questionObj.DeleteQuestion(a.DB)
 				fmt.Println("DeleteQuestion(): deleted ", questionObj)
 				respondWithJSON(w, http.StatusOK, questionObj)
 			} else {
@@ -465,4 +463,10 @@ func (a *App) initializeRoutes() {
 
 	a.Router.HandleFunc("/DeleteCourse", a.DeleteCourse).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/DeleteQuestion", a.DeleteQuestion).Methods("POST", "OPTIONS")
+
+	a.Router.HandleFunc("/testadd", a.Register).Methods("POST")
+	a.Router.HandleFunc("/testget", a.Teacher).Methods("POST")
+	a.Router.HandleFunc("/testgetcourse", a.Courses).Methods("POST")
+	a.Router.HandleFunc("/testdeletecourse", a.DeleteCourse).Methods("POST")
+	a.Router.HandleFunc("/testupdate", a.UpdateName).Methods("POST")
 }

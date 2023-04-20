@@ -30,6 +30,19 @@ export class CourseViewComponent {
   }
 
   deleteQuestion(question_serial: number) {
-    this.serve_back.DeleteQuestion(question_serial);
+    this.serve_back.DeleteQuestion(question_serial).then(res => {
+      this.serve_back.GetQuestions(this.serve_comm.GetCourseSerial()).then(res => {
+        this.serve_comm.ClearQuestions();
+        if (res != null) {
+          for (let j = 0; j < res.length; j++) {
+            this.serve_comm.AddQuestion(res[j]);
+          }
+        }
+
+      }).catch(res => {
+        console.log("YAY!");
+      });
+    });
+  
   }
 }

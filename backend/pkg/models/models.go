@@ -182,6 +182,11 @@ func (u *User) GetUserSerial(db *gorm.DB) int {
 	return user_serial
 }
 
+func (q *Question) DeleteQuestion(db *gorm.DB) error {
+	ret := db.Delete(&q)
+	return ret.Error
+}
+
 // DELETES FIRST INSTANCE OF A MATCHING USER FROM DATABASE
 func (u *User) DeleteUser(db *gorm.DB) error {
 	//ret := db.Exec("DELETE FROM users WHERE id=?", u.ID)
