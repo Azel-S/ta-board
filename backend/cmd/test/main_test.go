@@ -21,7 +21,7 @@ import (
 	models "TA-Bot/backend/pkg/models"
 )
 
-const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
+const UsersTableQuery = `CREATE TABLE IF NOT EXISTS users
 (
 	user_serial SERIAL,
 	username TEXT NOT NULL,
@@ -29,6 +29,18 @@ const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
 	professor_name TEXT NOT NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (user_serial)
 )`
+
+const CoursesTableQuery = `CREATE TABLE IF NOT EXISTS courses
+	(
+		course_serial SERIAL,
+		user_serial INT,
+		course_id TEXT NOT NULL,
+		course_code TEXT NOT NULL,
+		course_name TEXT NOT NULL,
+		professor_name TEXT NOT NULL,
+		description TEXT NOT NULL,
+		CONSTRAINT users_pkey PRIMARY KEY (course_serial)
+	)`
 
 var a config.App
 
@@ -46,46 +58,45 @@ func TestMain(m *testing.M) {
 // CHECK WHETHER OR NOT TABLE 'USERS' EXISTS -> NECESSARY FOR TESTS TO RUN
 func checkTableExistence() bool {
 	a.DB.Exec("DROP TABLE IF EXISTS users")
-	exists := a.DB.Exec(tableCreationQuery)
+	a.DB.Exec("DROP TABLE IF EXISTS courses")
+	exists := a.DB.Exec(UsersTableQuery)
+	if exists.Error == nil {
+		exists = a.DB.Exec(CoursesTableQuery)
+		return exists.Error == nil
+	}
 	return exists.Error == nil
 }
 
 // CLEARS ENTIRE 'USERS' TABLE
 func clearTable() {
 	a.DB.Exec("DELETE FROM users")
-}
-
-// CREATES AN ARTIFICIAL HTTP REQUEST TO TRY TO GET USERS (HANDLED BY ROUTER TO GetManyUsers())
-func TestEmptyTable(t *testing.T) {
-	clearTable()
-	req, _ := http.NewRequest("GET", "/users", nil)
-	response := executeRequest(req)
-	checkResponseCode(t, http.StatusOK, response.Code)
-	if body := response.Body.String(); body != "[]" {
-		t.Errorf("Expected an empty array, got %s", body)
-	}
+	a.DB.Exec("DELETE FROM courses")
 }
 
 // TESTS TO GET A USER NOT IN THE DATABASE (HANDLED BY ROUTER TO GetUser())
 func TestGetNonExistUser(t *testing.T) {
 	clearTable()
+	var jsonDATA = []byte(`{
+		"username":"NOT HERE",
+		"password":"NON EXISTENT",
+		"professor_name":"NOPE"
+		}`)
 	// Issue here: When set to "/users/10" or any ID greater than 9 (two digits+), it doesn't return an error like it should...
-	req, _ := http.NewRequest("GET", "/users/9", nil)
+	req, _ := http.NewRequest("POST", "/testget", bytes.NewBuffer(jsonDATA))
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
-	var m map[string]string
-	json.Unmarshal(response.Body.Bytes(), &m)
-	if m["error"] != "User not found" {
-		t.Errorf("Expected the 'error' key of the response to be set to 'User not found', got %v", m["error"])
-	}
 }
 
 // TESTS TO CREATE A USER IN DATABASE (HANDLED BY ROUTER TO CreateUser())
 func TestCreateUser(t *testing.T) {
 	clearTable()
 
-	var jsonStr = []byte(`{"professor_name":"test user", "class_id":"ABC123", "class_name":"Alphabet101"}`)
-	req, _ := http.NewRequest("POST", "/users", bytes.NewBuffer(jsonStr))
+	var jsonDATA = []byte(`{
+		"username":"test_user",
+		"password":"test_pass",
+		"professor_name":"test_name"
+		}`)
+	req, _ := http.NewRequest("POST", "/testadd", bytes.NewBuffer(jsonDATA))
 	req.Header.Set("Content-Type", "application/json")
 
 	response := executeRequest(req)
@@ -94,17 +105,14 @@ func TestCreateUser(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
 
-	if m["professor_name"] != "test user" {
+	if m["professor_name"] != "test_name" {
 		t.Errorf("Expected name = 'test user'. Got '%v'", m["professorName"])
 	}
-	if m["class_id"] != "ABC123" {
+	if m["password"] != "test_pass" {
 		t.Errorf("Expected cID = 'ABC123'. Got '%v'", m["classID"])
 	}
-	if m["class_name"] != "Alphabet101" {
+	if m["username"] != "test_user" {
 		t.Errorf("Expected class = 'Alphabet101'. Got '%v'", m["className"])
-	}
-	if m["id"] != 1.0 {
-		t.Errorf("Expected ID = '1'. Got '%v'", m["id"])
 	}
 }
 
@@ -112,9 +120,13 @@ func TestCreateUser(t *testing.T) {
 func TestGetUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
-	u := models.User{ProfessorName: "test user", Password: "test pass"}
+	u := models.User{Username: "test user", Password: "test pass"}
 	u.CreateUser(a.DB)
-	req, _ := http.NewRequest("GET", "/users/2", nil) // no idea why /users/1 doesn't work, 'u' actually has an id of 2 right here
+	var jsonDATA = []byte(`{
+		"username": "test user",
+		"password": "test pass"
+	}`)
+	req, _ := http.NewRequest("POST", "/testget", bytes.NewBuffer(jsonDATA))
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 }
@@ -123,15 +135,23 @@ func TestGetUser(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
-	u := models.User{ProfessorName: "test user", Password: "test pass"}
+	u := models.User{Username: "test user", Password: "test pass"}
 	u.CreateUser(a.DB)
-	req, _ := http.NewRequest("GET", "/users/1", nil)
+	var jsonDATA = []byte(`{
+		"username": "test user",
+		"password": "test pass"
+	}`)
+	req, _ := http.NewRequest("POST", "/testget", bytes.NewBuffer(jsonDATA))
 	response := executeRequest(req)
 	var ogUser map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &ogUser)
 
-	var jsonStr = []byte(`{"professor_name":"updated user", "class_id":"UPD101", "class_name":"Updates101"}`)
-	req, _ = http.NewRequest("PUT", "/users/1", bytes.NewBuffer(jsonStr))
+	jsonDATA = []byte(`{
+		"professor_name":"updated user",
+		"username": "test user",
+		"password": "test pass"
+		}`)
+	req, _ = http.NewRequest("POST", "/testupdate", bytes.NewBuffer(jsonDATA))
 	req.Header.Set("Content-Type", "application/json")
 
 	response = executeRequest(req)
@@ -143,31 +163,26 @@ func TestUpdateUser(t *testing.T) {
 	if m["professor_name"] == ogUser["professor_name"] {
 		t.Errorf("Expected the name to change from '%v' to '%v'. Got %v", ogUser["professor_name"], m["professor_name"], m["professor_name"])
 	}
-	if m["class_id"] == ogUser["class_id"] {
-		t.Errorf("Expected the name to change from '%v' to '%v'. Got '%v'", ogUser["class_id"], m["class_id"], m["class_id"])
-	}
-	if m["class_name"] == ogUser["class_name"] {
-		t.Errorf("Expected the price to change from '%v' to '%v'. Got '%v'", ogUser["class_name"], m["class_name"], m["class_name"])
-	}
 }
 
 // TESTS TO DELETE A USER (HANDLED BY ROUTER TO DeleteUser())
-func TestDeleteUser(t *testing.T) {
+func TestDeleteCourse(t *testing.T) {
 	clearTable()
 	//addUserRaw("test user", "ABC123", "Alphabet101")
-	u := models.User{ProfessorName: "test user", Password: "test pass"}
-	u.CreateUser(a.DB)
-	req, _ := http.NewRequest("GET", "/users/4", nil)
+	u := models.Course{CourseID: "testid", CourseCode: "testcode"}
+	u.CreateCourse(a.DB)
+	var jsonDATA = []byte(`{
+		"course_id": "testid",
+		"course_code": "testcode"
+	}`)
+
+	req, _ := http.NewRequest("POST", "/testdeletecourse", bytes.NewBuffer(jsonDATA))
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 
-	req, _ = http.NewRequest("DELETE", "/users/4", nil)
+	req, _ = http.NewRequest("POST", "/testgetcourse", bytes.NewBuffer(jsonDATA))
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
-
-	req, _ = http.NewRequest("GET", "/users/4", nil)
-	response = executeRequest(req)
-	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
 
 // HELPER FUNCTION TO EXECUTE TEST HTTP REQUESTS

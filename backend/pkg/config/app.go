@@ -463,4 +463,10 @@ func (a *App) initializeRoutes() {
 
 	a.Router.HandleFunc("/DeleteCourse", a.DeleteCourse).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/DeleteQuestion", a.DeleteQuestion).Methods("POST", "OPTIONS")
+
+	a.Router.HandleFunc("/testadd", a.Register).Methods("POST")
+	a.Router.HandleFunc("/testget", a.Teacher).Methods("POST")
+	a.Router.HandleFunc("/testgetcourse", a.Courses).Methods("POST")
+	a.Router.HandleFunc("/testdeletecourse", a.DeleteCourse).Methods("POST")
+	a.Router.HandleFunc("/testupdate", a.UpdateName).Methods("POST")
 }
